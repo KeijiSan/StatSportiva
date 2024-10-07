@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lista de Campeonatos</title>
+</head>
+<body>
+    <h1>Lista de Campeonatos</h1>
+    <ul>
+        {% for campeonato in campeonatos %}
+        <li>{{ campeonato.nombre }} (Fecha de inicio: {{ campeonato.fecha_inicio }})</li>
+        {% endfor %}
+    </ul>
+    <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
+</body>
+</html>
