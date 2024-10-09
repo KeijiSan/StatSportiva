@@ -158,14 +158,24 @@ def perfil_usuario(request):
 
     
     
+
 @login_required
 def abandonar_campeonato(request):
+    # Obtener el equipo asociado al entrenador del usuario
     equipo = get_object_or_404(Equipo, entrenador__user=request.user)
-    
+
     if request.method == 'POST':
-        equipo.delete()  # Elimina el equipo del campeonato
-        return redirect('perfil_usuario')  # Redirige al perfil después de eliminar
+        # Eliminar el equipo
+        equipo.delete()
+        
+        # Eliminar el entrenador asociado al usuario
+        entrenador = get_object_or_404(Entrenador, user=request.user)
+        entrenador.delete()
+
+        # Redirigir al perfil después de eliminar
+        return redirect('perfil_usuario')
 
     return render(request, 'basquetbol/abandonar_campeonato.html', {'equipo': equipo})
+
 
 

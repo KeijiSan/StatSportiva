@@ -6,6 +6,7 @@
     <title>Inscribir Equipo en Campeonato</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 </head>
 <body>
     <div class="inscribir-container">
@@ -36,12 +37,14 @@
                         </div>
                     {% endfor %}
                 </div>
+                <!-- Botón para añadir más jugadores -->
+                <button type="button" id="add-player-btn" class="add-player-btn">+ Agregar Jugador</button>
             </div>
 
             <button type="submit" class="submit-btn">Inscribir</button>
         </form>
 
-        <a href="{% url 'lista_campeonatos' %}" class="back-link">Volver a los campeonatos</a>
+        <a href="{% url 'proximo_partido' %}" class="back-link">Volver a Inicio</a>
 
         {% if messages %}
             <ul class="messages">
@@ -52,14 +55,48 @@
         {% endif %}
     </div>
 
-    <!-- Script para eliminar formularios dinámicamente -->
+    <!-- Script para añadir y eliminar formularios dinámicamente -->
     <script type="text/javascript">
         $(document).ready(function () {
+            // Obtener la cantidad total inicial de formularios
+            var formIndex = parseInt($('#id_jugador_set-TOTAL_FORMS').val());
+
+            // Añadir nuevo formulario al hacer clic en el botón "Agregar Jugador"
+            $('#add-player-btn').click(function () {
+                var totalForms = $('#id_jugador_set-TOTAL_FORMS');
+                var newFormIndex = formIndex;
+
+                // Clonar el primer formulario de jugador visible y resetear los valores
+                var newForm = $('#jugadores-list .jugador-form:first').clone(false);
+                newForm.find(':input').each(function () {
+                    var name = $(this).attr('name');
+                    var id = $(this).attr('id');
+
+                    if (name) {
+                        name = name.replace(/-\d+-/, '-' + newFormIndex + '-');
+                        $(this).attr('name', name);
+                    }
+                    if (id) {
+                        id = id.replace(/-\d+-/, '-' + newFormIndex + '-');
+                        $(this).attr('id', id);
+                    }
+
+                    $(this).val(''); // Limpiar el valor del campo
+                });
+
+                // Asegurarse de agregar el nuevo formulario después de los existentes
+                $('#jugadores-list').append(newForm);
+
+                // Incrementar el total de formularios
+                totalForms.val(parseInt(totalForms.val()) + 1);
+                formIndex++;
+            });
+
             // Eliminar formulario
             $('#jugadores-list').on('click', '.delete-btn', function () {
                 $(this).closest('.jugador-form').remove();
                 var totalForms = $('#id_jugador_set-TOTAL_FORMS');
-                totalForms.val(parseInt(totalForms.val()) - 1); // Decrementar el total de formularios
+                totalForms.val(parseInt(totalForms.val()) - 1);
             });
         });
     </script>

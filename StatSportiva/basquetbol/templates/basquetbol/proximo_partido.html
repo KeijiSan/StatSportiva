@@ -26,7 +26,7 @@
             <div class="auth-buttons">
                 {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
-                        <button><a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a></button>
+                        <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
                     {% endif %}
                     <!-- Formulario para cerrar sesión -->
                     <form method="POST" action="{% url 'logout' %}" style="display:inline;">
@@ -80,8 +80,9 @@
         <h2 class="match-title">Próximo partido</h2>
         <div class="match-teams">
             <div class="team" style="background-color: #ff3333;">
-                <img src="{% static 'images/shohoku.png' %}" alt="">
+                <img src="{% static 'img/shohoku.jpg' %}" alt="">
                 <p>Shohoku</p>
+
             </div>
             <div class="vs-container">
                 <div class="vs">
@@ -89,8 +90,8 @@
                 </div>
             </div>
             <div class="team" style="background-color: #3366ff;">
-                <img src="{% static 'images/kainan.png' %}" alt="">
                 <p>Kainan</p>
+                <img src="{% static 'img/kainan.png' %}" alt="">
             </div>
         </div>
         <p class="match-details">sáb, 31° agosto | 12:30 | Preparatoria Shohoku</p>
