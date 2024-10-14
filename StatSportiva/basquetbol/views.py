@@ -156,3 +156,7 @@ def abandonar_campeonato(request):
         return redirect('perfil_usuario')
 
     return render(request, 'basquetbol/abandonar_campeonato.html', {'equipo': equipo})
+
+# Vista para mostrar el foro
+def foro(request):
+    return render(request, 'basquetbol/foro.html')
