@@ -2,37 +2,38 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="basketball-register-container">
-        <div class="register-box">
-            <h2 class="register-title">Registro de Usuario</h2>
-            <form method="post" class="register-form">
+    <main class="basketball-register-container">
+        <section class="register-box">
+            <h1 class="register-title">Registro de Usuario</h1>
+            <form method="post" class="register-form" aria-label="Formulario de registro de usuario">
                 {% csrf_token %}
                 <div class="form-group">
-                    {{ form.username.label_tag }}
+                    <label for="id_username">{{ form.username.label }}</label>
                     {{ form.username }}
                 </div>
                 <div class="form-group">
-                    {{ form.email.label_tag }}
+                    <label for="id_email">{{ form.email.label }}</label>
                     {{ form.email }}
                 </div>
                 <div class="form-group">
-                    {{ form.password1.label_tag }}
+                    <label for="id_password1">{{ form.password1.label }}</label>
                     {{ form.password1 }}
                 </div>
                 <div class="form-group">
-                    {{ form.password2.label_tag }}
+                    <label for="id_password2">{{ form.password2.label }}</label>
                     {{ form.password2 }}
                 </div>
-                <button type="submit" class="register-btn">Registrarse</button>
+                <button type="submit" class="register-btn" aria-label="Registrarse">Registrarse</button>
             </form>
             <p class="register-text">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="login-link">Inicia sesión aquí</a></p>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 </html>

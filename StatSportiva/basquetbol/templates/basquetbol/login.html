@@ -2,29 +2,30 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     {% load static %}
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
-    <div class="login-container">
-        <div class="login-box">
-            <h2 class="login-title">Iniciar Sesión</h2>
-            <form method="post" class="login-form">
+    <main class="login-container">
+        <section class="login-box">
+            <h1 class="login-title">Iniciar Sesión</h1>
+            <form method="post" class="login-form" aria-label="Formulario de inicio de sesión">
                 {% csrf_token %}
                 <div class="form-group">
-                    {{ form.username.label_tag }}
+                    <label for="id_username">{{ form.username.label }}</label>
                     {{ form.username }}
                 </div>
                 <div class="form-group">
-                    {{ form.password.label_tag }}
+                    <label for="id_password">{{ form.password.label }}</label>
                     {{ form.password }}
                 </div>
-                <button type="submit" class="login-btn">Iniciar Sesión</button>
+                <button type="submit" class="login-btn" aria-label="Iniciar sesión">Iniciar Sesión</button>
             </form>
             <p class="login-text">¿No tienes cuenta? <a href="{% url 'registro' %}" class="register-link">Regístrate aquí</a></p>
-        </div>
-    </div>
+        </section>
+    </main>
 </body>
 </html>
