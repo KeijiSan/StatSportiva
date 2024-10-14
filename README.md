@@ -15,7 +15,7 @@ Stat Sportiva es una plataforma web que centralizará estadísticas detalladas d
 
 - Administrador: Crear, modificar y eliminar campeonatos, jugadores, partidos y usuarios.
 - Usuario: Ver estadísticas de jugadores y equipos, participar en el foro de discusiones, modificación de perfil (nombre de usuario, foto y descripción) y visualización de noticias de campeonatos, equipos y jugadores.
-- Planillero: Registrar, modificar y eliminar estadísticas de equipos y jugadores.
+- Planillero: Registrar, modificar y eliminar estadísticas de equipos y jugadores, registrar marcador en vivo.
 
 ## Avance del proyecto
 
