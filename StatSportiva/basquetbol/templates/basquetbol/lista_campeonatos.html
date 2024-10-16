@@ -4,14 +4,18 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lista de Campeonatos</title>
+    {% load static %}  <!-- Carga la etiqueta de archivos estáticos -->
+
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <h1>Lista de Campeonatos</h1>
-    <ul>
+    <ul class="campeonatos-lista">
         {% for campeonato in campeonatos %}
-        <li>{{ campeonato.nombre }} (Fecha de inicio: {{ campeonato.fecha_inicio }})</li>
+            <li class="{% if campeonato.equipos.count >= campeonato.max_equipos %}tachado{% endif %}">
+                {{ campeonato.nombre }} ({{ campeonato.equipos.count }}/{{ campeonato.max_equipos }} equipos)
+            </li>
         {% endfor %}
     </ul>
-    <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
 </body>
 </html>
