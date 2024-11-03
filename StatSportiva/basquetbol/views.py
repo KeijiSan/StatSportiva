@@ -3,7 +3,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
 from .models import Equipo, Jugador, Entrenador, Campeonato
-
+def vista_principal(request):
+    return render(request, 'basquetbol/inicio.html')  # Asegúrate de tener 'inicio.html' en la carpeta de plantillas
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
