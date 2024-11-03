@@ -78,15 +78,13 @@ MEDIA_ROOT = BASE_DIR / 'media'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.mysql',
-        'NAME': 'basquetbol_torneo',    # Reemplaza con el nombre de tu base de datos
-        'USER': 'root',               # Por defecto en XAMPP es 'root'
-        'PASSWORD': '',               # Por defecto en XAMPP la contraseña está vacía
-        'HOST': '127.0.0.1',
-        'PORT': '3306',
+        'NAME': 'basquetbol_torneo',  # Nombre de tu base de datos en XAMPP
+        'USER': 'root',  # Usuario predeterminado de XAMPP
+        'PASSWORD': '',  # Generalmente vacío por defecto, pero cambia si has establecido uno
+        'HOST': 'localhost',  # XAMPP corre en localhost
+        'PORT': '3306',  # Puerto predeterminado de MySQL
     }
 }
-
-
 
 
 
