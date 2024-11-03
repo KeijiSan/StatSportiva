@@ -1,12 +1,13 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
-from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, PartidoForm, ComentarioForm, RegistroForm
-from .models import Equipo, Jugador, Entrenador, Campeonato, Partido, Tema, Comentario, Clasificacion
+from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
+from .models import Equipo, Jugador, Entrenador, Campeonato
 
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
+    # Verifica si el usuario tiene un equipo inscrito
     equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
     return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito})
 
@@ -20,14 +21,17 @@ def inscribir_equipo(request):
         jugador_formset = JugadorFormSet(request.POST)
 
         if equipo_form.is_valid() and entrenador_form.is_valid() and jugador_formset.is_valid():
+            # Crear un nuevo entrenador asociado al usuario
             entrenador = entrenador_form.save(commit=False)
             entrenador.user = request.user
             entrenador.save()
 
+            # Crear un nuevo equipo asociado al entrenador
             equipo = equipo_form.save(commit=False)
             equipo.entrenador = entrenador
             equipo.save()
 
+            # Guardar los jugadores asociados al equipo
             jugadores = jugador_formset.save(commit=False)
             for jugador in jugadores:
                 jugador.equipo = equipo
@@ -35,6 +39,7 @@ def inscribir_equipo(request):
 
             return redirect('proximo_partido')
     else:
+        # Inicializar los formularios para una nueva inscripción
         equipo_form = InscripcionEquipoForm()
         entrenador_form = EntrenadorForm()
         jugador_formset = JugadorFormSet()
@@ -60,34 +65,12 @@ def crear_campeonato(request):
             form.save()
             return redirect('lista_campeonatos')
         else:
+            # Mostrar errores en la consola para depuración
             print("Errores en el formulario: ", form.errors)
     else:
         form = CrearCampeonatoForm()
 
     return render(request, 'basquetbol/crear_campeonato.html', {'form': form})
-
-
-# Vista para gestionar los partidos de un campeonato
-@login_required
-def gestionar_partido(request, partido_id):
-    partido = get_object_or_404(Partido, id=partido_id)
-    if request.method == 'POST':
-        form = PartidoForm(request.POST, instance=partido)
-        if form.is_valid():
-            form.save()
-            messages.success(request, "Partido actualizado con éxito")
-            return redirect('calendario_partidos', campeonato_id=partido.campeonato.id)
-    else:
-        form = PartidoForm(instance=partido)
-
-    return render(request, 'basquetbol/gestionar_partido.html', {'form': form, 'partido': partido})
-
-
-# Vista para ver el calendario de partidos
-def calendario_partidos(request, campeonato_id):
-    campeonato = get_object_or_404(Campeonato, id=campeonato_id)
-    partidos = campeonato.partidos.all().order_by('fecha')
-    return render(request, 'basquetbol/calendario_partidos.html', {'campeonato': campeonato, 'partidos': partidos})
 
 
 # Vista para registrar un nuevo usuario
@@ -97,7 +80,7 @@ def registro(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             user = form.save()
-            login(request, user)
+            login(request, user)  # Iniciar sesión automáticamente
             return redirect('lista_campeonatos')
     else:
         form = RegistroForm()
@@ -112,14 +95,17 @@ def detalle_campeonato(request, campeonato_id):
     return render(request, 'basquetbol/detalle_campeonato.html', {'campeonato': campeonato, 'equipos': equipos})
 
 
-# Vista para gestionar el perfil de usuario
+# Vista para gestionar el perfil de usuario, permitiendo modificar equipo y jugadores
 @login_required
 def perfil_usuario(request):
+    # Intentar obtener el entrenador asociado al usuario
     try:
         entrenador = Entrenador.objects.get(user=request.user)
     except Entrenador.DoesNotExist:
+        # Si no existe, redirigir a la inscripción de equipo
         return redirect('inscribir_equipo')
 
+    # Obtener el equipo asociado al entrenador
     equipo = get_object_or_404(Equipo, entrenador=entrenador)
     jugadores = equipo.jugadores.all()
 
@@ -136,7 +122,9 @@ def perfil_usuario(request):
                 jugador.equipo = equipo
                 jugador.save()
 
+            # Guardar todas las relaciones del formset
             jugador_formset.save_m2m()
+
             messages.success(request, "Cambios guardados exitosamente")
             return redirect('perfil_usuario')
         else:
@@ -153,12 +141,14 @@ def perfil_usuario(request):
     })
 
 
-# Vista para abandonar el campeonato
+# Vista para abandonar el campeonato, eliminando el equipo y el entrenador
 @login_required
 def abandonar_campeonato(request):
+    # Obtener el equipo asociado al entrenador del usuario
     equipo = get_object_or_404(Equipo, entrenador__user=request.user)
 
     if request.method == 'POST':
+        # Eliminar el equipo y el entrenador asociado al usuario
         equipo.delete()
         entrenador = get_object_or_404(Entrenador, user=request.user)
         entrenador.delete()
@@ -166,53 +156,3 @@ def abandonar_campeonato(request):
         return redirect('perfil_usuario')
 
     return render(request, 'basquetbol/abandonar_campeonato.html', {'equipo': equipo})
-
-
-# Vista para el foro y gestión de temas y comentarios
-def foro(request):
-    temas = Tema.objects.all()
-    return render(request, 'basquetbol/foro.html', {'temas': temas})
-
-
-def foro_tema(request, tema_id):
-    tema = get_object_or_404(Tema, id=tema_id)
-    comentarios = tema.comentarios.all()
-
-    if request.method == 'POST':
-        comentario_form = ComentarioForm(request.POST)
-        if comentario_form.is_valid():
-            comentario = comentario_form.save(commit=False)
-            comentario.autor = request.user
-            comentario.tema = tema
-            comentario.save()
-            return redirect('foro_tema', tema_id=tema.id)
-    else:
-        comentario_form = ComentarioForm()
-
-    return render(request, 'basquetbol/foro_tema.html', {
-        'tema': tema,
-        'comentarios': comentarios,
-        'comentario_form': comentario_form,
-    })
-
-
-# Vista para el historial de un equipo
-@login_required
-def historial_equipo(request):
-    entrenador = get_object_or_404(Entrenador, user=request.user)
-    equipo = get_object_or_404(Equipo, entrenador=entrenador)
-    partidos_local = equipo.partidos_local.all()
-    partidos_visitante = equipo.partidos_visitante.all()
-
-    return render(request, 'basquetbol/historial_equipo.html', {
-        'equipo': equipo,
-        'partidos_local': partidos_local,
-        'partidos_visitante': partidos_visitante,
-    })
-
-
-# Vista para ver la clasificación del campeonato
-def clasificacion(request, campeonato_id):
-    campeonato = get_object_or_404(Campeonato, id=campeonato_id)
-    clasificaciones = Clasificacion.objects.filter(equipo__campeonato=campeonato).order_by('-puntos')
-    return render(request, 'basquetbol/clasificacion.html', {'clasificaciones': clasificaciones})
