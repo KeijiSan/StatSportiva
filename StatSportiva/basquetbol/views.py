@@ -160,3 +160,4 @@ def abandonar_campeonato(request):
 # Vista para mostrar el foro
 def foro(request):
     return render(request, 'basquetbol/foro.html')
+a
