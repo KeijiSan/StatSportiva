@@ -3,14 +3,16 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
 from .models import Equipo, Jugador, Entrenador, Campeonato
-def vista_principal(request):
-    return render(request, 'basquetbol/inicio.html')  # Asegúrate de tener 'inicio.html' en la carpeta de plantillas
+
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
     # Verifica si el usuario tiene un equipo inscrito
     equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
     return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito})
+def lista_campeonatos(request):
+    campeonatos = Campeonato.objects.all()
+    return render(request, 'basquetbol/lista_campeonatos.html', {'campeonatos': campeonatos})
 
 
 # Vista para inscribir un equipo en un campeonato
@@ -82,7 +84,7 @@ def registro(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Iniciar sesión automáticamente
-            return redirect('lista_campeonatos')
+            return redirect('proximo_partido')
     else:
         form = RegistroForm()
 
