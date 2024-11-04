@@ -209,6 +209,10 @@ footer {
     text-align: center;
     padding: 20px;
     border-top: 3px solid #FF6F61;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    width: 100%;
 }
 
 /*FIN PAGINA PRINCIPAL(PROXIMO_PARTIDO.HMTL)*/
