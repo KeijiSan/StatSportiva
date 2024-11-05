@@ -10,6 +10,9 @@ def proximo_partido(request):
     # Verifica si el usuario tiene un equipo inscrito
     equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
     return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito})
+def lista_campeonatos(request):
+    campeonatos = Campeonato.objects.all()
+    return render(request, 'basquetbol/lista_campeonatos.html', {'campeonatos': campeonatos})
 
 
 # Vista para inscribir un equipo en un campeonato
@@ -81,7 +84,7 @@ def registro(request):
         if form.is_valid():
             user = form.save()
             login(request, user)  # Iniciar sesión automáticamente
-            return redirect('lista_campeonatos')
+            return redirect('proximo_partido')
     else:
         form = RegistroForm()
 
