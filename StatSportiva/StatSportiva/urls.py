@@ -8,7 +8,6 @@ from django.contrib.auth import views as auth_views
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', views.proximo_partido, name='vista_principal'),  # La URL raíz muestra la vista de "proximo_partido"
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('abandonar_campeonato/', views.abandonar_campeonato, name='abandonar_campeonato'),
     path('proximo_partido/', views.proximo_partido, name='proximo_partido'),
@@ -23,5 +22,3 @@ urlpatterns = [
     path('campeonatos/', views.lista_campeonatos, name='lista_campeonatos'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
-
-
