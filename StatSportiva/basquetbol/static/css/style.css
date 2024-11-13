@@ -74,6 +74,23 @@
 
 /* Match Info */
 /* Match Info */
+.score-display {
+    margin: 10px;
+    margin-top: 10px;
+    padding: 10px 15px;
+    background-color: #ffcc29;
+    color: #333;
+    font-size: 32px;
+    font-weight: bold;
+    border-radius: 10px;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.vs-p, .equipo-p{
+    margin-top: 10px;
+    margin-bottom: 1rem;
+}
+
 .match-info {
     background: linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
     border-radius: 15px;
@@ -99,7 +116,7 @@
 .match-teams {
     display: flex;
     align-items: center;
-    justify-content: space-around;
+    justify-content: center;
     margin: 20px 0;
     text-align: center;
 }
@@ -108,12 +125,11 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    padding: 10px ;
+    padding: 5px ;
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     color: #fff;
     font-size: 30px;
-    margin: 5px;
 }
 
 .team img {
@@ -503,6 +519,11 @@ button[type="button"]:hover {
 
 
 /*FIN INSCRIBIR_EQUIPO.HTML*/
+
+.tachado {
+    text-decoration: line-through;
+    color: grey;
+}
 
 
 /* Basketball themed login container */
