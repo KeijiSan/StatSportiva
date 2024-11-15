@@ -4,22 +4,63 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background-color: #1e1e1e; /* Naranja vibrante */
+    background-color: #21262e;
     padding: 20px 40px;
     color: white;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
 }
 
+/* Contenedor para el logo y el texto "STATSPORTIVA" */
+.navbar .brand {
+    display: flex;
+    align-items: center;
+    text-decoration: none;
+    gap: 10px; /* Ajusta este valor para controlar la distancia */
+}
+/* Logo */
 .navbar .logo {
     max-height: 60px;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    transition: transform 0.3s ease;
+}
+
+/* Efecto de suavidad al pasar el cursor */
+.navbar .logo:hover {
+    transform: scale(1.05);       /* Agranda un poco el logo al pasar el cursor */
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Incrementa la sombra al pasar el cursor */
+}
+/* Texto "STATSPORTIVA" */
+.navbar .brand-text {
+    color: white;
+    font-size: 1.5em;
+    font-weight: bold;
+    letter-spacing: 1px;
+    transition: color 0.3s ease;
+}
+
+.navbar .brand-text:hover {
+    color: #bada55;
 }
 
 /* Menu */
+.navbar nav {
+    flex: 1; /* Permite que el menú ocupe espacio y se mantenga centrado */
+    display: flex;
+    justify-content: center;
+}
+
 .navbar nav ul {
     list-style: none;
     display: flex;
     gap: 25px;
     margin: 0;
+    padding: 0;
+}
+
+.navbar nav ul li {
+    display: flex; /* Asegura que los elementos estén en línea */
 }
 
 .navbar nav ul li a {
@@ -28,32 +69,35 @@
     font-size: 18px;
     font-weight: bold;
     padding: 8px 15px;
-    transition: color 0.3s, background-color 0.3s;
+    border-radius: 5px;
+    transition: color 0.3s, background-color 0.3s, box-shadow 0.3s;
 }
 
 .navbar nav ul li a:hover {
-    color: #ff6f61;
+    color: #030303;
     background-color: white;
-    border-radius: 5px;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2); /* Sombra suave al hacer hover */
 }
 
 /* Botones de autenticación */
 .auth-buttons a, .auth-buttons button {
-    text-decoration: none;
+    text-decoration: none!important;
     font-size: 16px;
     font-weight: bold;
     padding: 10px 20px;
     border-radius: 25px;
     border: 2px solid white;
     cursor: pointer;
-    background-color: #FF6F61;
+    background-color: #2e333b;
     color: white;
-    transition: all 0.3s ease;
+    transition: background-color 0.3s ease, color 0.3s ease, box-shadow 0.3s ease, transform 0.2s ease;
 }
+
 
 .auth-buttons a:hover, .auth-buttons button:hover {
     background-color: white;
-    color: #FF6F61;
+    color: #2e333b;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.3); /* Sombra suave al hacer hover */
 }
 
 /* Carrusel */
@@ -750,13 +794,12 @@ button[type="button"]:hover {
 }
 
 
-
+/* LOGIN*/
 
 body {
-    background-color: #121212;
-    color: #ffffff;
+    background-color: #21262e;
     font-family: 'Arial', sans-serif;
-    background-image: url("../img/basketball_court_pattern.png"); /* Fondo de cancha */
+    background-image: url("{% static 'images/basketball_court_bg.jpg' %}"); /* Fondo de cancha */
     background-size: cover;
     background-position: center;
 }

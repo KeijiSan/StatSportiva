@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximo Partido</title>
+    <title>StatSportiva</title>
     {% load static %}  <!-- Carga la etiqueta de archivos estáticos -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
     <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
@@ -14,22 +14,31 @@
 <body>
     <header>
         <div class="navbar">
-            <img class="logo" src="{% static 'img/statsportivalogo.png' %}" alt="StatSportiva Logo">
+            <!-- Contenedor del logo y el texto "STATSPORTIVA" -->
+            <a href="{% url 'proximo_partido' %}" class="d-flex align-items-center brand">
+                <img class="logo" src="{% static 'img/stat.png' %}" alt="StatSportiva Logo">
+                <span class="brand-text">STATSPORTIVA</span>
+            </a>
+
+            <!-- Menú de navegación centrado -->
             <nav>
                 <ul>
                     <li><a href="{% url 'proximo_partido' %}">Inicio</a></li>
-                    <li><a href="#">Estadisticas</a></li>
+                    <li><a href="#">Estadísticas</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li> <!-- Enlace al perfil del usuario -->
+                        <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li>
                     {% endif %}
                 </ul>
             </nav>
+
+            <!-- Botones de autenticación -->
             <div class="auth-buttons">
                 {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
                         <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
                     {% endif %}
-                    <!-- Formulario para cerrar sesión -->
+                     <!-- Formulario para cerrar sesión -->
+
                     <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit">Cerrar Sesión</button>
@@ -38,8 +47,6 @@
                     <a href="{% url 'login' %}">Iniciar Sesión</a>
                 {% endif %}
             </div>
-            
-        </div>
         
     </header>
     <section class="banner">
