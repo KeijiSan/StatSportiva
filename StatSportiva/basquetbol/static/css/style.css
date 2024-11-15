@@ -569,43 +569,95 @@ button[type="button"]:hover {
     color: grey;
 }
 
+/* login */
+
+/* Estilo para la flecha de regreso */
+.back-arrow {
+    position: absolute;
+    top: 20px;
+    left: 20px;
+    font-size: 24px;
+    color: #1abc9c; /* Verde suave */
+    text-decoration: none;
+    font-weight: bold;
+    transition: color 0.3s ease;
+}
+
+.back-arrow:hover {
+    color: #16a085; /* Verde oscuro */
+}
+
+/* Logo en la caja de inicio de sesión */
+.login-logo {
+    max-width: 80px;
+    margin-bottom: 15px;
+    border-radius: 8px; /* Bordes redondeados opcionales */
+}
+
+/* Ajuste del contenedor de inicio de sesión */
+.login-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-image: url("{% static 'img/Fondo.jpg' %}");
+    background-size: cover;
+    background-position: center;
+    background-color: #21262e;
+    position: relative;
+}
+
+/* Caja de inicio de sesión */
+.login-box {
+    background-color: rgba(44, 62, 80, 0.9);
+    padding: 40px;
+    border-radius: 15px;
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
+    width: 350px;
+    text-align: center;
+    color: #ecf0f1;
+    font-family: 'Arial', sans-serif;
+    position: relative;
+}
 
 /* Basketball themed login container */
 .basketball-login-container {
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 100vh; /* Esto asegura que ocupa toda la altura de la pantalla */
-    background-image: url("{% static 'images/basketball_court_bg.jpg' %}"); /* Imagen de fondo de la cancha */
+    min-height: 100vh;
+    background-image: url("{% static 'img/Fondo.jpg' %}");
     background-size: cover;
     background-position: center;
+    background-color: #21262e; /* Color de respaldo */
     position: relative;
 }
 
+
 /* Centrar el login box */
 .login-box {
-    background-color: rgba(255, 140, 0, 0.9); /* Naranja con transparencia */
+    background-color: rgba(44, 62, 80, 0.9); /* Naranja con transparencia */
     padding: 40px;
     border-radius: 15px;
-    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.4);
+    box-shadow: 0 6px 14px rgba(0, 0, 0, 0.3);
     width: 350px;
     text-align: center;
-    color: white;
+    color: #ecf0f1;
     font-family: 'Arial', sans-serif;
     margin: auto;
     margin-top: 100px;
 }
 
-/* Título de la sesión */
+/* Título de inicio de sesión */
 .login-title {
     font-size: 28px;
     margin-bottom: 20px;
-    color: white;
-    font-family: 'Impact', sans-serif;
-    letter-spacing: 2px;
+    font-family: 'Verdana', sans-serif;
+    font-weight: bold;
+    letter-spacing: 1.5px;
 }
 
-/* Formulario y campos de entrada */
+/* Estilo de formulario y campos de entrada */
 .login-form .form-group {
     margin-bottom: 20px;
     text-align: left;
@@ -615,16 +667,23 @@ button[type="button"]:hover {
     width: 100%;
     padding: 12px;
     margin-top: 5px;
-    border: 2px solid #fff;
+    border: 2px solid #bdc3c7; /* Gris claro */
     border-radius: 8px;
-    background-color: rgba(255, 255, 255, 0.9);
+    background-color: rgba(255, 255, 255, 0.1); /* Transparente para combinar */
     font-size: 16px;
-    color: #333;
+    color: #ecf0f1;
     font-family: 'Verdana', sans-serif;
+    transition: border-color 0.3s ease;
 }
 
+.login-form input:focus {
+    border-color: #1abc9c; /* Verde suave en foco */
+    outline: none;
+}
+
+/* Botón de inicio de sesión */
 .login-btn {
-    background-color: #FFD700; /* Oro de aro de baloncesto */
+    background-color: #1abc9c; /* Verde suave */
     color: #333;
     padding: 12px 15px;
     border: none;
@@ -633,53 +692,53 @@ button[type="button"]:hover {
     cursor: pointer;
     font-size: 18px;
     font-family: 'Verdana', sans-serif;
-    transition: background-color 0.3s ease;
+    transition: background-color 0.3s ease, transform 0.2s;
 }
 
 .login-btn:hover {
-    background-color: #FFA500; /* Naranja de balón cuando está en hover */
+    background-color: #16a085; /* Verde oscuro */
+    transform: translateY(-2px); /* Efecto de elevación */
 }
 
-/* Texto y link para registro */
+/* Texto de registro */
 .login-text {
     margin-top: 20px;
     font-size: 14px;
-    color: white;
+    color: #bdc3c7;
     font-family: 'Verdana', sans-serif;
 }
 
+/* Enlace de registro */
 .register-link {
-    color: #FFD700; /* Oro de aro */
+    color: #1abc9c; /* Verde suave */
     text-decoration: none;
     font-weight: bold;
 }
 
 .register-link:hover {
     text-decoration: underline;
+    color: #16a085; /* Verde oscuro */
 }
 
-/* Estilo de las líneas en la caja, simulando una cancha */
-.login-box:before {
-    content: '';
-    position: absolute;
-    width: 100%;
-    height: 5px;
-    top: 0;
-    left: 0;
-    background-color: #fff;
-}
-
+/* Líneas de estilo en la caja */
+.login-box:before,
 .login-box:after {
     content: '';
     position: absolute;
     width: 100%;
-    height: 5px;
-    bottom: 0;
-    left: 0;
-    background-color: #fff;
+    height: 3px;
+    background-color: #1abc9c; /* Verde suave */
 }
 
+.login-box:before {
+    top: 0;
+    left: 0;
+}
 
+.login-box:after {
+    bottom: 0;
+    left: 0;
+}
 
 
 
