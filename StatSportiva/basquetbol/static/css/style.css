@@ -753,7 +753,8 @@ button[type="button"]:hover {
 
 
 body {
-    background-color: #f4f4f4;
+    background-color: #121212;
+    color: #ffffff;
     font-family: 'Arial', sans-serif;
     background-image: url("../img/basketball_court_pattern.png"); /* Fondo de cancha */
     background-size: cover;
