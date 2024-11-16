@@ -10,12 +10,12 @@
 </head>
 <body>
     <div class="login-container">
-        <!-- Enlace con la flecha de regreso -->
-        <a href="{% url 'proximo_partido' %}" class="back-arrow">&#8592;</a>
 
         <div class="login-box">
+            <a href="{% url 'proximo_partido' %}" class="back-arrow">&#8592;</a>
             <!-- Logo encima del título -->
             <img src="{% static 'img/stat.png' %}" alt="Logo" class="login-logo">
+            
 
             <h2 class="login-title">Iniciar Sesión</h2>
             <form method="post" class="login-form">

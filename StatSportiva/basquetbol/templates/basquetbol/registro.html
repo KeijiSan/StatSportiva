@@ -11,6 +11,10 @@
 <body>
     <div class="basketball-register-container">
         <div class="register-box">
+            <!-- Flecha para regresar -->
+            <a href="{% url 'proximo_partido' %}" class="back-arrow">&#8592;</a>
+            <img src="{% static 'img/stat.png' %}" alt="Icono de registro" class="register-icon">
+
             <h2 class="register-title">Registro de Usuario</h2>
             <form method="post" class="register-form">
                 {% csrf_token %}
