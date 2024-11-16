@@ -536,31 +536,39 @@ button[type="button"]:hover {
 .messages {
     list-style-type: none;
     padding: 0;
-    margin: 30px 0;
-    text-align: center;
+    margin: 20px 0;
 }
 
 .messages li {
-    margin-bottom: 15px;
-    padding: 15px;
+    padding: 10px;
+    margin-bottom: 10px;
     border-radius: 5px;
+    font-size: 14px;
 }
 
-.messages li.success {
-    background-color: #d4edda;
-    color: #155724;
+.messages .success {
+    background-color: #d4edda; /* Verde claro */
+    color: #155724; /* Verde oscuro */
+    border: 1px solid #c3e6cb; /* Borde verde */
 }
 
-.messages li.error {
-    background-color: #f8d7da;
-    color: #721c24;
+.messages .error {
+    background-color: #f8d7da; /* Rojo claro */
+    color: #721c24; /* Rojo oscuro */
+    border: 1px solid #f5c6cb; /* Borde rojo */
 }
 
-.messages li.warning {
+.messages .warning {
     background-color: #fff3cd;
     color: #856404;
+    border: 1px solid #ffeeba;
 }
 
+.messages .info {
+    background-color: #d1ecf1;
+    color: #0c5460;
+    border: 1px solid #bee5eb;
+}
 
 /*FIN INSCRIBIR_EQUIPO.HTML*/
 

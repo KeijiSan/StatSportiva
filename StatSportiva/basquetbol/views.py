@@ -3,7 +3,10 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
 from .models import Equipo, Jugador, Entrenador, Campeonato
-
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import CreateView
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
@@ -72,20 +75,29 @@ def crear_campeonato(request):
 
     return render(request, 'basquetbol/crear_campeonato.html', {'form': form})
 
-
 # Vista para registrar un nuevo usuario
-from django.contrib.auth import login
+
+from django.contrib import messages
+from django.shortcuts import render, redirect
+from django.urls import reverse
+from .forms import RegistroForm
+
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
-            user = form.save()
-            login(request, user)  # Iniciar sesión automáticamente
-            return redirect('lista_campeonatos')
+            form.save()
+            # Mensaje de éxito
+            messages.success(request, "¡Tu cuenta ha sido creada exitosamente! Ahora puedes iniciar sesión.")
+            return redirect('login')  # Redirige a la página de inicio de sesión
+        else:
+            # Mensaje de error
+            messages.error(request, "Hubo un error al registrar tu cuenta. Por favor, inténtalo nuevamente.")
     else:
         form = RegistroForm()
 
     return render(request, 'basquetbol/registro.html', {'form': form})
+
 
 
 # Vista para mostrar los detalles de un campeonato específico
