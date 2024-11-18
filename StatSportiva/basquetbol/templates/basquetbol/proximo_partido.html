@@ -1,36 +1,44 @@
 <!DOCTYPE html>
 <html lang="es">
-<head>
+    <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Próximo Partido</title>
+    <title>StatSportiva</title>
     {% load static %}  <!-- Carga la etiqueta de archivos estáticos -->
     <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
     <!-- Bootstrap CSS -->
-    <!--Prueba commit -->
-
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 
 </head>
 <body>
     <header>
         <div class="navbar">
-            <img class="logo" src="{% static 'img/statsportivalogo.png' %}" alt="StatSportiva Logo">
+            <!-- Contenedor del logo y el texto "STATSPORTIVA" -->
+            <a href="{% url 'proximo_partido' %}" class="d-flex align-items-center brand">
+                <img class="logo" src="{% static 'img/icono.png' %}" alt="StatSportiva Logo">
+                <span class="brand-text">STATSPORTIVA</span>
+            </a>
+
+            <!-- Menú de navegación centrado -->
             <nav>
                 <ul>
                     <li><a href="{% url 'proximo_partido' %}">Inicio</a></li>
-                    <li><a href="#">Estadisticas</a></li>
+                    <li><a href="#">Estadísticas</a></li>
                     {% if user.is_authenticated %}
-                        <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li> <!-- Enlace al perfil del usuario -->
+                        <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li>
                     {% endif %}
                 </ul>
             </nav>
+
+            <!-- Botones de autenticación -->
             <div class="auth-buttons">
                 {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
                         <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
                     {% endif %}
-                    <!-- Formulario para cerrar sesión -->
+                     <!-- Formulario para cerrar sesión -->
+
                     <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}
                         <button type="submit">Cerrar Sesión</button>
@@ -39,8 +47,6 @@
                     <a href="{% url 'login' %}">Iniciar Sesión</a>
                 {% endif %}
             </div>
-            
-        </div>
         
     </header>
     <section class="banner">
@@ -83,22 +89,42 @@
         <div class="match-teams">
             <div class="team" style="background-color: #ff3333;">
                 <img src="{% static 'img/shohoku.jpg' %}" alt="">
-                <p class="equipo-p">Shohoku</p>
-                <div class="score-display">
-                    <span id="local-score">60</span>
-                </div>
+                <p>Shohoku</p>
 
             </div>
             <div class="vs-container">
                 <div class="vs">
-                    <p class="vs-p">VS</p>
+                    <p>VS</p>
                 </div>
             </div>
             <div class="team" style="background-color: #3366ff;">
-                <div class="score-display">
-                    <span id="visit-score">58</span>
+                <p>Kainan</p>
+                <img src="{% static 'img/kainan.png' %}" alt="">
+            </div>
+        </div>
+        <p class="match-details">sáb, 31° agosto | 12:30 | Preparatoria Shohoku</p>
+    
+        <div class="stats-links">
+            <a href="#">Estadísticas</a>
+            <a href="#">Alineaciones</a>
+            <a href="#">Posiciones</a>
+        </div>
+    </section>
+    <section class="match-info">
+        <h2 class="match-title">Próximo partido</h2>
+        <div class="match-teams">
+            <div class="team" style="background-color: #ff3333;">
+                <img src="{% static 'img/shohoku.jpg' %}" alt="">
+                <p>Shohoku</p>
+
+            </div>
+            <div class="vs-container">
+                <div class="vs">
+                    <p>VS</p>
                 </div>
-                <p class="equipo-p">Kainan</p>
+            </div>
+            <div class="team" style="background-color: #3366ff;">
+                <p>Kainan</p>
                 <img src="{% static 'img/kainan.png' %}" alt="">
             </div>
         </div>
@@ -111,7 +137,7 @@
         </div>
     </section>
     
-    a
+    
 
     <footer>
         <p>Condiciones para el uso | Política de Privacidad | Anuncios basados en intereses</p>

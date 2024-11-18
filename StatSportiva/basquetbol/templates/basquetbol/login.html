@@ -5,11 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Iniciar Sesión</title>
     {% load static %}
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="login-container">
+
         <div class="login-box">
+            <a href="{% url 'proximo_partido' %}" class="back-arrow">&#8592;</a>
+            <!-- Logo encima del título -->
+            <img src="{% static 'img/stat.png' %}" alt="Logo" class="login-logo">
+            
+                <!-- Bloque para mostrar mensajes -->
+                    {% if messages %}
+                    <ul class="messages">
+                        {% for message in messages %}
+                            <li class="{{ message.tags }}">{{ message }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
+                    
             <h2 class="login-title">Iniciar Sesión</h2>
             <form method="post" class="login-form">
                 {% csrf_token %}
