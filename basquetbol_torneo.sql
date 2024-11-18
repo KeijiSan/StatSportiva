@@ -3,8 +3,8 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 14-10-2024 a las 03:34:37
--- Versión del servidor: 11.5.2-MariaDB
+-- Tiempo de generación: 18-11-2024 a las 00:53:10
+-- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -137,7 +137,7 @@ CREATE TABLE `auth_user` (
 
 INSERT INTO `auth_user` (`id`, `password`, `last_login`, `is_superuser`, `username`, `first_name`, `last_name`, `email`, `is_staff`, `is_active`, `date_joined`) VALUES
 (1, 'pbkdf2_sha256$870000$SL4gihqa6JDkNTjdE2D9nJ$VuCFkYy0W4eh+4WTAqFmfpOcUKw1cMwQUA5H1H81Ll8=', '2024-10-14 01:25:39.093324', 0, 'fabian', '', '', 'fabian.cardinaletp@gmail.com', 0, 1, '2024-10-03 13:05:51.820784'),
-(2, 'pbkdf2_sha256$870000$YWDR3JdX0Up88LA89S7JfA$GiNdsLdZlbXZE77y/3Y8tMQhTj3NC1erZ4wJhxWMX1k=', '2024-10-04 16:28:28.901541', 0, 'thomassalazar', '', '', 'fabian.cardinaletp@gmail.com', 0, 1, '2024-10-04 16:28:28.277475'),
+(2, 'pbkdf2_sha256$320000$mmfglOQKlgFfDF6kR90xHo$gO4WVPW+sRQHyqX58T84kegaB58pmFQ6UsLJ7xo/ylg=', '2024-11-17 23:30:53.923412', 1, 'thomassalazar', '', '', 'fabian.cardinaletp@gmail.com', 1, 1, '2024-10-04 16:28:28.277475'),
 (3, 'pbkdf2_sha256$870000$iRwtOF8GmD2Rceuh2jQh3a$lCMokDAb/IdiDGsg7HMu3t1UTPPq5cJEy5wlSDsgShA=', '2024-10-04 19:35:17.229319', 0, 'thomas', '', '', 'thomas@gmail.com', 0, 1, '2024-10-04 19:35:16.615441'),
 (4, 'pbkdf2_sha256$870000$SMUgWRvQFt88EJWjApqiOp$3PPz1X4VE3lGbObJDBDCi03WMuWfJfovi6x+9+1NHLU=', '2024-10-09 14:36:22.224180', 0, 'Keiji', '', '', 'keiji@gmail.com', 0, 1, '2024-10-09 14:36:21.615443'),
 (5, 'pbkdf2_sha256$870000$1tYIRVUU2IZHT5JLR0Fn8D$rdUdXraLkmk1fUmUlLXYOO7WR1YTVqgJh2NSKWUns/c=', '2024-10-09 15:01:09.507106', 0, 'wally', '', '', 'wally@gmail.com', 0, 1, '2024-10-09 15:01:08.923380');
@@ -200,7 +200,7 @@ CREATE TABLE `basquetbol_entrenador` (
   `nombre` varchar(100) NOT NULL,
   `nacionalidad` varchar(50) NOT NULL,
   `fecha_nacimiento` date NOT NULL,
-  `user_id` int(11) DEFAULT NULL
+  `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
@@ -229,7 +229,6 @@ CREATE TABLE `basquetbol_equipo` (
   `color_secundario` varchar(7) NOT NULL,
   `logo` varchar(100) DEFAULT NULL,
   `sitio_web` varchar(200) DEFAULT NULL,
-  `redes_sociales` longtext CHARACTER SET utf8mb4 COLLATE utf8mb4_bin DEFAULT NULL CHECK (json_valid(`redes_sociales`)),
   `campeonato_id` bigint(20) NOT NULL,
   `entrenador_id` bigint(20) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -238,11 +237,11 @@ CREATE TABLE `basquetbol_equipo` (
 -- Volcado de datos para la tabla `basquetbol_equipo`
 --
 
-INSERT INTO `basquetbol_equipo` (`id`, `nombre`, `fundacion`, `historia`, `color_principal`, `color_secundario`, `logo`, `sitio_web`, `redes_sociales`, `campeonato_id`, `entrenador_id`) VALUES
-(7, 'Chile', '2024-10-01', 'dklasdkasm', '#ff0000', '#ffffff', 'logos_equipos/logo_transparent_background_9YACqs2.png', 'http://127.0.0.1:8000/inscribir_eq', NULL, 1, 7),
-(13, 'japon', '2024-10-01', 'sda', '#0033ff', '#ffffff', 'logos_equipos/logo_transparent_background_cezGz3j.png', 'http://127.0.0.1:8000/inscribir_eq', NULL, 1, 21),
-(14, 'gorditos fc', '0000-00-00', 'evaaa', '#f4d2d2', '#6f0daf', 'logos_equipos/logo_transparent_background_oBTlyYD.png', NULL, NULL, 1, 22),
-(15, 'wally', '2024-10-01', 'lmkmk', '#000000', '#000000', '', NULL, NULL, 1, 23);
+INSERT INTO `basquetbol_equipo` (`id`, `nombre`, `fundacion`, `historia`, `color_principal`, `color_secundario`, `logo`, `sitio_web`, `campeonato_id`, `entrenador_id`) VALUES
+(7, 'Chile', '2024-10-01', 'dklasdkasm', '#ff0000', '#ffffff', 'logos_equipos/logo_transparent_background_9YACqs2.png', 'http://127.0.0.1:8000/inscribir_eq', 1, 7),
+(13, 'japon', '2024-10-01', 'sda', '#0033ff', '#ffffff', 'logos_equipos/logo_transparent_background_cezGz3j.png', 'http://127.0.0.1:8000/inscribir_eq', 1, 21),
+(14, 'gorditos fc', '0000-00-00', 'evaaa', '#f4d2d2', '#6f0daf', 'logos_equipos/logo_transparent_background_oBTlyYD.png', NULL, 1, 22),
+(15, 'wally', '2024-10-01', 'lmkmk', '#000000', '#000000', '', NULL, 1, 23);
 
 -- --------------------------------------------------------
 
@@ -301,6 +300,27 @@ INSERT INTO `basquetbol_jugador` (`id`, `nombre`, `posicion`, `numero`, `equipo_
 -- --------------------------------------------------------
 
 --
+-- Estructura de tabla para la tabla `basquetbol_video`
+--
+
+CREATE TABLE `basquetbol_video` (
+  `id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `url` varchar(2083) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `basquetbol_video`
+--
+
+INSERT INTO `basquetbol_video` (`id`, `title`, `url`) VALUES
+(1, 'michael', 'https://www.youtube.com/shorts/dfoCBTMe8sI'),
+(3, 'tiro exotico', 'https://www.youtube.com/shorts/-524ku1zdkc'),
+(5, 'tiro pete', 'https://www.youtube.com/shorts/Z5O4ooDy4qw');
+
+-- --------------------------------------------------------
+
+--
 -- Estructura de tabla para la tabla `django_admin_log`
 --
 
@@ -314,6 +334,18 @@ CREATE TABLE `django_admin_log` (
   `content_type_id` int(11) DEFAULT NULL,
   `user_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `django_admin_log`
+--
+
+INSERT INTO `django_admin_log` (`id`, `action_time`, `object_id`, `object_repr`, `action_flag`, `change_message`, `content_type_id`, `user_id`) VALUES
+(1, '2024-11-17 00:16:42.649671', '1', 'michael', 1, '[{\"added\": {}}]', 13, 2),
+(2, '2024-11-17 00:18:10.486078', '2', 'lebron', 1, '[{\"added\": {}}]', 13, 2),
+(3, '2024-11-17 00:18:53.397670', '3', 'tiro exotico', 1, '[{\"added\": {}}]', 13, 2),
+(4, '2024-11-17 23:38:46.509519', '4', 'https://www.youtube.com/watch?v=C3-riALJTvo', 1, '[{\"added\": {}}]', 13, 2),
+(5, '2024-11-17 23:47:36.035072', '2', 'lebron', 3, '', 13, 2),
+(6, '2024-11-17 23:47:50.533333', '5', 'tiro pete', 1, '[{\"added\": {}}]', 13, 2);
 
 -- --------------------------------------------------------
 
@@ -342,6 +374,7 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (9, 'basquetbol', 'estadio'),
 (11, 'basquetbol', 'fase'),
 (12, 'basquetbol', 'jugador'),
+(13, 'basquetbol', 'video'),
 (5, 'contenttypes', 'contenttype'),
 (6, 'sessions', 'session');
 
@@ -383,7 +416,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (18, 'basquetbol', '0001_initial', '2024-10-02 16:28:16.786772'),
 (19, 'sessions', '0001_initial', '2024-10-02 16:28:16.806431'),
 (20, 'basquetbol', '0002_remove_equipo_estadio', '2024-10-04 15:05:28.639432'),
-(21, 'basquetbol', '0003_entrenador_user', '2024-10-04 15:50:57.993492');
+(21, 'basquetbol', '0003_entrenador_user', '2024-10-04 15:50:57.993492'),
+(22, 'basquetbol', '0004_auto_20241115_1156', '2024-11-17 01:41:55.339427');
 
 -- --------------------------------------------------------
 
@@ -396,6 +430,13 @@ CREATE TABLE `django_session` (
   `session_data` longtext NOT NULL,
   `expire_date` datetime(6) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `django_session`
+--
+
+INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
+('6nnx5h0790lv6cx6bbpvif1y5ildz2ay', '.eJxVjDkOwjAUBe_iGlle4uVT0ucM1veGA8iW4qRC3B1HSgHtzLz3Jg73rbi9p9UtkVyJIJdf5jE8Uz1EfGC9Nxpa3dbF0yOhp-10bjG9bmf7d1Cwl7E2XKCXKjPJhbQGdFZoQ9QBsoQJhE08Q54ApOTKMjNAVp4prQzHUZHPF7qvNqk:1tCojF:2cS8i1w4pH7XQrJ85ik4VwZ2D_dMdDn5-mWZUthIp0Q', '2024-12-01 23:30:53.926572');
 
 --
 -- Índices para tablas volcadas
@@ -486,6 +527,12 @@ ALTER TABLE `basquetbol_fase`
 ALTER TABLE `basquetbol_jugador`
   ADD PRIMARY KEY (`id`),
   ADD KEY `basquetbol_jugador_equipo_id_a3094891_fk_basquetbol_equipo_id` (`equipo_id`);
+
+--
+-- Indices de la tabla `basquetbol_video`
+--
+ALTER TABLE `basquetbol_video`
+  ADD PRIMARY KEY (`id`);
 
 --
 -- Indices de la tabla `django_admin_log`
@@ -592,22 +639,28 @@ ALTER TABLE `basquetbol_jugador`
   MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=47;
 
 --
+-- AUTO_INCREMENT de la tabla `basquetbol_video`
+--
+ALTER TABLE `basquetbol_video`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
 -- AUTO_INCREMENT de la tabla `django_admin_log`
 --
 ALTER TABLE `django_admin_log`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=7;
 
 --
 -- AUTO_INCREMENT de la tabla `django_content_type`
 --
 ALTER TABLE `django_content_type`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=13;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=14;
 
 --
 -- AUTO_INCREMENT de la tabla `django_migrations`
 --
 ALTER TABLE `django_migrations`
-  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=22;
+  MODIFY `id` bigint(20) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
 
 --
 -- Restricciones para tablas volcadas

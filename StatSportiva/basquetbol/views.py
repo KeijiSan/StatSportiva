@@ -3,14 +3,32 @@ from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
 from .models import Equipo, Jugador, Entrenador, Campeonato
+<<<<<<< Updated upstream
+=======
+from django.contrib.messages.views import SuccessMessageMixin
+from django.urls import reverse_lazy
+from django.contrib.auth.forms import UserCreationForm
+from django.views.generic.edit import CreateView
+from .models import Equipo, Video  # Importa el modelo Video
+>>>>>>> Stashed changes
 
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
     # Verifica si el usuario tiene un equipo inscrito
     equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
-    return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito})
 
+    # Obtén todos los videos de la base de datos
+    videos = Video.objects.all()  # Cambié HighlightVideo por Video para usar el modelo correcto
+
+    # Convertir las URLs de YouTube Shorts al formato embebido
+    for video in videos:
+        if "shorts" in video.url:
+            video_id = video.url.split('/')[-1]  # Extrae el ID del video de la URL
+            video.url = f"https://www.youtube.com/embed/{video_id}"
+
+    # Renderiza la plantilla 'proximo_partido.html' y pasa los videos y equipo_inscrito en el contexto
+    return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito, 'videos': videos})
 
 # Vista para inscribir un equipo en un campeonato
 @login_required
@@ -160,3 +178,8 @@ def abandonar_campeonato(request):
 # Vista para mostrar el foro
 def foro(request):
     return render(request, 'basquetbol/foro.html')
+
+# En views.py
+
+
+  

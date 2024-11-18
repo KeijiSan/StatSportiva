@@ -102,8 +102,70 @@
             <a href="#">Posiciones</a>
         </div>
     </section>
+<<<<<<< Updated upstream
     
     
+=======
+    <section class="match-info">
+        <h2 class="match-title">Próximo partido</h2>
+        <div class="match-teams">
+            <div class="team" style="background-color: #ff3333;">
+                <img src="{% static 'img/shohoku.jpg' %}" alt="">
+                <p>Shohoku</p>
+
+            </div>
+            <div class="vs-container">
+                <div class="vs">
+                    <p>VS</p>
+                </div>
+            </div>
+            <div class="team" style="background-color: #3366ff;">
+                <p>Kainan</p>
+                <img src="{% static 'img/kainan.png' %}" alt="">
+            </div>
+        </div>
+        <p class="match-details">sáb, 31° agosto | 12:30 | Preparatoria Shohoku</p>
+    
+        <div class="stats-links">
+            <a href="#">Estadísticas</a>
+            <a href="#">Alineaciones</a>
+            <a href="#">Posiciones</a>
+        </div>
+    </section>
+    <!-- Nueva Sección de Highlights como Carrusel -->
+<section class="highlights-section rounded-box text-center">
+    <h2 class="highlights-title">Highlights</h2>
+    <div id="highlightsCarrusel" class="carousel slide mx-auto" data-ride="carousel" style="max-width: 800px;">
+        <!-- Indicadores del carrusel -->
+        <ol class="carousel-indicators">
+            {% for video in videos %}
+                <li data-target="#highlightsCarrusel" data-slide-to="{{ forloop.counter0 }}" class="{% if forloop.first %}active{% endif %}"></li>
+            {% endfor %}
+        </ol>
+
+        <!-- Contenido del carrusel -->
+        <div class="carousel-inner">
+            {% for video in videos %}
+            <div class="carousel-item {% if forloop.first %}active{% endif %}">
+                <div class="video-container text-center">
+                    <iframe width="560" height="315" src="{{ video.url }}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+
+        <!-- Controles de navegación del carrusel -->
+        <a class="carousel-control-prev" href="#highlightsCarrusel" role="button" data-slide="prev">
+            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+            <span class="sr-only">Anterior</span>
+        </a>
+        <a class="carousel-control-next" href="#highlightsCarrusel" role="button" data-slide="next">
+            <span class="carousel-control-next-icon" aria-hidden="true"></span>
+            <span class="sr-only">Siguiente</span>
+        </a>
+    </div>
+</section>
+>>>>>>> Stashed changes
 
     <footer>
         <p>Condiciones para el uso | Política de Privacidad | Anuncios basados en intereses</p>

@@ -102,3 +102,22 @@ class Equipo(models.Model):
 
     def __str__(self):
         return self.nombre
+
+
+
+class Video(models.Model):
+    """
+    Representa un video destacado (highlight) del campeonato.
+    """
+    title = models.CharField(max_length=100)  # Título del video (obligatorio)
+    url = models.URLField()  # URL del video de YouTube (obligatorio)
+
+    class Meta:
+        db_table = 'basquetbol_video'  # Utilizar la tabla ya existente
+
+    def __str__(self):
+        return self.title
+
+    def delete(self, *args, **kwargs):
+        # Puedes añadir lógica adicional aquí si deseas realizar alguna acción antes de la eliminación
+        super(Video, self).delete(*args, **kwargs)

@@ -812,3 +812,57 @@ body {
 .basketball-back-link:before {
     content: '⬅ ';
 }
+/* Estilo General de la Sección Highlights */
+.highlights-section {
+    background-color: #243b6b; /* Similar al fondo de la sección "Próximo partido" */
+    color: #ffffff;
+    padding: 20px;
+    margin: 40px auto; /* Centrar horizontalmente la sección y dar separación superior e inferior */
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    border-radius: 15px; /* Bordes redondeados */
+    max-width: 900px; /* Limitar el ancho para que no ocupe toda la pantalla */
+}
+
+/* Título de la Sección */
+.highlights-title {
+    font-size: 24px;
+    text-transform: uppercase;
+    color: #ffcc33; /* Color similar al de la línea bajo "PRÓXIMO PARTIDO" */
+    margin-bottom: 20px;
+    font-weight: bold;
+}
+
+/* Contenedor de Videos del Carrusel */
+.video-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0 auto; /* Asegura que el video esté centrado */
+}
+
+/* Carrusel de Videos */
+.carousel-inner {
+    max-width: 800px;
+    margin: 0 auto; /* Centrar el carrusel */
+    border-radius: 15px; /* Bordes redondeados para los videos */
+    overflow: hidden; /* Para mantener los bordes redondeados */
+}
+
+/* Indicadores del Carrusel */
+.carousel-indicators li {
+    background-color: #ffcc33; /* Indicadores en color similar al tema */
+}
+
+/* Botones del Carrusel */
+.carousel-control-prev-icon,
+.carousel-control-next-icon {
+    background-color: #ffcc33; /* Botones de navegación en amarillo */
+    border-radius: 50%; /* Para hacerlos circulares */
+    padding: 10px;
+}
+
+.carousel-control-prev,
+.carousel-control-next {
+    filter: brightness(1.5); /* Aumenta la visibilidad en el fondo oscuro */
+}
