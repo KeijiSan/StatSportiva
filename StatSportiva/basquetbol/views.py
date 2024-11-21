@@ -1,17 +1,18 @@
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.urls import reverse
 from .forms import InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm
 from .models import Equipo, Jugador, Entrenador, Campeonato
-from django.contrib.messages.views import SuccessMessageMixin
-from django.urls import reverse_lazy
-from django.contrib.auth.forms import UserCreationForm
-from django.views.generic.edit import CreateView
+
 
 # Vista para mostrar el próximo partido
 def proximo_partido(request):
-    # Verifica si el usuario tiene un equipo inscrito
-    equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
+    equipo_inscrito = (
+        Equipo.objects.filter(entrenador__user=request.user).exists()
+        if request.user.is_authenticated
+        else False
+    )
     return render(request, 'basquetbol/proximo_partido.html', {'equipo_inscrito': equipo_inscrito})
 
 
@@ -24,25 +25,24 @@ def inscribir_equipo(request):
         jugador_formset = JugadorFormSet(request.POST)
 
         if equipo_form.is_valid() and entrenador_form.is_valid() and jugador_formset.is_valid():
-            # Crear un nuevo entrenador asociado al usuario
             entrenador = entrenador_form.save(commit=False)
             entrenador.user = request.user
             entrenador.save()
 
-            # Crear un nuevo equipo asociado al entrenador
             equipo = equipo_form.save(commit=False)
             equipo.entrenador = entrenador
             equipo.save()
 
-            # Guardar los jugadores asociados al equipo
             jugadores = jugador_formset.save(commit=False)
             for jugador in jugadores:
                 jugador.equipo = equipo
                 jugador.save()
 
+            messages.success(request, "¡Equipo inscrito exitosamente!")
             return redirect('proximo_partido')
+        else:
+            messages.error(request, "Hubo un error al inscribir el equipo.")
     else:
-        # Inicializar los formularios para una nueva inscripción
         equipo_form = InscripcionEquipoForm()
         entrenador_form = EntrenadorForm()
         jugador_formset = JugadorFormSet()
@@ -61,37 +61,31 @@ def lista_campeonatos(request):
 
 
 # Vista para crear un nuevo campeonato
+@login_required
 def crear_campeonato(request):
     if request.method == 'POST':
         form = CrearCampeonatoForm(request.POST)
         if form.is_valid():
             form.save()
+            messages.success(request, "Campeonato creado exitosamente.")
             return redirect('lista_campeonatos')
         else:
-            # Mostrar errores en la consola para depuración
-            print("Errores en el formulario: ", form.errors)
+            messages.error(request, "Hubo un error al crear el campeonato.")
     else:
         form = CrearCampeonatoForm()
 
     return render(request, 'basquetbol/crear_campeonato.html', {'form': form})
 
+
 # Vista para registrar un nuevo usuario
-
-from django.contrib import messages
-from django.shortcuts import render, redirect
-from django.urls import reverse
-from .forms import RegistroForm
-
 def registro(request):
     if request.method == 'POST':
         form = RegistroForm(request.POST)
         if form.is_valid():
             form.save()
-            # Mensaje de éxito
             messages.success(request, "¡Tu cuenta ha sido creada exitosamente! Ahora puedes iniciar sesión.")
-            return redirect('login')  # Redirige a la página de inicio de sesión
+            return redirect('login')
         else:
-            # Mensaje de error
             messages.error(request, "Hubo un error al registrar tu cuenta. Por favor, inténtalo nuevamente.")
     else:
         form = RegistroForm()
@@ -99,10 +93,9 @@ def registro(request):
     return render(request, 'basquetbol/registro.html', {'form': form})
 
 
-
 # Vista para mostrar los detalles de un campeonato específico
 def detalle_campeonato(request, campeonato_id):
-    campeonato = Campeonato.objects.get(id=campeonato_id)
+    campeonato = get_object_or_404(Campeonato, id=campeonato_id)
     equipos = campeonato.equipos.all()
     return render(request, 'basquetbol/detalle_campeonato.html', {'campeonato': campeonato, 'equipos': equipos})
 
@@ -110,14 +103,11 @@ def detalle_campeonato(request, campeonato_id):
 # Vista para gestionar el perfil de usuario, permitiendo modificar equipo y jugadores
 @login_required
 def perfil_usuario(request):
-    # Intentar obtener el entrenador asociado al usuario
     try:
         entrenador = Entrenador.objects.get(user=request.user)
     except Entrenador.DoesNotExist:
-        # Si no existe, redirigir a la inscripción de equipo
         return redirect('inscribir_equipo')
 
-    # Obtener el equipo asociado al entrenador
     equipo = get_object_or_404(Equipo, entrenador=entrenador)
     jugadores = equipo.jugadores.all()
 
@@ -126,21 +116,12 @@ def perfil_usuario(request):
         jugador_formset = JugadorFormSet(request.POST, instance=equipo)
 
         if equipo_form.is_valid() and jugador_formset.is_valid():
-            equipo = equipo_form.save(commit=False)
-            equipo.save()
-
-            jugadores = jugador_formset.save(commit=False)
-            for jugador in jugadores:
-                jugador.equipo = equipo
-                jugador.save()
-
-            # Guardar todas las relaciones del formset
-            jugador_formset.save_m2m()
-
-            messages.success(request, "Cambios guardados exitosamente")
+            equipo_form.save()
+            jugador_formset.save()
+            messages.success(request, "Cambios guardados exitosamente.")
             return redirect('perfil_usuario')
         else:
-            messages.error(request, "Error al guardar los cambios")
+            messages.error(request, "Error al guardar los cambios.")
     else:
         equipo_form = InscripcionEquipoForm(instance=equipo)
         jugador_formset = JugadorFormSet(instance=equipo)
@@ -156,19 +137,33 @@ def perfil_usuario(request):
 # Vista para abandonar el campeonato, eliminando el equipo y el entrenador
 @login_required
 def abandonar_campeonato(request):
-    # Obtener el equipo asociado al entrenador del usuario
-    equipo = get_object_or_404(Equipo, entrenador__user=request.user)
-
-    if request.method == 'POST':
-        # Eliminar el equipo y el entrenador asociado al usuario
-        equipo.delete()
+    try:
+        equipo = get_object_or_404(Equipo, entrenador__user=request.user)
         entrenador = get_object_or_404(Entrenador, user=request.user)
-        entrenador.delete()
 
-        return redirect('perfil_usuario')
+        if request.method == 'POST':
+            equipo.delete()
+            entrenador.delete()
+            messages.success(request, "Has abandonado el campeonato exitosamente.")
+            return redirect('perfil_usuario')
+    except Exception as e:
+        messages.error(request, f"Ocurrió un error: {str(e)}")
 
     return render(request, 'basquetbol/abandonar_campeonato.html', {'equipo': equipo})
+
 
 # Vista para mostrar el foro
 def foro(request):
     return render(request, 'basquetbol/foro.html')
+
+
+# Vista para la Política de Privacidad
+def politica_privacidad(request):
+    return render(request, 'basquetbol/politica_privacidad.html')
+
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render
+
+def login_view(request):
+    form = AuthenticationForm(request)
+    return render(request, 'basquetbol/login.html', {'form': form})

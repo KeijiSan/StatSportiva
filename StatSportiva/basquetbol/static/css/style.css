@@ -707,6 +707,28 @@ button[type="button"]:hover {
     transform: translateY(-3px); /* Movimiento hacia arriba */
     box-shadow: 0 6px 12px rgba(0, 0, 0, 0.3); /* Sombra más fuerte */
 }
+.google-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 10px;
+    margin-top: 15px;
+    background-color: #4285F4;
+    color: white;
+    text-decoration: none;
+    border-radius: 5px;
+    font-weight: bold;
+}
+
+.google-btn:hover {
+    background-color: #357AE8;
+}
+
+.google-icon {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+}
 
 /* Texto para Registro */
 .login-text {
