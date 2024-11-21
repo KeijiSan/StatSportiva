@@ -40,24 +40,38 @@ class InscripcionEquipoForm(forms.ModelForm):
         model = Equipo
         fields = ['nombre', 'campeonato', 'fundacion', 'historia', 'color_principal', 'color_secundario', 'logo']
 
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Añadir una opción vacía para que ningún campeonato esté seleccionado por defecto
+        campeonatos = Campeonato.objects.all()
+        choices = [('', 'Seleccione un campeonato')]  # Opción vacía
+
+        for campeonato in campeonatos:
+            if campeonato.equipos.count() >= campeonato.max_equipos:
+                choices.append((campeonato.id, f"{campeonato.nombre} (Lleno)"))
+            else:
+                choices.append((campeonato.id, campeonato.nombre))
+
+        # Sobrescribir el campo campeonato para usar estas opciones
+        self.fields['campeonato'].choices = choices
+
+        # Mantener la fecha de fundación si ya existe
+        if self.instance.pk and self.instance.fundacion:
+            self.fields['fundacion'].initial = self.instance.fundacion
+
     def clean_fundacion(self):
         fundacion = self.cleaned_data.get('fundacion')
         if fundacion and fundacion > datetime.date.today():
             raise forms.ValidationError('La fecha de fundación no puede ser en el futuro.')
         return fundacion
 
-    def clean_color_principal(self):
-        color = self.cleaned_data.get('color_principal')
-        if not color.startswith('#') or len(color) != 7:
-            raise forms.ValidationError("El color principal debe ser un código hexadecimal válido (e.g., #FFFFFF).")
-        return color
-
     def clean(self):
         cleaned_data = super().clean()
         campeonato = cleaned_data.get('campeonato')
 
         if campeonato and campeonato.equipos.count() >= campeonato.max_equipos:
-            raise forms.ValidationError(f'Este campeonato ya tiene el máximo de {campeonato.max_equipos} equipos inscritos.')
+            raise forms.ValidationError(f'Este campeonato ya ha alcanzado el máximo de {campeonato.max_equipos} equipos inscritos.')
 
         return cleaned_data
 
@@ -93,11 +107,15 @@ class JugadorForm(forms.ModelForm):
         return numero
 
 
-# Formset para gestionar múltiples jugadores
+# Crear el formset para gestionar múltiples instancias del modelo Jugador asociado a un equipo
 JugadorFormSet = inlineformset_factory(
-    Equipo,
-    Jugador,
-    form=JugadorForm,
-    extra=1,
-    can_delete=True
+    Equipo,  # Modelo al que se vincula (Equipo)
+    Jugador,  # Modelo que se va a gestionar en el formset (Jugador)
+    form=JugadorForm,  # El formulario base para cada jugador
+    extra=1,  # Número de formularios vacíos por defecto para agregar nuevos jugadores
+    can_delete=True,  # Permitir eliminación de jugadores existentes
+    min_num=5,  # Mínimo de jugadores requeridos
+    max_num=9,  # Máximo de jugadores permitidos
+    validate_min=True,  # Validar que se cumpla el mínimo de jugadores
+    validate_max=True  # Validar que no se exceda el máximo de jugadores
 )
