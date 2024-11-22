@@ -72,8 +72,138 @@
     object-fit: cover;
 }
 
+
+
+
+
+.modal-header {
+    background-color: #007bff;
+    color: #fff;
+}
+.modal-body {
+    background-color: #f8f9fa;
+}
+.modal-footer {
+    background-color: #f8f9fa;
+}
+.team-stats {
+    margin: 10px 0;
+}
+.team-stats h5 {
+    background-color: #007bff;
+    color: #fff;
+    padding: 10px;
+    border-radius: 5px;
+}
+.team-stats table {
+    width: 100%;
+    background-color: #ffffff;
+    border-collapse: collapse;
+}
+.team-stats table th, .team-stats table td {
+    padding: 10px;
+    text-align: center;
+    border: 1px solid #dddddd;
+}
+
 /* Match Info */
 /* Match Info */
+.puntos-card {
+    display: inline-block;
+    background-color: #ffdd57; /* Color amarillo claro */
+    color: #000;
+    padding: 10px 20px;
+    border-radius: 10px;
+    font-weight: bold;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+    margin-top: 10px;
+}
+
+
+
+
+.match-teams {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px 0;
+    background-color:linear-gradient(135deg, #1e3c72 0%, #2a5298 100%);
+    border-radius: 15px;
+}
+
+.team {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0 50px;
+    background-color: #ffffff;
+    padding: 20px;
+    border-radius: 15px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.1);
+    width: 180px;
+}
+
+.team img {
+    width: 80px;
+    height: 60px;
+    margin-bottom: 15px;
+    border-radius: 10px;
+    box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.2);
+}
+
+.equipo-p {
+    font-size: 1.25rem;
+    font-weight: bold;
+    color: #333;
+    margin-top: 5px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.puntos {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #f93e3e; /* Color rojo, típico de los marcadores deportivos */
+    margin: 0 30px;
+    background-color: #ffffff;
+    padding: 15px 25px;
+    border-radius: 20px;
+    box-shadow: 0px 6px 12px rgba(0, 0, 0, 0.15);
+}
+
+.vs-container {
+    font-size: 3rem;
+    font-weight: bold;
+    color: #ff6600; /* Color anaranjado que recuerda a una pelota de básquetbol */
+    margin: 0 30px;
+}
+
+.stats-buttons {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+}
+
+.btn-stats {
+    background-color: #ffcc00; /* Color amarillo deportivo */
+    color: #ffffff;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    margin: 0 10px;
+    transition: background-color 0.3s ease;
+    box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.15);
+}
+
+.btn-stats:hover {
+    background-color: #ffaa00; /* Color amarillo más oscuro para el hover */
+}
+
+
+
+
+
 .score-display {
     margin: 10px;
     margin-top: 10px;

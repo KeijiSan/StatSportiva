@@ -1,0 +1,101 @@
+<!-- campeonato_bracket.html -->
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket del Campeonato</title>
+    <link rel="stylesheet" href="{% static 'basquetbol/styles/bracket.css' %}">
+    <style>
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px;
+        }
+        .round {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin-bottom: 40px;
+        }
+        .match {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid #000;
+            padding: 10px;
+            margin: 10px;
+            width: 300px;
+            background-color: #f0f0f0;
+        }
+        .team {
+            flex: 1;
+            text-align: center;
+            padding: 5px;
+        }
+        .vs {
+            margin: 0 15px;
+            font-weight: bold;
+        }
+        .round-title {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="bracket-container">
+        <h1>{{ campeonato.nombre }}</h1>
+
+        <!-- Fase Clasificatorias -->
+        <div class="round">
+            <div class="round-title">Clasificatorias</div>
+            {% for partido in partidos_clasificatorias %}
+                <div class="match">
+                    <div class="team">{{ partido.equipo_local.nombre_equipo }} ({{ partido.goles_local }})</div>
+                    <div class="vs">VS</div>
+                    <div class="team">{{ partido.equipo_visitante.nombre_equipo }} ({{ partido.goles_visitante }})</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Fase de Cuartos -->
+        <div class="round">
+            <div class="round-title">Cuartos de Final</div>
+            {% for partido in partidos_cuartos %}
+                <div class="match">
+                    <div class="team">{{ partido.equipo_local.nombre_equipo }} ({{ partido.goles_local }})</div>
+                    <div class="vs">VS</div>
+                    <div class="team">{{ partido.equipo_visitante.nombre_equipo }} ({{ partido.goles_visitante }})</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Fase Semifinal -->
+        <div class="round">
+            <div class="round-title">Semifinal</div>
+            {% for partido in partidos_semifinal %}
+                <div class="match">
+                    <div class="team">{{ partido.equipo_local.nombre_equipo }} ({{ partido.goles_local }})</div>
+                    <div class="vs">VS</div>
+                    <div class="team">{{ partido.equipo_visitante.nombre_equipo }} ({{ partido.goles_visitante }})</div>
+                </div>
+            {% endfor %}
+        </div>
+
+        <!-- Final -->
+        <div class="round">
+            <div class="round-title">Final</div>
+            {% for partido in partidos_final %}
+                <div class="match">
+                    <div class="team">{{ partido.equipo_local.nombre_equipo }} ({{ partido.goles_local }})</div>
+                    <div class="vs">VS</div>
+                    <div class="team">{{ partido.equipo_visitante.nombre_equipo }} ({{ partido.goles_visitante }})</div>
+                </div>
+            {% endfor %}
+        </div>
+    </div>
+</body>
+</html>

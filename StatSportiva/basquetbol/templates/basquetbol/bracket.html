@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket Triangular - Eliminatorias</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <style>
+        body {
+            background-color: #f4f4f4;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            color: #333;
+        }
+        header {
+            background-color: #003366;
+            color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffd700;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+
+        .navbar-nav .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        .navbar-form .form-control {
+            margin-right: 10px;
+        }
+
+        .auth-buttons a, .auth-buttons button {
+            border: 1px solid #ffd700;
+            background-color: transparent;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .auth-buttons a:hover, .auth-buttons button:hover {
+            background-color: #ffd700;
+            color: #003366;
+        }
+
+        h1 {
+            margin: 20px 0;
+            font-size: 2rem;
+            color: #003366;
+        }
+
+        .bracket-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            margin: 20px auto;
+            padding: 20px;
+            width: 100%;
+            max-width: 800px;
+        }
+
+        .bracket-row {
+            display: flex;
+            justify-content: space-between;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+
+        .bracket-match {
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            padding: 10px;
+            text-align: center;
+            width: 120px;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .bracket-match:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .bracket-line {
+            width: 2px;
+            background: #ddd;
+            margin: -10px auto;
+        }
+
+        .line-horizontal {
+            height: 2px;
+            width: 50px;
+            background: #ddd;
+        }
+
+        .line-vertical {
+            height: 20px;
+            width: 2px;
+            background: #ddd;
+        }
+
+        .final {
+            margin: 20px auto;
+            width: fit-content;
+        }
+
+        footer {
+            background-color: #003366;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            margin-top: 20px;
+            font-size: 0.9rem;
+        }
+    </style>
+</head>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'proximo_partido' %}">StatSportiva</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'proximo_partido' %}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'estadisticas_equipos' %}">Estadísticas</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'bracket_eliminatorias' campeonato_id=1 %}">Bracket</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Buscar</button>
+            </form>
+            <div class="ml-3 auth-buttons">
+                {% if user.is_authenticated %}
+                    {% if not equipo_inscrito %}
+                        <a href="{% url 'inscribir_equipo' %}">Inscribir Equipo</a>
+                    {% endif %}
+                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-warning">Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-warning">Iniciar Sesión</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+<body>
+    <div class="container text-center">
+        <h1>Eliminatorias Campeonato: {{ campeonato.nombre }}</h1>
+        <div class="bracket-container">
+            <!-- Primera fila - Cuartos -->
+            <div class="bracket-row">
+                {% for partido in partidos_cuartos %}
+                <div class="bracket-match">
+                    <strong>{{ partido.equipo_local.nombre_equipo }}</strong>
+                    <br>vs<br>
+                    <strong>{{ partido.equipo_visitante.nombre_equipo }}</strong>
+                    <small>{{ partido.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+
+            <!-- Segunda fila - Semifinal -->
+            <div class="bracket-row">
+                <div class="line-horizontal"></div>
+                {% for partido in partidos_semifinal %}
+                <div class="bracket-match">
+                    <strong>{{ partido.equipo_local.nombre_equipo }}</strong>
+                    <br>vs<br>
+                    <strong>{{ partido.equipo_visitante.nombre_equipo }}</strong>
+                    <small>{{ partido.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% endfor %}
+                <div class="line-horizontal"></div>
+            </div>
+
+            <!-- Final -->
+            <div class="final">
+                {% if partido_final %}
+                <div class="bracket-match">
+                    <strong>{{ partido_final.equipo_local.nombre_equipo }}</strong>
+                    <br>vs<br>
+                    <strong>{{ partido_final.equipo_visitante.nombre_equipo }}</strong>
+                    <small>{{ partido_final.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% else %}
+                <p style="color: #777;">Aún no se ha programado la final.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    <!-- Footer -->
+    <footer>
+        <p>&copy; 2024 StatSportiva. Todos los derechos reservados.</p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,129 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Equipos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+            header {
+            background-color: #003366;
+            color: #fff;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 3px solid #ffd700;
+        }
+
+        .navbar-brand {
+            font-size: 1.5rem;
+            font-weight: 700;
+            text-transform: uppercase;
+        }
+
+        .navbar-nav .nav-link {
+            color: white;
+            font-weight: 500;
+        }
+
+        .navbar-nav .nav-link:hover {
+            text-decoration: underline;
+        }
+
+        .navbar-form .form-control {
+            margin-right: 10px;
+        }
+
+        .auth-buttons a, .auth-buttons button {
+            border: 1px solid #ffd700;
+            background-color: transparent;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 5px;
+            text-decoration: none;
+        }
+
+        .auth-buttons a:hover, .auth-buttons button:hover {
+            background-color: #ffd700;
+            color: #003366;
+        }
+</style>
+<header>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <a class="navbar-brand" href="{% url 'proximo_partido' %}">StatSportiva</a>
+        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav mr-auto">
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'proximo_partido' %}">Inicio</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" href="{% url 'estadisticas_equipos' %}">Estadísticas</a>
+                </li>
+                {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
+                    </li>
+                {% endif %}
+            </ul>
+            <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline my-2 my-lg-0">
+                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Buscar</button>
+            </form>
+            <div class="ml-3 auth-buttons">
+                {% if user.is_authenticated %}
+                    {% if not equipo_inscrito %}
+                        <a href="{% url 'inscribir_equipo' %}">Inscribir Equipo</a>
+                    {% endif %}
+                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-warning">Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="btn btn-outline-warning">Iniciar Sesión</a>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+</header>
+<body>
+    <div class="container mt-4">
+        <h2 class="text-center font-weight-bold mb-4">Estadísticas de Equipos</h2>
+        <table class="table table-bordered">
+            <thead class="table-dark">
+                <tr>
+                    <th>Equipo</th>
+                    <th>Total Puntos</th>
+                    <th>Total Triples</th>
+                    <th>Total Pases</th>
+                    <th>Total Rebotes</th>
+                    <th>Total Faltas</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for equipo in equipos %}
+                <tr>
+                    <td>{{ equipo.nombre_equipo }}</td>
+                    <td>{{ equipo.total_puntos|default:0 }}</td>
+                    <td>{{ equipo.total_triples|default:0 }}</td>
+                    <td>{{ equipo.total_pases|default:0 }}</td>
+                    <td>{{ equipo.total_rebotes|default:0 }}</td>
+                    <td>{{ equipo.total_faltas|default:0 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        
+    </div>
+        <!-- Footer -->
+        <footer>
+            <p>&copy; 2024 StatSportiva. Todos los derechos reservados.</p>
+        </footer>
+</body>
+</html>

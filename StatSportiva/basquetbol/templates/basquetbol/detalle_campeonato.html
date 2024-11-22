@@ -1,25 +1,225 @@
+{% load static %}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Detalles del Campeonato</title>
+    <title>Campeonato - Detalle</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container {
+            margin-top: 40px;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h2, h3 {
+            text-align: center;
+            font-weight: bold;
+            color: #333333;
+            margin-bottom: 30px;
+        }
+
+        table.table {
+            margin-bottom: 30px;
+        }
+
+        table.table th {
+            background-color: #343a40;
+            color: #ffffff;
+        }
+
+        table.table tbody tr:nth-child(odd) {
+            background-color: #f2f2f2;
+        }
+
+        .btn-primary, .btn-danger {
+            color: #ffffff;
+            padding: 10px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            display: block;
+            margin: 20px auto;
+            width: 80%;
+            border-radius: 8px;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #004085;
+        }
+
+        .btn-danger {
+            background-color: #dc3545;
+            border-color: #dc3545;
+        }
+
+        .btn-danger:hover {
+            background-color: #c82333;
+            border-color: #bd2130;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            margin-bottom: 40px;
+        }
+
+        .empty-state {
+            text-align: center;
+            font-size: 18px;
+            color: #777777;
+            padding: 20px 0;
+        }
+
+        .btn-group-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            margin-bottom: 30px;
+        }
+    </style>
 </head>
 <body>
-    <h1>{{ campeonato.nombre }}</h1>
-    <p>Fecha de inicio: {{ campeonato.fecha_inicio }}</p>
-    <p>Fecha de fin: {{ campeonato.fecha_fin }}</p>
-    <p>Descripción: {{ campeonato.descripcion }}</p>
+    <div class="container">
+        <h2>Detalle del Campeonato: {{ campeonato.nombre }}</h2>
 
-    <h2>Equipos inscritos</h2>
-    <ul>
-        {% for equipo in equipos %}
-            <li>{{ equipo.nombre }} - Entrenador: {{ equipo.entrenador.nombre }}</li>
-        {% empty %}
-            <li>No hay equipos inscritos en este campeonato.</li>
-        {% endfor %}
-    </ul>
+        {% if campeon %}
+        <h2>¡El Campeón del Campeonato {{ campeonato.nombre }} es: {{ campeon.equipo.nombre_equipo }}!</h2>
+        {% else %}
+        <h2>Aún no se ha determinado el campeón de este campeonato.</h2>
+        {% endif %}
+    
+        <!-- Tabla de Posiciones -->
+        <h3>Tabla de Posiciones</h3>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Equipo</th>
+                        <th>Puntos</th>
+                        <th>Partidos Ganados</th>
+                        <th>Partidos Perdidos</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if posiciones %}
+                        {% for posicion in posiciones %}
+                            <tr>
+                                <td>{{ posicion.equipo.nombre_equipo }}</td>
+                                <td>{{ posicion.puntos }}</td>
+                                <td>{{ posicion.partidos_ganados }}</td>
+                                <td>{{ posicion.partidos_perdidos }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No hay equipos en el campeonato</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
 
-    <a href="{% url 'lista_campeonatos' %}">Volver a los campeonatos</a>
+        <!-- Botones para Generar Partidos -->
+        <div class="btn-group-container">
+            <!-- Botón para Generar Partidos de Clasificatorias -->
+            <form method="post" action="{% url 'generar_partidos_clasificatorias' campeonato.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-primary">Generar Partidos Clasificatorias</button>
+            </form>
+
+            <!-- Botón para Generar la Fase Eliminatoria -->
+            <form method="post" action="{% url 'generar_fase_eliminatoria' campeonato.id %}">
+                {% csrf_token %}
+                <button type="submit" class="btn btn-danger">Generar Fase Eliminatoria</button>
+            </form>
+        </div>
+
+        <!-- Partidos de la Fase Clasificatoria -->
+        <h3>Partidos de Fase Clasificatoria</h3>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Equipo Local</th>
+                        <th>Equipo Visitante</th>
+                        <th>Fecha</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if partidos_clasificatorias %}
+                        {% for partido in partidos_clasificatorias %}
+                            <tr>
+                                <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="3" class="empty-state">No hay partidos de fase clasificatoria disponibles</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+            </table>
+        </div>
+
+        <!-- Partidos de la Fase Eliminatoria -->
+        <h3>Partidos de Fase Eliminatoria</h3>
+        <div class="table-container">
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Equipo Local</th>
+                        <th>Equipo Visitante</th>
+                        <th>Fecha</th>
+                        <th>Fase</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% if partidos_eliminatoria %}
+                        {% for partido in partidos_eliminatoria %}
+                            <tr>
+                                <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                                <td>{{ partido.fase }}</td>
+                            </tr>
+                        {% endfor %}
+                    {% else %}
+                        <tr>
+                            <td colspan="4" class="empty-state">No hay partidos de fase eliminatoria disponibles</td>
+                        </tr>
+                    {% endif %}
+                </tbody>
+                
+            </table>
+        </div>
+    </div>
+
+    <!-- jQuery and Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Redirigir automáticamente a gestionar_registros para el campeonato actual
+        window.onload = function() {
+            window.location.href = "{% url 'gestionar_registros' %}";
+        }
+    </script>
 </body>
 </html>
