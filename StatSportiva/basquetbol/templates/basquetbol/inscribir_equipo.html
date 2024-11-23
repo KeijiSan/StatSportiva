@@ -4,106 +4,364 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Inscribir Equipo en Campeonato</title>
+    <title>Inscripción de Equipo</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <style>
+        /* Misma hoja de estilo anterior */
+        :root {
+            --primary-bg: #121212;
+            --secondary-bg: #1f1f1f;
+            --text-color: #ffffff;
+            --highlight-color: #ffd700;
+            --button-bg: #333333;
+            --button-hover-bg: #444444;
+            --border-color: #444444;
+        }
+
+        body {
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        .container-insc {
+            max-width: 800px;
+            margin: 40px auto;
+            margin-top: 120px ;
+            background-color: var(--secondary-bg);
+            border-radius: 10px;
+            padding: 30px;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+        }
+
+        h1 {
+            text-align: center;
+            font-size: 2.5rem;
+            color: var(--highlight-color);
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            font-size: 1.5rem;
+            border-bottom: 2px solid var(--highlight-color);
+            margin-bottom: 20px;
+        }
+
+        label {
+            font-weight: bold;
+        }
+
+        input, select, textarea {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 20px;
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            background-color: var(--primary-bg);
+            color: var(--text-color);
+        }
+
+        input:focus, select:focus, textarea:focus {
+            border-color: var(--highlight-color);
+            box-shadow: 0 0 5px var(--highlight-color);
+            outline: none;
+        }
+
+        .btn-insc {
+            background-color: var(--highlight-color);
+            color: var(--primary-bg);
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            font-weight: bold;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #e1c700;
+        }
+
+        .btn-danger {
+            background-color: #e74c3c;
+            color: var(--text-color);
+        }
+
+        .btn-danger:hover {
+            background-color: #c0392b;
+        }
+
+        .jugador-form {
+            background-color: var(--primary-bg);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+
+        #wallet_container {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .lead {
+            font-size: 1.2rem;
+            color: var(--highlight-color);
+        }
+
+        img {
+            display: block;
+            margin: 10px auto;
+            max-width: 150px;
+            border-radius: 5px;
+        }
+
+        .messages {
+            list-style: none;
+            padding: 0;
+            margin: 20px 0;
+        }
+
+        .messages li {
+            background-color: var(--button-bg);
+            padding: 10px;
+            border-radius: 5px;
+            margin-bottom: 10px;
+        }
+
+        .messages .success {
+            border-left: 5px solid #2ecc71;
+        }
+
+        .messages .error {
+            border-left: 5px solid #e74c3c;
+        }
+    </style>
 </head>
+
 <body>
-    <div class="container mt-5">
-        <h1 class="text-center">Inscribir Equipo en un Campeonato</h1>
+    <header class="header">
+        <nav class="nav container-nav">
+           <div class="nav__data">
+              <a href="{% url 'proximo_partido' %}" class="nav__logo">
+                 <i class="ri-planet-line"></i> StatSportiva
+              </a>
+              
+              <div class="nav__toggle" id="nav-toggle">
+                 <i class="ri-menu-line nav__burger"></i>
+                 <i class="ri-close-line nav__close"></i>
+              </div>
+           </div>
 
-        <form method="post" enctype="multipart/form-data" class="mt-5">
+           <!--=============== NAV MENU ===============-->
+           <div class="nav__menu" id="nav-menu">
+              <ul class="nav__list">
+                 <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
+
+                 <li><a href="#" class="nav__link">Foro</a></li>
+
+                 <!--=============== DROPDOWN 1 ===============-->
+                 <li class="dropdown__item">
+                    <div class="nav__link">
+                       Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                    </div>
+
+                    <ul class="dropdown__menu">
+                       <li>
+                          <a href="{% url 'tabla_posiciones' %}" class="dropdown__link">
+                             <i class="ri-pie-chart-line"></i> Posiciones
+                          </a>                          
+                       </li>
+
+                       <li>
+                          <a href="{% url 'bracket_eliminatorias' campeonato_id=1 %}" class="dropdown__link">
+                             <i class="ri-arrow-up-down-line"></i> Eliminatorias
+                          </a>
+                       </li>
+
+                       <!--=============== DROPDOWN SUBMENU ===============-->
+                       <li class="dropdown__subitem">
+                          <div class="dropdown__link">
+                             <i class="ri-bar-chart-line"></i> Partidos <i class="ri-add-line dropdown__add"></i>
+                          </div>
+
+                          <ul class="dropdown__submenu">
+                             <li>
+                                <a href="{% url 'estadisticas_equipos' %}" class="dropdown__sublink">
+                                   <i class="ri-file-list-line"></i> Estadisticas
+                                </a>
+                             </li>
+     
+                             <li>
+                                <a href="#" class="dropdown__sublink">
+                                   <i class="ri-cash-line"></i> Payments
+                                </a>
+                             </li>
+     
+                             <li>
+                                <a href="#" class="dropdown__sublink">
+                                   <i class="ri-refund-2-line"></i> Refunds
+                                </a>
+                             </li>
+                          </ul>
+                       </li>
+                    </ul>
+                 </li>
+                 
+
+                 <li class="nav__item form-inline my-2 my-lg-0">
+                    <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline">
+                        <input class="form-control mr-sm-2 nav__search-input" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                        <button class="btn btn-outline-warning nav__search-button" type="submit">Buscar</button>
+                    </form>
+                </li>
+                 <!--=============== DROPDOWN 2 ===============-->
+                 <li class="dropdown__item">
+                    <div class="nav__link">
+                       Usuario <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                    </div>
+
+                    <ul class="dropdown__menu">
+                        {% if user.is_authenticated %}
+                        <li>
+                          <a href="{% url 'perfil_usuario' %}" class="dropdown__link">
+                             <i class="ri-user-line"></i> Perfil
+                          </a>                          
+                       </li>
+                       {% endif %}
+                       <li>
+                        {% if user.is_authenticated %}
+                        {% if not equipo_inscrito %}
+                            <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
+                        {% endif %}
+                            <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-warning nav__search-button">Cerrar Sesión</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="dropdown__link"><i class="ri-lock-line"></i> Iniciar sesion</a>
+                    {% endif %}
+
+
+                       </li>
+
+                    </ul>
+                 </li>
+
+                 <li><a href="#" class="nav__link">Contacto</a></li>
+              </ul>
+           </div>
+        </nav>
+     </header>
+    <div class="container-insc">
+        <h1>Inscribir Equipo</h1>
+        <form method="post" enctype="multipart/form-data">
             {% csrf_token %}
-
-            <h2 class="section-title">Información del Equipo</h2>
-            <div class="form-section mb-4">
+            
+            <h2>Información del Equipo</h2>
+            <div>
                 {{ equipo_form.as_p }}
                 {% if equipo_form.instance.logo %}
-                    <div class="mt-3">
-                        <h3>Logo del Equipo Actual</h3>
-                        <img src="{{ equipo_form.instance.logo.url }}" alt="Logo del equipo" class="img-fluid" style="max-width: 200px;">
-                    </div>
+                    <img src="{{ equipo_form.instance.logo.url }}" alt="Logo del equipo">
                 {% endif %}
             </div>
 
-            <h2 class="section-title">Información del Entrenador</h2>
-            <div class="form-section mb-4">
+            <h2>Información del Entrenador</h2>
+            <div>
                 {{ entrenador_form.as_p }}
             </div>
 
-            <h2 class="section-title">Jugadores</h2>
-            <div class="form-section mb-4">
+            <h2>Jugadores</h2>
+            <div>
                 {{ jugador_formset.management_form }}
                 <div id="jugadores-list">
-                    <!-- Mostrar todos los formularios del formset de jugadores -->
                     {% for form in jugador_formset %}
-                        <div class="jugador-form border p-3 mb-3">
+                        <div class="jugador-form">
                             {{ form.as_p }}
-                            <button type="button" class="delete-btn btn btn-danger mt-2">Eliminar</button>
+                            <button type="button" class="btn btn-danger delete-btn">Eliminar</button>
                         </div>
                     {% endfor %}
                 </div>
-                <!-- Botón para añadir más jugadores -->
-                <button type="button" id="add-player-btn" class="btn btn-secondary mt-3">+ Agregar Jugador</button>
+                <button type="button" id="add-player-btn" class="btn btn mt-3 btn-outline-warning nav__search-button">+ Agregar Jugador</button>
             </div>
 
-            <button type="submit" class="btn btn-primary">Inscribir</button>
+            <button type="submit" class="btn mt-4  btn-outline-warning nav__search-button">Inscripción</button>
         </form>
-
-        <a href="{% url 'proximo_partido' %}" class="btn btn-link mt-4">Volver a Inicio</a>
-
-        {% if messages %}
-            <ul class="messages mt-3">
-                {% for message in messages %}
-                    <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
     </div>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-foot">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>StatSportiva</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Nuestros servicios</a></li>
+                        <li><a href="#">Politica & Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contactanos</a></li>
+                        <li><a href="#">Foro</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Campeonatos</h4>
+                    <ul>
+                        <li><a href="#">Equipos</a></li>
+                        <li><a href="#">Partidos</a></li>
+                        <li><a href="#">Estadisticas</a></li>
+                        <li><a href="#">Posiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </footer>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const jugadorList = document.getElementById("jugadores-list");
+            const addPlayerBtn = document.getElementById("add-player-btn");
+            let formIndex = {{ jugador_formset.total_form_count }};
 
-    <!-- Script para añadir y eliminar formularios dinámicamente -->
-    <script type="text/javascript">
-        $(document).ready(function () {
-            // Obtener la cantidad total inicial de formularios
-            var formIndex = parseInt($('#id_jugador_set-TOTAL_FORMS').val());
-
-            // Añadir nuevo formulario al hacer clic en el botón "Agregar Jugador"
-            $('#add-player-btn').click(function () {
-                var totalForms = $('#id_jugador_set-TOTAL_FORMS');
-                var newFormIndex = formIndex;
-
-                // Clonar el primer formulario de jugador visible y resetear los valores
-                var newForm = $('#jugadores-list .jugador-form:first').clone(false);
-                newForm.find(':input').each(function () {
-                    var name = $(this).attr('name');
-                    var id = $(this).attr('id');
-
-                    if (name) {
-                        name = name.replace(/-\d+-/, '-' + newFormIndex + '-');
-                        $(this).attr('name', name);
-                    }
-                    if (id) {
-                        id = id.replace(/-\d+-/, '-' + newFormIndex + '-');
-                        $(this).attr('id', id);
-                    }
-
-                    $(this).val(''); // Limpiar el valor del campo
-                });
-
-                // Asegurarse de agregar el nuevo formulario después de los existentes
-                $('#jugadores-list').append(newForm);
-
-                // Incrementar el total de formularios
-                totalForms.val(parseInt(totalForms.val()) + 1);
+            addPlayerBtn.addEventListener("click", function () {
+                const emptyFormHtml = '{{ jugador_formset.empty_form.as_p|escapejs }}';
+                const newFormHtml = emptyFormHtml.replace(/__prefix__/g, formIndex);
+                const formContainer = document.createElement("div");
+                formContainer.classList.add("jugador-form");
+                formContainer.innerHTML = newFormHtml + 
+                    '<button type="button" class="btn btn-danger delete-btn mt-2">Eliminar</button>';
+                jugadorList.appendChild(formContainer);
                 formIndex++;
+
+                // Agregar evento para eliminar al nuevo formulario
+                formContainer.querySelector(".delete-btn").addEventListener("click", function () {
+                    formContainer.remove();
+                });
             });
 
-            // Eliminar formulario
-            $('#jugadores-list').on('click', '.delete-btn', function () {
-                $(this).closest('.jugador-form').remove();
-                var totalForms = $('#id_jugador_set-TOTAL_FORMS');
-                totalForms.val(parseInt(totalForms.val()) - 1);
+            // Eliminar formularios existentes
+            jugadorList.querySelectorAll(".delete-btn").forEach(function (btn) {
+                btn.addEventListener("click", function () {
+                    btn.closest(".jugador-form").remove();
+                });
             });
         });
     </script>

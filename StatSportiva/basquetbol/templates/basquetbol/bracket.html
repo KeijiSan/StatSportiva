@@ -1,214 +1,350 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Bracket Triangular - Eliminatorias</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
     <style>
         body {
-            background-color: #f4f4f4;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
+            background-color: #f4f6f8;
             color: #333;
+            font-family: 'Roboto', sans-serif;
         }
-        header {
-            background-color: #003366;
-            color: #fff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #ffd700;
+        
+        .container {
+            padding-top: 100px;
+            padding-bottom: 50px;
         }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .navbar-nav .nav-link {
-            color: white;
-            font-weight: 500;
-        }
-
-        .navbar-nav .nav-link:hover {
-            text-decoration: underline;
-        }
-
-        .navbar-form .form-control {
-            margin-right: 10px;
-        }
-
-        .auth-buttons a, .auth-buttons button {
-            border: 1px solid #ffd700;
-            background-color: transparent;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .auth-buttons a:hover, .auth-buttons button:hover {
-            background-color: #ffd700;
-            color: #003366;
-        }
-
-        h1 {
-            margin: 20px 0;
-            font-size: 2rem;
-            color: #003366;
-        }
-
-        .bracket-container {
+        
+        /* Triangular Bracket */
+        .bracket-triangle {
             display: flex;
             flex-direction: column;
             align-items: center;
-            margin: 20px auto;
-            padding: 20px;
-            width: 100%;
-            max-width: 800px;
+            position: relative;
+            gap: 30px;
         }
-
-        .bracket-row {
+        
+        .bracket-level {
             display: flex;
-            justify-content: space-between;
-            width: 100%;
-            margin-bottom: 20px;
+            justify-content: center;
+            gap: 40px;
         }
-
+        
         .bracket-match {
-            background: white;
-            border: 2px solid #ddd;
+            background-color: #ffffff;
+            border: 2px solid #003366;
             border-radius: 10px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-            padding: 10px;
+            padding: 15px 20px;
+            width: 200px;
             text-align: center;
-            width: 120px;
-            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
         }
-
-        .bracket-match:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
-        }
-
-        .bracket-line {
-            width: 2px;
-            background: #ddd;
-            margin: -10px auto;
-        }
-
-        .line-horizontal {
-            height: 2px;
+        
+        .bracket-match img.team-logo {
             width: 50px;
-            background: #ddd;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
         }
-
-        .line-vertical {
-            height: 20px;
-            width: 2px;
-            background: #ddd;
+        
+        .team {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #003366;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
         }
-
-        .final {
-            margin: 20px auto;
-            width: fit-content;
+        
+        .vs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            height: 50px;
         }
-
-        footer {
-            background-color: #003366;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            margin-top: 20px;
+        
+        .vs-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #003366;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bracket-match:hover {
+            background-color: #eef3fa;
+            border-color: #007bff;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .team {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #003366;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px; /* Para evitar que el texto salga del cuadro */
+        }
+        
+        .vs {
             font-size: 0.9rem;
+            color: #555;
+            margin: 5px 0;
+            text-align: center;
         }
+        
+        .match-date {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        
+        /* Triangle Connectors */
+        .triangle-connector {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid #003366;
+            margin-top: -10px;
+        }
+        
+        /* Margins for footer and navbar */
+        .mt-5 {
+            margin-top: 120px !important;
+        }
+        
+        .mb-5 {
+            margin-bottom: 80px !important;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .bracket-level {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .bracket-match {
+                width: 160px;
+            }
+            .triangle-connector {
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-top: 30px solid #003366;
+            }
+        }
+         
+
     </style>
 </head>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url 'proximo_partido' %}">StatSportiva</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'proximo_partido' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'estadisticas_equipos' %}">Estadísticas</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'bracket_eliminatorias' campeonato_id=1 %}">Bracket</a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
-                    </li>
-                {% endif %}
-            </ul>
-            <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
-                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Buscar</button>
-            </form>
-            <div class="ml-3 auth-buttons">
-                {% if user.is_authenticated %}
+<header class="header">
+    <nav class="nav container-nav">
+       <div class="nav__data">
+          <a href="{% url 'proximo_partido' %}" class="nav__logo">
+             <i class="ri-planet-line"></i> StatSportiva
+          </a>
+          
+          <div class="nav__toggle" id="nav-toggle">
+             <i class="ri-menu-line nav__burger"></i>
+             <i class="ri-close-line nav__close"></i>
+          </div>
+       </div>
+
+       <!--=============== NAV MENU ===============-->
+       <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+             <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
+
+             <li><a href="#" class="nav__link">Foro</a></li>
+
+             <!--=============== DROPDOWN 1 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                   <li>
+                      <a href="{% url 'tabla_posiciones' %}" class="dropdown__link">
+                         <i class="ri-pie-chart-line"></i> Posiciones
+                      </a>                          
+                   </li>
+
+                   <li>
+                      <a href="{% url 'bracket_eliminatorias' campeonato_id=1 %}" class="dropdown__link">
+                         <i class="ri-arrow-up-down-line"></i> Eliminatorias
+                      </a>
+                   </li>
+
+                   <!--=============== DROPDOWN SUBMENU ===============-->
+                   <li class="dropdown__subitem">
+                      <div class="dropdown__link">
+                         <i class="ri-bar-chart-line"></i> Partidos <i class="ri-add-line dropdown__add"></i>
+                      </div>
+
+                      <ul class="dropdown__submenu">
+                         <li>
+                            <a href="{% url 'estadisticas_equipos' %}" class="dropdown__sublink">
+                               <i class="ri-file-list-line"></i> Estadisticas
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-cash-line"></i> Payments
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-refund-2-line"></i> Refunds
+                            </a>
+                         </li>
+                      </ul>
+                   </li>
+                </ul>
+             </li>
+             
+
+             <li class="nav__item form-inline my-2 my-lg-0">
+                <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline">
+                    <input class="form-control mr-sm-2 nav__search-input" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                    <button class="btn btn-outline-warning nav__search-button" type="submit">Buscar</button>
+                </form>
+            </li>
+             <!--=============== DROPDOWN 2 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Usuario <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                    {% if user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'perfil_usuario' %}" class="dropdown__link">
+                         <i class="ri-user-line"></i> Perfil
+                      </a>                          
+                   </li>
+                   {% endif %}
+                   <li>
+                    {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
-                        <a href="{% url 'inscribir_equipo' %}">Inscribir Equipo</a>
+                        <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
                     {% endif %}
-                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                        <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-warning">Cerrar Sesión</button>
+                        <button type="submit" class="btn btn-outline-warning nav__search-button">Cerrar Sesión</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-warning">Iniciar Sesión</a>
+                    <a href="{% url 'login' %}" class="dropdown__link"><i class="ri-lock-line"></i> Iniciar sesion</a>
                 {% endif %}
-            </div>
-        </div>
+
+
+                   </li>
+
+                </ul>
+             </li>
+
+             <li><a href="#" class="nav__link">Contacto</a></li>
+          </ul>
+       </div>
     </nav>
-</header>
+ </header>
 <body>
-    <div class="container text-center">
-        <h1>Eliminatorias Campeonato: {{ campeonato.nombre }}</h1>
-        <div class="bracket-container">
-            <!-- Primera fila - Cuartos -->
-            <div class="bracket-row">
+    <div class="container mt-5 mb-5 text-center">
+        <!-- Título -->
+        <h1 class="text-uppercase font-weight-bold mb-5" style="color: #003366;">Eliminatorias Campeonato: {{ campeonato.nombre }}</h1>
+    
+        <div class="bracket-triangle">
+            <!-- Cuartos -->
+            <div class="bracket-level">
                 {% for partido in partidos_cuartos %}
-                <div class="bracket-match">
-                    <strong>{{ partido.equipo_local.nombre_equipo }}</strong>
-                    <br>vs<br>
-                    <strong>{{ partido.equipo_visitante.nombre_equipo }}</strong>
-                    <small>{{ partido.fecha|date:"d M, H:i" }}</small>
+                <div class="bracket-match shadow-sm">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
                 </div>
                 {% endfor %}
             </div>
-
-            <!-- Segunda fila - Semifinal -->
-            <div class="bracket-row">
-                <div class="line-horizontal"></div>
+    
+            <!-- Conector -->
+            <div class="triangle-connector"></div>
+    
+            <!-- Semifinal -->
+            <div class="bracket-level">
                 {% for partido in partidos_semifinal %}
-                <div class="bracket-match">
-                    <strong>{{ partido.equipo_local.nombre_equipo }}</strong>
-                    <br>vs<br>
-                    <strong>{{ partido.equipo_visitante.nombre_equipo }}</strong>
-                    <small>{{ partido.fecha|date:"d M, H:i" }}</small>
+                <div class="bracket-match shadow-sm">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
                 </div>
                 {% endfor %}
-                <div class="line-horizontal"></div>
             </div>
-
+    
+            <!-- Conector -->
+            <div class="triangle-connector"></div>
+    
             <!-- Final -->
-            <div class="final">
+            <div class="bracket-level">
                 {% if partido_final %}
-                <div class="bracket-match">
-                    <strong>{{ partido_final.equipo_local.nombre_equipo }}</strong>
-                    <br>vs<br>
-                    <strong>{{ partido_final.equipo_visitante.nombre_equipo }}</strong>
-                    <small>{{ partido_final.fecha|date:"d M, H:i" }}</small>
+                <div class="bracket-match shadow-lg">
+                    <div class="team">
+                        <img src="{{ partido_final.equipo_local.logo.url }}" alt="{{ partido_final.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido_final.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido_final.equipo_visitante.logo.url }}" alt="{{ partido_final.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido_final.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido_final.fecha|date:"d M, H:i" }}</small>
                 </div>
                 {% else %}
                 <p style="color: #777;">Aún no se ha programado la final.</p>
@@ -216,9 +352,50 @@
             </div>
         </div>
     </div>
+    
+    
     <!-- Footer -->
-    <footer>
-        <p>&copy; 2024 StatSportiva. Todos los derechos reservados.</p>
-    </footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-foot">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>StatSportiva</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Nuestros servicios</a></li>
+                        <li><a href="#">Politica & Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contactanos</a></li>
+                        <li><a href="#">Foro</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Campeonatos</h4>
+                    <ul>
+                        <li><a href="#">Equipos</a></li>
+                        <li><a href="#">Partidos</a></li>
+                        <li><a href="#">Estadisticas</a></li>
+                        <li><a href="#">Posiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </footer>
 </body>
 </html>

@@ -6,124 +6,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Equipos</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 </head>
 <style>
-            header {
-            background-color: #003366;
-            color: #fff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #ffd700;
-        }
-
-        .navbar-brand {
-            font-size: 1.5rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
-
-        .navbar-nav .nav-link {
-            color: white;
-            font-weight: 500;
-        }
-
-        .navbar-nav .nav-link:hover {
-            text-decoration: underline;
-        }
-
-        .navbar-form .form-control {
-            margin-right: 10px;
-        }
-
-        .auth-buttons a, .auth-buttons button {
-            border: 1px solid #ffd700;
-            background-color: transparent;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        .auth-buttons a:hover, .auth-buttons button:hover {
-            background-color: #ffd700;
-            color: #003366;
-        }
+    body {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+    .table {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f4f6f8; /* Color de hover en filas */
+    }
+    
+    .table th {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    
+    .table td {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333333;
+    }
+    
+    .table img {
+        border: 2px solid #ffd700;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
 </style>
-<header>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-        <a class="navbar-brand" href="{% url 'proximo_partido' %}">StatSportiva</a>
-        <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-            <span class="navbar-toggler-icon"></span>
-        </button>
-        <div class="collapse navbar-collapse" id="navbarNav">
-            <ul class="navbar-nav mr-auto">
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'proximo_partido' %}">Inicio</a>
-                </li>
-                <li class="nav-item">
-                    <a class="nav-link" href="{% url 'estadisticas_equipos' %}">Estadísticas</a>
-                </li>
-                {% if user.is_authenticated %}
-                    <li class="nav-item">
-                        <a class="nav-link" href="{% url 'perfil_usuario' %}">Perfil</a>
-                    </li>
-                {% endif %}
-            </ul>
-            <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline my-2 my-lg-0">
-                <input class="form-control mr-sm-2" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
-                <button class="btn btn-outline-warning my-2 my-sm-0" type="submit">Buscar</button>
-            </form>
-            <div class="ml-3 auth-buttons">
-                {% if user.is_authenticated %}
+<header class="header">
+    <nav class="nav container-nav">
+       <div class="nav__data">
+          <a href="#" class="nav__logo">
+             <i class="ri-planet-line"></i> StatSportiva
+          </a>
+          
+          <div class="nav__toggle" id="nav-toggle">
+             <i class="ri-menu-line nav__burger"></i>
+             <i class="ri-close-line nav__close"></i>
+          </div>
+       </div>
+
+       <!--=============== NAV MENU ===============-->
+       <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+             <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
+
+             <li><a href="#" class="nav__link">Foro</a></li>
+
+             <!--=============== DROPDOWN 1 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                   <li>
+                      <a href="" class="dropdown__link">
+                         <i class="ri-pie-chart-line"></i> Posiciones
+                      </a>                          
+                   </li>
+
+                   <li>
+                      <a href="{% url 'bracket_eliminatorias' campeonato_id=1 %}" class="dropdown__link">
+                         <i class="ri-arrow-up-down-line"></i> Eliminatorias
+                      </a>
+                   </li>
+
+                   <!--=============== DROPDOWN SUBMENU ===============-->
+                   <li class="dropdown__subitem">
+                      <div class="dropdown__link">
+                         <i class="ri-bar-chart-line"></i> Partidos <i class="ri-add-line dropdown__add"></i>
+                      </div>
+
+                      <ul class="dropdown__submenu">
+                         <li>
+                            <a href="{% url 'estadisticas_equipos' %}" class="dropdown__sublink">
+                               <i class="ri-file-list-line"></i> Estadisticas
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-cash-line"></i> Payments
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-refund-2-line"></i> Refunds
+                            </a>
+                         </li>
+                      </ul>
+                   </li>
+                </ul>
+             </li>
+             
+
+             <li class="nav__item form-inline my-2 my-lg-0">
+                <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline">
+                    <input class="form-control mr-sm-2 nav__search-input" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                    <button class="btn btn-outline-warning nav__search-button" type="submit">Buscar</button>
+                </form>
+            </li>
+             <!--=============== DROPDOWN 2 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Usuario <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                    {% if user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'perfil_usuario' %}" class="dropdown__link">
+                         <i class="ri-user-line"></i> Perfil
+                      </a>                          
+                   </li>
+                   {% endif %}
+                   <li>
+                    {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
-                        <a href="{% url 'inscribir_equipo' %}">Inscribir Equipo</a>
+                        <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
                     {% endif %}
-                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
+                        <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
                         {% csrf_token %}
-                        <button type="submit" class="btn btn-outline-warning">Cerrar Sesión</button>
+                        <button type="submit" class="btn btn-outline-warning nav__search-button">Cerrar Sesión</button>
                     </form>
                 {% else %}
-                    <a href="{% url 'login' %}" class="btn btn-outline-warning">Iniciar Sesión</a>
+                    <a href="{% url 'login' %}" class="dropdown__link"><i class="ri-lock-line"></i> Iniciar sesion</a>
                 {% endif %}
+
+
+                   </li>
+
+                </ul>
+             </li>
+
+             <li><a href="#" class="nav__link">Contacto</a></li>
+          </ul>
+       </div>
+    </nav>
+ </header>
+ 
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center font-weight-bold mb-5" style="color: #003366;">📊 Estadísticas de Equipos</h2>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle shadow-lg">
+                <thead class="text-white" style="background-color: #1f1f1f;">
+                    <tr >
+                        <th class="text-center py-3">Equipo</th>
+                        <th class="text-center py-3">Total Puntos</th>
+                        <th class="text-center py-3">Total Triples</th>
+                        <th class="text-center py-3">Total Pases</th>
+                        <th class="text-center py-3">Total Rebotes</th>
+                        <th class="text-center py-3">Total Faltas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipo in equipos %}
+                    <tr>
+                        <td class="text-center py-3 font-weight-bold">
+                            <img src="{% if equipo.logo %}{{ equipo.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ equipo.nombre_equipo }}" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
+                            {{ equipo.nombre_equipo }}
+                        </td>
+                        <td class="text-center py-3">{{ equipo.total_puntos|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_triples|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_pases|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_rebotes|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_faltas|default:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-foot">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>StatSportiva</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Nuestros servicios</a></li>
+                        <li><a href="#">Politica & Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contactanos</a></li>
+                        <li><a href="#">Foro</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Campeonatos</h4>
+                    <ul>
+                        <li><a href="#">Equipos</a></li>
+                        <li><a href="#">Partidos</a></li>
+                        <li><a href="#">Estadisticas</a></li>
+                        <li><a href="#">Posiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
             </div>
         </div>
-    </nav>
-</header>
-<body>
-    <div class="container mt-4">
-        <h2 class="text-center font-weight-bold mb-4">Estadísticas de Equipos</h2>
-        <table class="table table-bordered">
-            <thead class="table-dark">
-                <tr>
-                    <th>Equipo</th>
-                    <th>Total Puntos</th>
-                    <th>Total Triples</th>
-                    <th>Total Pases</th>
-                    <th>Total Rebotes</th>
-                    <th>Total Faltas</th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for equipo in equipos %}
-                <tr>
-                    <td>{{ equipo.nombre_equipo }}</td>
-                    <td>{{ equipo.total_puntos|default:0 }}</td>
-                    <td>{{ equipo.total_triples|default:0 }}</td>
-                    <td>{{ equipo.total_pases|default:0 }}</td>
-                    <td>{{ equipo.total_rebotes|default:0 }}</td>
-                    <td>{{ equipo.total_faltas|default:0 }}</td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        
-    </div>
-        <!-- Footer -->
-        <footer>
-            <p>&copy; 2024 StatSportiva. Todos los derechos reservados.</p>
-        </footer>
+   </footer>
 </body>
 </html>

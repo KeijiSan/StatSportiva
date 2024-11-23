@@ -4,8 +4,16 @@ from django.contrib.auth import views as auth_views
 from django.conf import settings
 from django.conf.urls.static import static
 from basquetbol import views
+from django.urls import path, include
 
 urlpatterns = [
+    #------------------ KEIJI---------------------------------
+    path('', views.proximo_partido, name='vista_principal'),  # Página principal
+    path('logout/', auth_views.LogoutView.as_view(next_page='vista_principal'), name='logout'),
+    path('politica-privacidad/', views.politica_privacidad, name='politica_privacidad'),  # Política de privacidad
+    path('accounts/', include('allauth.urls')),  # Rutas de django-allauth
+
+
     # -------------------------- Admin --------------------------
     path('admin/', admin.site.urls),
 
@@ -27,6 +35,7 @@ urlpatterns = [
     path('campeonatos/<int:campeonato_id>/octavos/', views.octavos_view, name='octavos_view'),
     path('campeonatos/<int:campeonato_id>/generar_fase_eliminatoria/', views.generar_fase_eliminatoria, name='generar_fase_eliminatoria'),
     path('campeonatos/<int:campeonato_id>/bracket/', views.bracket_eliminatorias, name='bracket_eliminatorias'),
+    path('tabla_posiciones/', views.tabla_posiciones, name='tabla_posiciones'),
 
     # -------------------------- Equipos --------------------------
     path('inscribir_equipo/', views.inscribir_equipo, name='inscribir_equipo'),

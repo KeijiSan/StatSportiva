@@ -34,11 +34,52 @@ from .models import Equipo, Video  # Importa el modelo Video
 
 
 
+
+#------------------------- keiji ------------------------------------------------------------------------
+from django.urls import reverse
+
+# Vista para la Política de Privacidad
+def politica_privacidad(request):
+    return render(request, 'basquetbol/politica_privacidad.html')
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render
+def login_view(request):
+    form = AuthenticationForm(request)
+    return render(request, 'basquetbol/login.html', {'form': form})
+
+from django.shortcuts import render
+from .models import Posicion  # Modelo que contiene la tabla de posiciones
+
+def tabla_posiciones(request):
+    posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')  # Ordenar por puntos y partidos ganados
+    return render(request, 'basquetbol/tabla_posiciones.html', {'posiciones': posiciones})
+
+
 #---------------------------------------- Pagina principal, USUARIO ----------------------------------------------------------------
 
+from .models import Partido
+
+from django.shortcuts import render
+from .models import Partido
+
+def partidos_con_estadisticas(request):
+    """
+    Retorna todos los partidos que tienen estadísticas registradas.
+    """
+    partidos = Partido.objects.filter(estadisticas__isnull=False).order_by('fecha')  # Filtrar partidos con estadísticas
+    return render(request, 'basquetbol/proximo_partido.html', {'partidos': partidos})
 
 
 def proximo_partido(request):
+    
+    equipo_inscrito = (
+        Equipo.objects.filter(entrenador__user=request.user).exists()
+        if request.user.is_authenticated
+        else False
+    )
+    
+    partidos_con_estadisticas = Partido.objects.filter(estadisticas__isnull=False).order_by('fecha')
+
     equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
 
     # Obtén todos los videos de la base de datos
@@ -89,6 +130,7 @@ def proximo_partido(request):
         request,
         'basquetbol/proximo_partido.html',
         {
+            'partidos_con_estadisticas': partidos_con_estadisticas,
             'proximo_partido': partido_proximo,
             'probabilidad_local': probabilidad_local,
             'probabilidad_visitante': probabilidad_visitante,
@@ -97,6 +139,8 @@ def proximo_partido(request):
         },
     )
      
+
+
 
 
 
@@ -356,6 +400,9 @@ def registro(request):
         form = RegistroForm(request.POST)
         if form.is_valid():
             user = form.save()
+                        # Especificar el backend que se va a usar
+            backend = 'allauth.account.auth_backends.AuthenticationBackend'
+            user.backend = backend
             login(request, user)  # Iniciar sesión automáticamente
             return redirect('proximo_partido')
     else:
@@ -833,71 +880,37 @@ def registrar_estadisticas_partido(request, partido_id):
 
 
 
+from .models import Video  # Importa el modelo de Video
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='Administrador').exists())
 def gestionar_registros(request):
-    
-    # Inicializar todos los formularios y datos necesarios
     usuario_form = RegistroForm()
     equipo_form = InscripcionEquipoForm()
     entrenador_form = EntrenadorForm()
     jugador_formset = JugadorFormSet()
     campeonato_form = CrearCampeonatoForm()
-    
+
     campeonatos = Campeonato.objects.all()
     equipos = Equipo.objects.all()
     posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')
+    videos = Video.objects.all()
 
-    # Obtener todos los partidos de clasificatorias y eliminatorias
-    partidos_clasificatorias = Partido.objects.filter(fase='Clasificatorias').order_by('fecha')
-    partidos_eliminatoria = Partido.objects.filter(fase='Eliminatoria').order_by('fecha')
-
-    # Verificar si hay un campeonato seleccionado
     campeonato_seleccionado = None
+    partidos_clasificatorias = []
+    partidos_eliminatoria = []
+
     if request.method == 'POST':
-        campeonato_id = request.POST.get('campeonato_id')
-        if campeonato_id:
-            try:
-                campeonato_seleccionado = Campeonato.objects.get(id=campeonato_id)
-            except Campeonato.DoesNotExist:
-                messages.error(request, "El campeonato seleccionado no existe.")
-
-        # Manejo de los demás formularios y acciones POST
-        if 'registrar_usuario' in request.POST:
-            usuario_form = RegistroForm(request.POST)
-            if usuario_form.is_valid():
-                user = usuario_form.save()
-                tipo_usuario = request.POST.get('tipo_usuario')
-                if tipo_usuario == 'planillero':
-                    user.groups.add(Group.objects.get(name='Planillero'))
-                elif tipo_usuario == 'administrador':
-                    user.groups.add(Group.objects.get(name='Administrador'))
-                messages.success(request, "Usuario registrado exitosamente.")
-
-        elif 'registrar_equipo' in request.POST:
-            equipo_form = InscripcionEquipoForm(request.POST, request.FILES)
-            entrenador_form = EntrenadorForm(request.POST)
-            jugador_formset = JugadorFormSet(request.POST)
-            if equipo_form.is_valid() and entrenador_form.is_valid() and jugador_formset.is_valid():
-                entrenador = entrenador_form.save(commit=False)
-                entrenador.user = request.user
-                entrenador.save()
-                equipo = equipo_form.save(commit=False)
-                equipo.entrenador = entrenador
-                equipo.save()
-                jugadores = jugador_formset.save(commit=False)
-                for jugador in jugadores:
-                    jugador.equipo = equipo
-                    jugador.save()
-                messages.success(request, "Equipo registrado exitosamente.")
-
-        elif 'crear_campeonato' in request.POST:
-            campeonato_form = CrearCampeonatoForm(request.POST)
-            if campeonato_form.is_valid():
-                campeonato_form.save()
-                messages.success(request, "Campeonato creado exitosamente.")
-            else:
-                messages.error(request, "Hubo un problema al crear el campeonato.")
+        # Manejo del detalle del campeonato
+        if 'campeonato_id' in request.POST:
+            campeonato_id = request.POST.get('campeonato_id')
+            if campeonato_id:
+                try:
+                    campeonato_seleccionado = Campeonato.objects.get(id=campeonato_id)
+                    partidos_clasificatorias = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Clasificatorias')
+                    partidos_eliminatoria = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Eliminatoria')
+                except Campeonato.DoesNotExist:
+                    messages.error(request, "El campeonato seleccionado no existe.")
 
     context = {
         'usuario_form': usuario_form,
@@ -908,14 +921,17 @@ def gestionar_registros(request):
         'campeonatos': campeonatos,
         'equipos': equipos,
         'posiciones': posiciones,
-        'partidos_clasificatorias': partidos_clasificatorias,
-        'partidos_eliminatoria': partidos_eliminatoria,
-        'campeonato_seleccionado': campeonato_seleccionado,
+        'videos': videos,
     }
 
+    if campeonato_seleccionado:
+        context.update({
+            'campeonato_seleccionado': campeonato_seleccionado,
+            'partidos_clasificatorias': partidos_clasificatorias,
+            'partidos_eliminatoria': partidos_eliminatoria,
+        })
+
     return render(request, 'basquetbol/gestionar_registros.html', context)
-
-
 
 
 

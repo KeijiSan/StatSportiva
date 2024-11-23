@@ -6,6 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Perfil de Usuario</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@4.6.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
         body {
@@ -13,19 +14,21 @@
             background-color: #f4f4f9;
         }
 
+  
         .profile-container {
             display: flex;
             max-width: 1200px;
-            margin: 30px auto;
-            background: white;
+            margin: 100px auto; /* Espacio para el navbar */
+            background: var(--secondary-bg);
             border-radius: 10px;
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
         }
+    
 
         /* Sidebar */
         .profile-sidebar {
             width: 300px;
-            background-color: #003366;
+            background-color: #1f1f1f;
             color: white;
             padding: 20px;
             display: flex;
@@ -40,10 +43,10 @@
         }
 
         .team-logo {
-            width: 150px;
+            width: 100px;
             height: 150px;
             object-fit: cover;
-            border-radius: 50%;
+            border-radius: 5%;
             border: 3px solid #fff;
             margin-bottom: 20px;
         }
@@ -104,97 +107,123 @@
         .btn-save:hover {
             background-color: #218838;
         }
-        header {
-            background-color: #003366;
-            color: #fff;
-            padding: 15px 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            border-bottom: 3px solid #ffd700;
-        }
 
-        header .logo {
-            font-size: 2rem;
-            font-weight: 700;
-            text-transform: uppercase;
-        }
 
-        header nav ul {
-            list-style: none;
-            display: flex;
-            gap: 20px;
-            margin: 0;
-            padding: 0;
-        }
-
-        header nav ul li a {
-            color: white;
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        header nav ul li a:hover {
-            text-decoration: underline;
-        }
-
-        header .auth-buttons a, header .auth-buttons button {
-            border: 1px solid #ffd700;
-            background-color: transparent;
-            color: white;
-            padding: 5px 15px;
-            border-radius: 5px;
-            text-decoration: none;
-        }
-
-        header .auth-buttons a:hover, header .auth-buttons button:hover {
-            background-color: #ffd700;
-            color: #003366;
-        }
-        /* Footer Styling */
-        footer {
-            background-color: #003366;
-            color: #fff;
-            text-align: center;
-            padding: 20px;
-            margin-top: 30px;
-        }
-
-        footer a {
-            color: #ffd700;
-            text-decoration: none;
-        }
-
-        footer a:hover {
-            text-decoration: underline;
-        }
     </style>
 </head>
-<header>
-    <div class="logo">StatSportiva</div>
-    <nav>
-        <ul>
-            <li><a href="{% url 'proximo_partido' %}">Inicio</a></li>
-            <li><a href="#">Estadísticas</a></li>
-            {% if user.is_authenticated %}
-                <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li>
-            {% endif %}
-        </ul>
+<header class="header">
+    <nav class="nav container-nav">
+       <div class="nav__data">
+          <a href="{% url 'proximo_partido' %}" class="nav__logo">
+             <i class="ri-planet-line"></i> StatSportiva
+          </a>
+          
+          <div class="nav__toggle" id="nav-toggle">
+             <i class="ri-menu-line nav__burger"></i>
+             <i class="ri-close-line nav__close"></i>
+          </div>
+       </div>
+
+       <!--=============== NAV MENU ===============-->
+       <div class="nav__menu" id="nav-menu">
+          <ul class="nav__list">
+             <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
+
+             <li><a href="#" class="nav__link">Foro</a></li>
+
+             <!--=============== DROPDOWN 1 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                   <li>
+                      <a href="{% url 'tabla_posiciones' %}" class="dropdown__link">
+                         <i class="ri-pie-chart-line"></i> Posiciones
+                      </a>                          
+                   </li>
+
+                   <li>
+                      <a href="{% url 'bracket_eliminatorias' campeonato_id=1 %}" class="dropdown__link">
+                         <i class="ri-arrow-up-down-line"></i> Eliminatorias
+                      </a>
+                   </li>
+
+                   <!--=============== DROPDOWN SUBMENU ===============-->
+                   <li class="dropdown__subitem">
+                      <div class="dropdown__link">
+                         <i class="ri-bar-chart-line"></i> Partidos <i class="ri-add-line dropdown__add"></i>
+                      </div>
+
+                      <ul class="dropdown__submenu">
+                         <li>
+                            <a href="{% url 'estadisticas_equipos' %}" class="dropdown__sublink">
+                               <i class="ri-file-list-line"></i> Estadisticas
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-cash-line"></i> Payments
+                            </a>
+                         </li>
+ 
+                         <li>
+                            <a href="#" class="dropdown__sublink">
+                               <i class="ri-refund-2-line"></i> Refunds
+                            </a>
+                         </li>
+                      </ul>
+                   </li>
+                </ul>
+             </li>
+             
+
+             <li class="nav__item form-inline my-2 my-lg-0">
+                <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline">
+                    <input class="form-control mr-sm-2 nav__search-input" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                    <button class="btn btn-outline-warning nav__search-button" type="submit">Buscar</button>
+                </form>
+            </li>
+             <!--=============== DROPDOWN 2 ===============-->
+             <li class="dropdown__item">
+                <div class="nav__link">
+                   Usuario <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                </div>
+
+                <ul class="dropdown__menu">
+                    {% if user.is_authenticated %}
+                    <li>
+                      <a href="{% url 'perfil_usuario' %}" class="dropdown__link">
+                         <i class="ri-user-line"></i> Perfil
+                      </a>                          
+                   </li>
+                   {% endif %}
+                   <li>
+                    {% if user.is_authenticated %}
+                    {% if not equipo_inscrito %}
+                        <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
+                    {% endif %}
+                        <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
+                        {% csrf_token %}
+                        <button type="submit" class="btn btn-outline-warning nav__search-button">Cerrar Sesión</button>
+                    </form>
+                {% else %}
+                    <a href="{% url 'login' %}" class="dropdown__link"><i class="ri-lock-line"></i> Iniciar sesion</a>
+                {% endif %}
+
+
+                   </li>
+
+                </ul>
+             </li>
+
+             <li><a href="#" class="nav__link">Contacto</a></li>
+          </ul>
+       </div>
     </nav>
-    <div class="auth-buttons">
-        {% if user.is_authenticated %}
-            {% if not equipo_inscrito %}
-                <a href="{% url 'inscribir_equipo' %}">Inscribir Equipo</a>
-            {% endif %}
-            <form method="POST" action="{% url 'logout' %}" style="display:inline;">
-                {% csrf_token %}
-                <button type="submit">Cerrar Sesión</button>
-            </form>
-        {% else %}
-            <a href="{% url 'login' %}">Iniciar Sesión</a>
-        {% endif %}
-    </div>
-</header>
+ </header>
 <body>
     <div class="profile-container">
         <!-- Sidebar -->
@@ -323,8 +352,47 @@
             });
         });
     </script>
-    <footer>
-        <p>&copy; 2024 StatSportiva. Todos los derechos reservados.</p>
-    </footer>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-foot">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>StatSportiva</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Nuestros servicios</a></li>
+                        <li><a href="#">Politica & Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contactanos</a></li>
+                        <li><a href="#">Foro</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Campeonatos</h4>
+                    <ul>
+                        <li><a href="#">Equipos</a></li>
+                        <li><a href="#">Partidos</a></li>
+                        <li><a href="#">Estadisticas</a></li>
+                        <li><a href="#">Posiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </footer>
 </body>
 </html>

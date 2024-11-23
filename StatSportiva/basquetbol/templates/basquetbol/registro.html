@@ -1,3 +1,5 @@
+<!-- agregue favicon, linea 16 agregue flecha para regresar al inicio, linea 22 bloque de mensaje al tener error en registrar aparezca -->
+
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,12 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registrarse</title>
     {% load static %}
+    {% load socialaccount %}
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
 </head>
 <body>
     <div class="basketball-register-container">
         <div class="register-box">
+            <!-- Flecha para regresar -->
+            <a href="{% url 'proximo_partido' %}" class="back-arrow">&#8592;</a>
+            <img src="{% static 'img/stat.png' %}" alt="Icono de registro" class="register-icon">
+
             <h2 class="register-title">Registro de Usuario</h2>
+
+            <!-- Bloque de mensajes -->
+            {% if messages %}
+
+            {% endif %}
+
             <form method="post" class="register-form">
                 {% csrf_token %}
                 <div class="form-group">
@@ -31,6 +45,15 @@
                 </div>
                 <button type="submit" class="register-btn">Registrarse</button>
             </form>
+
+            <!-- Botón para registrarse con Google -->
+            <p class="register-text">O regístrate con Google:</p>
+            <a href="{% provider_login_url 'google' %}" class="google-btn">
+                <img src="{% static 'img/google-logo.png' %}" alt="Google Logo" class="google-icon">
+                Regístrate con Google
+            </a>
+
+            <!-- Enlace para iniciar sesión -->
             <p class="register-text">¿Ya tienes una cuenta? <a href="{% url 'login' %}" class="login-link">Inicia sesión aquí</a></p>
         </div>
     </div>
