@@ -12,6 +12,7 @@ urlpatterns = [
     path('logout/', auth_views.LogoutView.as_view(next_page='vista_principal'), name='logout'),
     path('politica-privacidad/', views.politica_privacidad, name='politica_privacidad'),  # Política de privacidad
     path('accounts/', include('allauth.urls')),  # Rutas de django-allauth
+    path('nosotros/', views.nosotros, name='nosotros'),
 
 
     # -------------------------- Admin --------------------------

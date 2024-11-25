@@ -51,10 +51,31 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'fa.sachez@duocuc.com'  # Cambia por tu correo
+EMAIL_HOST_PASSWORD = 'tu_contraseña_de_aplicación'  # Contraseña de la app
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_CONTACT_EMAIL = 'destinatario@correo.com'  # Correo que recibirá los mensajes
+
+
+# Archivo JSON de las credenciales
+GOOGLE_CREDENTIALS_FILE = 'basquetbol/client_secret_228538335100-nnv91uvl01i4iml1r6iv9old9pkiualm.apps.googleusercontent.com.json'
+
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'tu_correo@gmail.com'  # Cambia a tu correo
+EMAIL_HOST_PASSWORD = 'tu_contraseña_o_app_password'  # Contraseña o app password
 
 # Application definition
 
 INSTALLED_APPS = [
+    
     'widget_tweaks',
     'django.contrib.sites',  # Necesario para django-allauth
     'allauth',
@@ -176,10 +197,13 @@ AUTHENTICATION_BACKENDS = [
     'allauth.account.auth_backends.AuthenticationBackend',  # Backend de allauth
 ]
 # Configuración de la autenticación de Google
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Iniciar sesión con usuario o correo
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Verificación obligatoria
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/proximo_partido/'
+SOCIALACCOUNT_LOGIN_ON_GET = True
+
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
         'SCOPE': ['profile', 'email'],

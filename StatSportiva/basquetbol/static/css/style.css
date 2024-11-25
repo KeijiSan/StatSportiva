@@ -4,6 +4,121 @@
     box-sizing: border-box;
 }
 
+:root {
+    --header-height: 3.5rem;
+  
+    /*========== Colors ==========*/
+    /*Color mode HSL(hue, saturation, lightness)*/
+    --black-color: hsl(220, 24%, 12%);
+    --black-color-light: hsl(220, 24%, 15%);
+    --black-color-lighten: hsl(220, 20%, 18%);
+    --white-color: #fff;
+    --body-color: hsl(220, 100%, 97%);
+    --bg-primary-estat: #121212;
+    --secondary-bg: #1f1f1f;
+    --highlight-color: #ffd700;
+    --text-color: #ffffff;
+    --table-border-color: #333333;
+    --hover-row-bg: #1e1e1e;
+    --modal-bg-color: #121212;
+    --modal-header-color: #1f1f1f;
+    --modal-text-color: #ffffff;
+    --modal-highlight-color: #ffd700;
+    --modal-table-border: #333333;
+    --modal-row-hover: #222222;
+    --table-row-highlight: #fffae6;
+  
+    /*========== Font and typography ==========*/
+    /*.5rem = 8px | 1rem = 16px ...*/
+    --body-font: "Montserrat", sans-serif;
+    --normal-font-size: .938rem;
+  
+    /*========== Font weight ==========*/
+    --font-regular: 400;
+    --font-semi-bold: 600;
+  
+    /*========== z index ==========*/
+    --z-tooltip: 10;
+    --z-fixed: 100;
+  }
+  
+  .modal-body-stat {
+    padding: 20px;
+}
+.highlights-section {
+    padding: 50px 20px;
+    background: linear-gradient(135deg, #121212, #1e1e1e);
+    color: #ffffff;
+    border-top: 2px solid #ffd700;
+    border-bottom: 2px solid #ffd700;
+    position: relative;
+    overflow: hidden;
+}
+
+.highlights-title {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: #ffd700;
+    margin-bottom: 30px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+.highlights-slider {
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    position: relative;
+    width: 100%;
+}
+
+.highlights-container {
+    display: flex;
+    gap: 20px;
+    transition: transform 0.4s ease;
+}
+
+.highlight-item {
+    min-width: 300px;
+    flex: 0 0 auto;
+    transition: transform 0.3s ease;
+}
+
+.highlight-item iframe {
+    width: 100%;
+    height: 200px;
+    border-radius: 15px;
+    border: 2px solid #ffd700;
+}
+
+
+.slider-control {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    background-color: rgba(0, 0, 0, 0.6);
+    color: #ffd700;
+    border: none;
+    font-size: 2rem;
+    padding: 10px;
+    border-radius: 50%;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.slider-control:hover {
+    background-color: #ffd700;
+    color: #121212;
+}
+
+.slider-control.prev {
+    left: 10px;
+}
+
+.slider-control.next {
+    right: 10px;
+}
+
 .contenedor-noticias {
     display: flex;
     justify-content: space-between; /* Asegura que los elementos se distribuyan correctamente */
@@ -61,8 +176,106 @@
         margin: 0; /* Elimina el margen lateral */
     }
 }
+.highlight-row {
+    background-color: var(--table-row-highlight);
+    color: var(--modal-bg-color);
+    font-weight: bold;
+}
+.modal-header-stat {
+    background-color: var(--modal-header-color);
+    color: var(--modal-highlight-color);
+    font-weight: bold;
+    border-bottom: 2px solid var(--modal-highlight-color);
+    padding: 15px 20px;
+    border-radius: 10px 10px 0 0;
+}
+.modal-header-stat h5 {
+    margin: 0;
+    font-size: 1.5rem;
+}
 
+.no-data {
+    text-align: center;
+    font-style: italic;
+    color: var(--modal-highlight-color);
+    padding: 10px;
+}
+.btn-secondary {
+    background-color: var(--modal-header-color);
+    color: var(--modal-text-color);
+    border: 1px solid var(--modal-highlight-color);
+    font-weight: bold;
+    padding: 10px 15px;
+    border-radius: 5px;
+    transition: all 0.3s;
+}
 
+.btn-secondary:hover {
+    background-color: var(--modal-highlight-color);
+    color: var(--modal-bg-color);
+}
+.btn-secondary-stat {
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    border: 1px solid var(--highlight-color);
+    padding: 10px 20px;
+    border-radius: 5px;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+.btn-secondary:hover {
+    background-color: var(--highlight-color);
+    color: var(--primary-bg);
+}
+.modal-footer.stat {
+    background-color: var(--secondary-bg);
+    padding: 15px;
+    border-top: 2px solid var(--highlight-color);
+    border-radius: 0 0 8px 8px;
+}
+.team-header {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+}
+.team-header h5 {
+    margin-top: 10px;
+    font-size: 1.2rem;
+    color: var(--highlight-color);
+}
+.no-data {
+    text-align: center;
+    color: var(--highlight-color);
+    font-style: italic;
+}
+.team-logo-stat {
+    max-width: 60px;
+    max-height: 60px;
+    margin: 10px auto;
+    border-radius: 50%;
+    border: 2px solid var(--highlight-color);
+    display: block;
+}
+.modal-header {
+    background-color: var(--secondary-bg);
+    color: var(--highlight-color);
+    border-bottom: 2px solid var(--highlight-color);
+    padding: 15px;
+    border-radius: 8px 8px 0 0;
+}
+.modal-content-prox {
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    border-radius: 8px;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+    background-color: var(--modal-bg-color);
+        color: var(--modal-text-color);
+        border-radius: 10px;
+        border: 1px solid var(--modal-header-color);
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.8);
+}
 .hidden {
     display: none !important;
 }
@@ -599,30 +812,7 @@ background-attachment: fixed;
 @import url("https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600&display=swap");
 
 /*=============== VARIABLES CSS ===============*/
-:root {
-  --header-height: 3.5rem;
 
-  /*========== Colors ==========*/
-  /*Color mode HSL(hue, saturation, lightness)*/
-  --black-color: hsl(220, 24%, 12%);
-  --black-color-light: hsl(220, 24%, 15%);
-  --black-color-lighten: hsl(220, 20%, 18%);
-  --white-color: #fff;
-  --body-color: hsl(220, 100%, 97%);
-
-  /*========== Font and typography ==========*/
-  /*.5rem = 8px | 1rem = 16px ...*/
-  --body-font: "Montserrat", sans-serif;
-  --normal-font-size: .938rem;
-
-  /*========== Font weight ==========*/
-  --font-regular: 400;
-  --font-semi-bold: 600;
-
-  /*========== z index ==========*/
-  --z-tooltip: 10;
-  --z-fixed: 100;
-}
 
 /*========== Responsive typography ==========*/
 @media screen and (min-width: 1024px) {

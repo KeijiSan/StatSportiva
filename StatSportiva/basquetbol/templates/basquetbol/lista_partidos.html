@@ -1,240 +1,283 @@
-{% load static %}
-<!DOCTYPE html>
-<html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Partidos del Campeonato {% if campeonato %}{{ campeonato.nombre }}{% else %}Todos los Partidos{% endif %}</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/css/bootstrap.min.css">
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <style>
-        body {
-            background-color: #f8f9fa;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<style>
+    :root {
+        --primary-bg: #121212;
+        --secondary-bg: #1f1f1f;
+        --highlight-color: #ffd700;
+        --text-color: #ffffff;
+        --muted-text: #bbbbbb;
+        --border-color: #444444;
+        --hover-row-bg: #1e1e1e;
+    }
 
-        .campeon {
-            background-color: #343a40;
-            color: #ffc107;
-            padding: 20px;
-            border-radius: 10px;
-            text-align: center;
-            font-size: 1.5rem;
-            font-weight: bold;
-            box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
+    body {
+        background-color: var(--primary-bg);
+        color: var(--text-color);
+        font-family: 'Roboto', sans-serif;
+        margin: 0;
+        padding: 0;
+    }
 
-        .container {
-            margin-top: 60px;
-        }
+    .container {
+        padding-top: 80px;
+    }
 
-        .table-section {
-            margin-top: 50px;
-        }
+    .display-5 {
+        color: var(--highlight-color);
+        text-align: center;
+        margin-bottom: 30px;
+    }
 
-        .table-section h2 {
-            color: #343a40;
-            margin-bottom: 20px;
-            font-size: 1.8rem;
-            font-weight: bold;
-        }
+    .campeon {
+        background-color: var(--secondary-bg);
+        color: var(--highlight-color);
+        padding: 15px;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 1.5rem;
+        font-weight: bold;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.5);
+        margin-bottom: 30px;
+    }
 
-        .table {
-            background: white;
-            box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.1);
-            border-radius: 10px;
-            overflow: hidden;
-        }
+    .table-section {
+        margin-top: 30px;
+    }
 
-        .table thead {
-            background-color: #007bff;
-            color: white;
-        }
+    .table-section h2 {
+        color: var(--highlight-color);
+        margin-bottom: 15px;
+        font-size: 1.5rem;
+        text-transform: uppercase;
+        text-align: center;
+        border-bottom: 2px solid var(--highlight-color);
+        display: inline-block;
+        padding-bottom: 5px;
+    }
 
-        .btn-primary {
-            background-color: #007bff;
-            border-color: #007bff;
-            transition: all 0.3s ease-in-out;
-        }
+    .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0px 4px 12px rgba(0, 0, 0, 0.3);
+        background-color: var(--secondary-bg);
+    }
 
-        .btn-primary:hover {
-            background-color: #0056b3;
-            border-color: #0056b3;
-        }
+    .table {
+        width: 100%;
+        border-collapse: collapse;
+        margin-bottom: 0;
+    }
 
-        .back-link {
-            display: inline-block;
-            margin-top: 40px;
-            color: #007bff;
-            text-decoration: none;
-            font-weight: bold;
-        }
+    .table thead th {
+        background-color: var(--secondary-bg);
+        color: var(--highlight-color);
+        text-transform: uppercase;
+        text-align: center;
+        padding: 12px;
+        border-bottom: 2px solid var(--border-color);
+    }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+    .table tbody td {
+        text-align: center;
+        padding: 10px;
+        border-bottom: 1px solid var(--border-color);
+        color: var(--muted-text);
+    }
 
-        .table-section .table-responsive {
-            border-radius: 10px;
-            overflow: hidden;
-        }
-    </style>
-</head>
-<body>
-    <div class="container">
-        <h1 class="text-center my-4 display-5 text-primary">Partidos del Campeonato: {% if campeonato %}{{ campeonato.nombre }}{% else %}Todos los Partidos{% endif %}</h1>
+    .table tbody tr:hover {
+        background-color: var(--hover-row-bg);
+        transition: all 0.3s ease;
+    }
 
-        {% if campeonato and campeonato.campeon %}
-            <div class="campeon">
-                ¡El Campeón del Campeonato es: {{ campeonato.campeon.equipo.nombre_equipo }}!
+    .btn-primary {
+        background-color: var(--highlight-color);
+        color: var(--primary-bg);
+        border: none;
+        padding: 8px 15px;
+        font-size: 0.9rem;
+        text-transform: uppercase;
+        font-weight: bold;
+        border-radius: 5px;
+        transition: all 0.3s ease;
+    }
+
+    .btn-primary:hover {
+        background-color: #e6c700;
+        color: var(--primary-bg);
+    }
+
+    .back-link {
+        display: inline-block;
+        margin-top: 40px;
+        color: var(--highlight-color);
+        text-decoration: none;
+        font-weight: bold;
+        text-align: center;
+    }
+
+    .back-link:hover {
+        text-decoration: underline;
+    }
+
+    .text-secondary {
+        color: var(--muted-text) !important;
+    }
+</style>
+
+<div class="container">
+    <h1 class="display-5">Partidos del Campeonato: {% if campeonato %}{{ campeonato.nombre }}{% else %}Todos los Partidos{% endif %}</h1>
+
+    {% if campeonato and campeonato.campeon %}
+        <div class="campeon">
+            ¡El Campeón del Campeonato es: {{ campeonato.campeon.equipo.nombre_equipo }}!
+        </div>
+    {% endif %}
+
+    {% if partidos %}
+        <!-- Clasificatorias -->
+        <div class="table-section">
+            <h2>Clasificatorias</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Equipo Local</th>
+                            <th>Equipo Visitante</th>
+                            <th>Estadio</th>
+                            <th>Fase</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidos %}
+                            {% if partido.fase == 'Clasificatorias' %}
+                                <tr>
+                                    <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                                    <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                    <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                    <td>{{ partido.estadio.nombre }}</td>
+                                    <td>{{ partido.fase }}</td>
+                                    <td>
+                                        <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn-primary">Registrar Estadísticas</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
-        {% endif %}
+        </div>
 
-        {% if partidos %}
-            <div class="table-section">
-                <h2>Clasificatorias</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Equipo Local</th>
-                                <th>Equipo Visitante</th>
-                                <th>Estadio</th>
-                                <th>Fase</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for partido in partidos %}
-                                {% if partido.fase == 'Clasificatorias' %}
-                                    <tr>
-                                        <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
-                                        <td>{{ partido.equipo_local.nombre_equipo }}</td>
-                                        <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
-                                        <td>{{ partido.estadio.nombre }}</td>
-                                        <td>{{ partido.fase }}</td>
-                                        <td>
-                                            <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn btn-primary btn-sm">Registrar Estadísticas</a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Cuartos -->
+        <div class="table-section">
+            <h2>Cuartos</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Equipo Local</th>
+                            <th>Equipo Visitante</th>
+                            <th>Estadio</th>
+                            <th>Fase</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidos %}
+                            {% if partido.fase == 'Cuartos' %}
+                                <tr>
+                                    <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                                    <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                    <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                    <td>{{ partido.estadio.nombre }}</td>
+                                    <td>{{ partido.fase }}</td>
+                                    <td>
+                                        <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn-primary">Registrar Estadísticas</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="table-section">
-                <h2>Cuartos</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Equipo Local</th>
-                                <th>Equipo Visitante</th>
-                                <th>Estadio</th>
-                                <th>Fase</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for partido in partidos %}
-                                {% if partido.fase == 'Cuartos' %}
-                                    <tr>
-                                        <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
-                                        <td>{{ partido.equipo_local.nombre_equipo }}</td>
-                                        <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
-                                        <td>{{ partido.estadio.nombre }}</td>
-                                        <td>{{ partido.fase }}</td>
-                                        <td>
-                                            <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn btn-primary btn-sm">Registrar Estadísticas</a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Semifinal -->
+        <div class="table-section">
+            <h2>Semifinal</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Equipo Local</th>
+                            <th>Equipo Visitante</th>
+                            <th>Estadio</th>
+                            <th>Fase</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidos %}
+                            {% if partido.fase == 'Semifinal' %}
+                                <tr>
+                                    <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                                    <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                    <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                    <td>{{ partido.estadio.nombre }}</td>
+                                    <td>{{ partido.fase }}</td>
+                                    <td>
+                                        <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn-primary">Registrar Estadísticas</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+        </div>
 
-            <div class="table-section">
-                <h2>Semifinal</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Equipo Local</th>
-                                <th>Equipo Visitante</th>
-                                <th>Estadio</th>
-                                <th>Fase</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for partido in partidos %}
-                                {% if partido.fase == 'Semifinal' %}
-                                    <tr>
-                                        <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
-                                        <td>{{ partido.equipo_local.nombre_equipo }}</td>
-                                        <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
-                                        <td>{{ partido.estadio.nombre }}</td>
-                                        <td>{{ partido.fase }}</td>
-                                        <td>
-                                            <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn btn-primary btn-sm">Registrar Estadísticas</a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
+        <!-- Final -->
+        <div class="table-section">
+            <h2>Final</h2>
+            <div class="table-responsive">
+                <table class="table">
+                    <thead>
+                        <tr>
+                            <th>Fecha</th>
+                            <th>Equipo Local</th>
+                            <th>Equipo Visitante</th>
+                            <th>Estadio</th>
+                            <th>Fase</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for partido in partidos %}
+                            {% if partido.fase == 'Final' %}
+                                <tr>
+                                    <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                                    <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                                    <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                                    <td>{{ partido.estadio.nombre }}</td>
+                                    <td>{{ partido.fase }}</td>
+                                    <td>
+                                        <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn-primary">Registrar Estadísticas</a>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
             </div>
+        </div>
+    {% else %}
+        <p class="text-center mt-5 text-secondary">No hay partidos programados para este campeonato aún.</p>
+    {% endif %}
 
-            <div class="table-section">
-                <h2>Final</h2>
-                <div class="table-responsive">
-                    <table class="table table-hover align-middle">
-                        <thead>
-                            <tr>
-                                <th>Fecha</th>
-                                <th>Equipo Local</th>
-                                <th>Equipo Visitante</th>
-                                <th>Estadio</th>
-                                <th>Fase</th>
-                                <th>Acciones</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for partido in partidos %}
-                                {% if partido.fase == 'Final' %}
-                                    <tr>
-                                        <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
-                                        <td>{{ partido.equipo_local.nombre_equipo }}</td>
-                                        <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
-                                        <td>{{ partido.estadio.nombre }}</td>
-                                        <td>{{ partido.fase }}</td>
-                                        <td>
-                                            <a href="{% url 'registrar_estadisticas' partido.id %}" class="btn btn-primary btn-sm">Registrar Estadísticas</a>
-                                        </td>
-                                    </tr>
-                                {% endif %}
-                            {% endfor %}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
-        {% else %}
-            <p class="text-center mt-5 text-secondary">No hay partidos programados para este campeonato aún.</p>
-        {% endif %}
+    {% if campeonato %}
+        <a href="{% url 'detalle_campeonato' campeonato.id %}" class="back-link">Volver al Detalle del Campeonato</a>
+    {% endif %}
+</div>
 
-        {% if campeonato %}
-            <a href="{% url 'detalle_campeonato' campeonato.id %}" class="back-link">Volver al Detalle del Campeonato</a>
-        {% endif %}
-    </div>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.0/js/bootstrap.bundle.min.js"></script>
-</body>
-</html>

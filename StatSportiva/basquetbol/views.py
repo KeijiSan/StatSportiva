@@ -49,10 +49,18 @@ def login_view(request):
 
 from django.shortcuts import render
 from .models import Posicion  # Modelo que contiene la tabla de posiciones
+from django.db.models import Avg
 
 def tabla_posiciones(request):
     posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')  # Ordenar por puntos y partidos ganados
     return render(request, 'basquetbol/tabla_posiciones.html', {'posiciones': posiciones})
+
+
+
+def nosotros(request):
+    return render(request, 'basquetbol/sobre_nosotros.html')
+
+
 
 
 #---------------------------------------- Pagina principal, USUARIO ----------------------------------------------------------------
@@ -62,6 +70,29 @@ from .models import Partido
 from django.shortcuts import render
 from .models import Partido
 
+from django.db.models import Avg
+from django.utils.timezone import now
+import joblib
+import pandas as pd
+from basquetbol.models import Partido
+from django.shortcuts import render
+from django.utils.timezone import now
+from .models import Partido
+from django.shortcuts import render
+from django.utils.timezone import now
+import pandas as pd
+from basquetbol.models import Partido
+
+from django.shortcuts import render
+from django.utils.timezone import now
+import joblib
+import pandas as pd
+from .models import Partido
+import sklearn.externals
+
+
+
+
 def partidos_con_estadisticas(request):
     """
     Retorna todos los partidos que tienen estadísticas registradas.
@@ -70,41 +101,36 @@ def partidos_con_estadisticas(request):
     return render(request, 'basquetbol/proximo_partido.html', {'partidos': partidos})
 
 
+from django.utils.timezone import now
+import pandas as pd
+import joblib
+from .models import Partido, Video, Posicion, Equipo
+
 def proximo_partido(request):
-    
+    # Verificar si el usuario tiene un equipo inscrito
     equipo_inscrito = (
         Equipo.objects.filter(entrenador__user=request.user).exists()
         if request.user.is_authenticated
         else False
     )
-    
+
+    # Obtener todos los partidos con estadísticas registradas
     partidos_con_estadisticas = Partido.objects.filter(estadisticas__isnull=False).order_by('fecha')
 
-    equipo_inscrito = Equipo.objects.filter(entrenador__user=request.user).exists() if request.user.is_authenticated else False
-
-    # Obtén todos los videos de la base de datos
-    videos = Video.objects.all()  # Cambié HighlightVideo por Video para usar el modelo correcto
-
-    # Convertir las URLs de YouTube Shorts al formato embebido
-    for video in videos:
-        if "shorts" in video.url:
-            video_id = video.url.split('/')[-1]  # Extrae el ID del video de la URL
-            video.url = f"https://www.youtube.com/embed/{video_id}"
-
-    # Renderiza la plantilla 'proximo_partido.html' y pasa los videos y equipo_inscrito en el contexto
-    # Obtén el partido más cercano a la fecha actual
+    # Obtener el partido más cercano a la fecha actual sin estadísticas registradas
     partido_proximo = (
-        Partido.objects.filter(fecha__gte=now())
-        .order_by('fecha')  # Ordenar por fecha ascendente
+        Partido.objects.filter(fecha__gte=now(), estadisticas__isnull=True)
+        .order_by('fecha')
         .first()
     )
 
-    probabilidad_local = 0
-    probabilidad_visitante = 0
+    # Inicializar probabilidades como vacías
+    probabilidad_local = None
+    probabilidad_visitante = None
 
+    # Solo calcular probabilidades si el partido tiene estadísticas
     if partido_proximo and hasattr(partido_proximo, 'estadisticas'):
         model = joblib.load('modelo_prediccion_partidos.pkl')
-
         estadisticas = partido_proximo.estadisticas
         data = {
             'pases_equipo_local': [estadisticas.pases_equipo_local],
@@ -124,7 +150,15 @@ def proximo_partido(request):
         probabilidad_local = round(prediccion[0][1] * 100, 2)
         probabilidad_visitante = round(prediccion[0][0] * 100, 2)
 
+    # Obtener las posiciones de los equipos
     posiciones = Posicion.objects.all().order_by('-puntos')
+
+    # Obtener los videos y convertir URLs de shorts de YouTube
+    videos = Video.objects.all()
+    for video in videos:
+        if "shorts" in video.url:
+            video_id = video.url.split('/')[-1]
+            video.url = f"https://www.youtube.com/embed/{video_id}"
 
     return render(
         request,
@@ -135,10 +169,86 @@ def proximo_partido(request):
             'probabilidad_local': probabilidad_local,
             'probabilidad_visitante': probabilidad_visitante,
             'posiciones': posiciones,
-            'equipo_inscrito': equipo_inscrito, 'videos': videos
+            'equipo_inscrito': equipo_inscrito,
+            'videos': videos,
         },
     )
-     
+
+import pandas as pd
+from django.shortcuts import render
+from django.utils.timezone import now
+from .models import Partido, Equipo, Posicion, Video
+
+def proximo_partido_con_estadisticas(request):
+    # Verificar si el usuario tiene un equipo inscrito
+    equipo_inscrito = (
+        Equipo.objects.filter(entrenador__user=request.user).exists()
+        if request.user.is_authenticated
+        else False
+    )
+
+    # Obtener el partido más cercano con estadísticas registradas
+    partido_con_estadisticas = (
+        Partido.objects.filter(fecha__gte=now(), estadisticas__isnull=False)
+        .order_by('fecha')
+        .first()
+    )
+
+    probabilidad_local = None
+    probabilidad_visitante = None
+
+    if partido_con_estadisticas and hasattr(partido_con_estadisticas, 'estadisticas'):
+        try:
+            # Cargar el modelo de predicción
+            model = joblib.load('modelo_prediccion_partidos.pkl')
+
+            # Preparar los datos para el modelo
+            estadisticas = partido_con_estadisticas.estadisticas
+            data = {
+                'pases_equipo_local': [estadisticas.pases_equipo_local],
+                'faltas_equipo_local': [estadisticas.faltas_equipo_local],
+                'triples_equipo_local': [estadisticas.triples_equipo_local],
+                'rebotes_equipo_local': [estadisticas.rebotes_equipo_local],
+                'puntos_equipo_local': [estadisticas.puntos_equipo_local],
+                'pases_equipo_visitante': [estadisticas.pases_equipo_visitante],
+                'faltas_equipo_visitante': [estadisticas.faltas_equipo_visitante],
+                'triples_equipo_visitante': [estadisticas.triples_equipo_visitante],
+                'rebotes_equipo_visitante': [estadisticas.rebotes_equipo_visitante],
+                'puntos_equipo_visitante': [estadisticas.puntos_equipo_visitante],
+            }
+
+            df = pd.DataFrame(data)
+            prediccion = model.predict_proba(df)
+
+            # Calcular probabilidades
+            probabilidad_local = round(prediccion[0][1] * 100, 2)
+            probabilidad_visitante = round(prediccion[0][0] * 100, 2)
+        except Exception as e:
+            print(f"Error al calcular probabilidades: {e}")
+
+    # Obtener las posiciones de los equipos
+    posiciones = Posicion.objects.all().order_by('-puntos')
+
+    # Obtener los videos y convertir URLs de shorts de YouTube
+    videos = Video.objects.all()
+    for video in videos:
+        if "shorts" in video.url:
+            video_id = video.url.split('/')[-1]
+            video.url = f"https://www.youtube.com/embed/{video_id}"
+
+    return render(
+        request,
+        'basquetbol/proximo_partido.html',
+        {
+            'proximo_partido_stats': partido_con_estadisticas,
+            'probabilidad_local': probabilidad_local,
+            'probabilidad_visitante': probabilidad_visitante,
+            'posiciones': posiciones,
+            'equipo_inscrito': equipo_inscrito,
+            'videos': videos,
+        },
+    )
+
 
 
 

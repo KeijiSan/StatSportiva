@@ -5,97 +5,74 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StatSportiva</title>
     {% load static %}
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
     <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
 
 <style>
-
-
-
-    .highlights-section {
-        padding: 50px 20px;
-        background: linear-gradient(135deg, #121212, #1e1e1e);
-        color: #ffffff;
-        border-top: 2px solid #ffd700;
-        border-bottom: 2px solid #ffd700;
-        position: relative;
-        overflow: hidden;
-    }
+       .modal-body {
+            padding: 20px;
+        }
     
-    .highlights-title {
-        font-size: 2.5rem;
-        font-weight: bold;
-        color: #ffd700;
-        margin-bottom: 30px;
-        text-transform: uppercase;
-        letter-spacing: 2px;
-    }
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            color: var(--modal-text-color);
+        }
     
-    .highlights-slider {
-        display: flex;
-        align-items: center;
-        overflow: hidden;
-        position: relative;
-        width: 100%;
-    }
+        table th {
+            background-color: var(--modal-header-color);
+            color: var(--modal-highlight-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
     
-    .highlights-container {
-        display: flex;
-        gap: 20px;
-        transition: transform 0.4s ease;
-    }
+        table th:first-child {
+            border-top-left-radius: 8px;
+        }
     
-    .highlight-item {
-        min-width: 300px;
-        flex: 0 0 auto;
-        transition: transform 0.3s ease;
-    }
+        table th:last-child {
+            border-top-right-radius: 8px;
+        }
     
-    .highlight-item iframe {
-        width: 100%;
-        height: 200px;
-        border-radius: 15px;
-        border: 2px solid #ffd700;
-    }
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--modal-table-border);
+            font-size: 0.9rem;
+        }
     
+        table tbody tr:hover {
+            background-color: var(--modal-row-hover);
+            transition: background-color 0.3s;
+        }
     
-    .slider-control {
-        position: absolute;
-        top: 50%;
-        transform: translateY(-50%);
-        background-color: rgba(0, 0, 0, 0.6);
-        color: #ffd700;
-        border: none;
-        font-size: 2rem;
-        padding: 10px;
-        border-radius: 50%;
-        cursor: pointer;
-        z-index: 10;
-    }
-    
-    .slider-control:hover {
-        background-color: #ffd700;
-        color: #121212;
-    }
-    
-    .slider-control.prev {
-        left: 10px;
-    }
-    
-    .slider-control.next {
-        right: 10px;
-    }
-    
-        
-    
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
     
 
- 
-
-        
+    
+        .btn-secondary {
+            background-color: var(--modal-header-color);
+            color: var(--modal-text-color);
+            border: 1px solid var(--modal-highlight-color);
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+    
+        .btn-secondary:hover {
+            background-color: var(--modal-highlight-color);
+            color: var(--modal-bg-color);
+        }
     </style>
 </head>
 <body class="body-prox">
@@ -208,7 +185,7 @@
                     </ul>
                  </li>
 
-                 <li><a href="#" class="nav__link">Contacto</a></li>
+                 <li><a href="{% url 'nosotros' %}" class="nav__link">Contacto</a></li>
               </ul>
            </div>
         </nav>
@@ -293,9 +270,16 @@
             <!-- Anuncio Izquierdo -->
             <div class="anuncio-img">
                 
-                <a href="#">
+                <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
                     Anuncio
                     <img src="{% static 'img/anuncio.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-iz">
+                </a>
+            </div>
+            <div class="anuncio-img">
+                
+                <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                    Anuncio
+                    <img src="{% static 'img/anuncio4.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-iz">
                 </a>
             </div>
         </div>
@@ -396,8 +380,8 @@
         
                         <!-- Barra -->
                         <div class="col-md-2 text-center">
-                            <div class="progress" style="height: 20px;">
-                                <div class="progress-bar bg-primary" role="progressbar" 
+                            <div class="" style="height: 20px;">
+                                <div class="progress-bar bg-primary-estat" role="progressbar" 
                                      style="width: {{ probabilidad_local }}%; border-radius: 20px 0 0 20px;" 
                                      aria-valuenow="{{ probabilidad_local }}" aria-valuemin="0" aria-valuemax="100">
                                 </div>
@@ -435,100 +419,117 @@
         </div>
         
     
-    
-        <!-- Modal Estadísticas -->
-    <div class="modal fade" id="estadisticasModal" tabindex="-1" aria-labelledby="estadisticasModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-lg">
-            <div class="modal-content">
-                <div class="modal-header bg-primary text-white">
-                    <h5 class="modal-title" id="estadisticasModalLabel">Estadísticas del Partido</h5>
-                    <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-    
-    
-    
-                <div class="modal-body">
-                    {% if proximo_partido.estadisticas %}
-                        <div class="row">
-                            <!-- Equipo Local -->
-                            <div class="col-md-6 text-center">
-                                <h5 class="text-primary font-weight-bold">{{ proximo_partido.equipo_local.nombre_equipo }}</h5>
-                                <table class="table table-bordered table-hover">
-                                    <tbody>
-                                        <tr>
-                                            <th>Puntos</th>
-                                            <td>{{ proximo_partido.estadisticas.puntos_equipo_local }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Triples</th>
-                                            <td>{{ proximo_partido.estadisticas.triples_equipo_local }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Pases</th>
-                                            <td>{{ proximo_partido.estadisticas.pases_equipo_local }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Rebotes</th>
-                                            <td>{{ proximo_partido.estadisticas.rebotes_equipo_local }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Faltas</th>
-                                            <td>{{ proximo_partido.estadisticas.faltas_equipo_local }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+      
+        
+
+
+        
+     <!-- Modal Estadísticas -->
+<div class="modal fade" id="estadisticasModal" tabindex="-1" aria-labelledby="estadisticasModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content-prox">
+            <div class="modal-header-stat">
+                <h5 class="modal-title" id="estadisticasModalLabel">Estadísticas del Partido</h5>
+                <button type="button" class="close btn-secondary-stat" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if proximo_partido.estadisticas %}
+                    <div class="row">
+                        <!-- Equipo Local -->
+                        <div class="col-md-6">
+                            <div class="team-header">
+                                <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_local.nombre_equipo }}" class="team-logo-stat">
+                                <h5>{{ proximo_partido.equipo_local.nombre_equipo }}</h5>
                             </div>
-    
-    
-    
-                            <!-- Equipo Visitante -->
-                            <div class="col-md-6 text-center">
-                                <h5 class="text-danger font-weight-bold">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h5>
-                                <table class="table table-bordered table-hover">
-                                    <tbody>
-                                        <tr>
-                                            <th>Puntos</th>
-                                            <td>{{ proximo_partido.estadisticas.puntos_equipo_visitante }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Triples</th>
-                                            <td>{{ proximo_partido.estadisticas.triples_equipo_visitante }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Pases</th>
-                                            <td>{{ proximo_partido.estadisticas.pases_equipo_visitante }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Rebotes</th>
-                                            <td>{{ proximo_partido.estadisticas.rebotes_equipo_visitante }}</td>
-                                        </tr>
-                                        <tr>
-                                            <th>Faltas</th>
-                                            <td>{{ proximo_partido.estadisticas.faltas_equipo_visitante }}</td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Estadística</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Puntos</td>
+                                        <td>{{ proximo_partido.estadisticas.puntos_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Triples</td>
+                                        <td>{{ proximo_partido.estadisticas.triples_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pases</td>
+                                        <td>{{ proximo_partido.estadisticas.pases_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Faltas</td>
+                                        <td>{{ proximo_partido.estadisticas.faltas_equipo_local }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                    {% else %}
-                        <p class="text-center font-italic text-muted">No hay estadísticas disponibles para este partido.</p>
-                    {% endif %}
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
-                </div>
+
+                        <!-- Equipo Visitante -->
+                        <div class="col-md-6">
+                            <div class="team-header">
+                                <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" class="team-logo-stat">
+                                <h5>{{ proximo_partido.equipo_visitante.nombre_equipo }}</h5>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Estadística</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Puntos</td>
+                                        <td>{{ proximo_partido.estadisticas.puntos_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Triples</td>
+                                        <td>{{ proximo_partido.estadisticas.triples_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pases</td>
+                                        <td>{{ proximo_partido.estadisticas.pases_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Faltas</td>
+                                        <td>{{ proximo_partido.estadisticas.faltas_equipo_visitante }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="no-data">No hay estadísticas disponibles para este partido.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer-stat">
+                <button type="button" class="btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
+</div>
     
     
         <!-- Modal Posiciones -->
         <div class="modal fade" id="posicionesModal" tabindex="-1" aria-labelledby="posicionesModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-lg">
-                <div class="modal-content">
-                    <div class="modal-header">
+                <div class="modal-content-prox">
+                    <div class="modal-header-stat">
                         <h5 class="modal-title" id="posicionesModalLabel">Tabla de Posiciones</h5>
                         <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
                             <span aria-hidden="true">&times;</span>
@@ -560,7 +561,7 @@
                             <p>No hay posiciones disponibles.</p>
                         {% endif %}
                     </div>
-                    <div class="modal-footer">
+                    <div class="modal-footer-stat">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
                     </div>
                 </div>
@@ -568,14 +569,24 @@
         </div>
     </div>
 
+
+
+
     <div class="anuncio-derecha">
-            <!-- Anuncio Izquierdo -->
-            <div class="">
-                <a href="#">
-                    Anuncio
-                   <img src="{% static 'img/anuncio2.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-dr">
-                </a>
-            </div>
+        <!-- Anuncio Izquierdo -->
+
+        <div class="">
+            <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                Anuncio
+                <img src="{% static 'img/anuncio2.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-dr">
+            </a>
+        </div>
+
+        <div class="">
+            <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                Anuncio
+                <img src="{% static 'img/anuncio3.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-dr">
+            </a>
         </div>
 
     </div>
@@ -583,7 +594,7 @@
     
     </div>
     
-    
+
 
     <section class="highlights-section text-center">
         <h2 class="highlights-title">🎥 Highlights</h2>
