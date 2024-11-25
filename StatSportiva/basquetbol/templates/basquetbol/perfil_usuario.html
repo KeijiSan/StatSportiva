@@ -129,7 +129,7 @@
           <ul class="nav__list">
              <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
 
-             <li><a href="#" class="nav__link">Foro</a></li>
+             <li><a href="{% url 'foro' %}" class="nav__link">Foro</a></li>
 
              <!--=============== DROPDOWN 1 ===============-->
              <li class="dropdown__item">
@@ -203,7 +203,6 @@
                    <li>
                     {% if user.is_authenticated %}
                     {% if not equipo_inscrito %}
-                        <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
                     {% endif %}
                         <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
                         {% csrf_token %}
@@ -219,7 +218,7 @@
                 </ul>
              </li>
 
-             <li><a href="#" class="nav__link">Contacto</a></li>
+             <li><a href="{% url 'nosotros' %}" class="nav__link">Contacto</a></li>
           </ul>
        </div>
     </nav>
@@ -243,17 +242,24 @@
 
         <!-- Main Content -->
         <div class="profile-content">
-            <!-- Información del Equipo -->
-            <div class="content-section active" id="team-info">
-                <div class="card">
-                    <h4>Información del Equipo</h4>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ equipo_form.as_p }}
-                        <button type="submit" name="equipo_form" class="btn btn-primary">Guardar Cambios</button>
-                    </form>
-                </div>
-            </div>
+          <!-- Información del Equipo -->
+<div class="content-section active" id="team-info">
+    <div class="card">
+        <h4>Información del Equipo</h4>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            {{ equipo_form.as_p }}
+            <button type="submit" name="equipo_form" class="btn btn-primary">Guardar Cambios</button>
+        </form>
+        <!-- Botón Abandonar Campeonato -->
+        <form method="post" action="{% url 'abandonar_campeonato' %}">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-danger mt-3" onclick="return confirm('¿Estás seguro de que deseas abandonar el campeonato? Esta acción es irreversible.')">
+                Abandonar Campeonato
+            </button>
+        </form>
+    </div>
+</div>
 
             <!-- Información del Entrenador -->
             <div class="content-section" id="coach-info">
@@ -353,46 +359,7 @@
         });
     </script>
     <!-- Footer -->
-    <footer class="footer">
-        <div class="container-foot">
-            <div class="row">
-                <div class="footer-col">
-                    <h4>StatSportiva</h4>
-                    <ul>
-                        <li><a href="#">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros servicios</a></li>
-                        <li><a href="#">Politica & Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Ayuda</h4>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contactanos</a></li>
-                        <li><a href="#">Foro</a></li>
-                        <li><a href="#">Ubicación</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Campeonatos</h4>
-                    <ul>
-                        <li><a href="#">Equipos</a></li>
-                        <li><a href="#">Partidos</a></li>
-                        <li><a href="#">Estadisticas</a></li>
-                        <li><a href="#">Posiciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Siguenos</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-   </footer>
+    {% include 'partials/footer.html' %}
+
 </body>
 </html>

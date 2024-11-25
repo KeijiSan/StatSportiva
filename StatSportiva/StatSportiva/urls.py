@@ -5,6 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from basquetbol import views
 from django.urls import path, include
+from basquetbol.views import create_post,like_post,delete_post
+
 
 urlpatterns = [
     #------------------ KEIJI---------------------------------
@@ -13,7 +15,14 @@ urlpatterns = [
     path('politica-privacidad/', views.politica_privacidad, name='politica_privacidad'),  # Política de privacidad
     path('accounts/', include('allauth.urls')),  # Rutas de django-allauth
     path('nosotros/', views.nosotros, name='nosotros'),
-
+    
+    
+    path('foro/', views.foro, name='foro'),
+    path('create/', views.create_post, name='create_post'),
+    path('like/<int:post_id>/', views.like_post, name='like_post'),
+    path('reply/<int:post_id>/', views.reply_post, name='reply_post'),
+    path('delete/<int:post_id>/', views.delete_post, name='delete_post'),  # Ruta para eliminar un post
+    path('logout/', auth_views.LogoutView.as_view(next_page='/'), name='logout'),  # Ruta para cerrar sesión
 
     # -------------------------- Admin --------------------------
     path('admin/', admin.site.urls),

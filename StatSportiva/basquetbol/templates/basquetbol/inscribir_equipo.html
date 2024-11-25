@@ -24,7 +24,7 @@
         }
 
         body {
-            background-color: var(--primary-bg);
+            background-color: withe;
             color: var(--text-color);
             font-family: 'Roboto', sans-serif;
         }
@@ -197,17 +197,7 @@
                                 </a>
                              </li>
      
-                             <li>
-                                <a href="#" class="dropdown__sublink">
-                                   <i class="ri-cash-line"></i> Payments
-                                </a>
-                             </li>
-     
-                             <li>
-                                <a href="#" class="dropdown__sublink">
-                                   <i class="ri-refund-2-line"></i> Refunds
-                                </a>
-                             </li>
+        
                           </ul>
                        </li>
                     </ul>
@@ -237,7 +227,6 @@
                        <li>
                         {% if user.is_authenticated %}
                         {% if not equipo_inscrito %}
-                            <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
                         {% endif %}
                             <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
                             {% csrf_token %}

@@ -17,7 +17,7 @@ from datetime import timedelta
 import joblib
 import pandas as pd
 from .models import (
-    Equipo, Jugador, Entrenador, Campeonato, Partido, Posicion, Campeon, PartidoEstadistica, Estadio
+    Equipo, Jugador, Entrenador, Campeonato, Partido, Posicion, Campeon, PartidoEstadistica, Estadio, Post, Reply
 )
 from .forms import (
     InscripcionEquipoForm, EntrenadorForm, JugadorFormSet, CrearCampeonatoForm, RegistroForm, PartidoStatsForm
@@ -36,6 +36,61 @@ from .models import Equipo, Video  # Importa el modelo Video
 
 
 #------------------------- keiji ------------------------------------------------------------------------
+
+from django.shortcuts import render, get_object_or_404, redirect
+from .models import Post, Reply
+
+def foro(request):
+    posts = Post.objects.all().order_by('-created_at')  # Obtén las publicaciones
+    print(posts)  # Depura las publicaciones en la consola
+    return render(request, 'basquetbol/foro.html', {'posts': posts})  # Pásalas al contexto
+
+
+@login_required
+def create_post(request):
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Post.objects.create(author=request.user, content=content)
+        return redirect('foro')
+
+@login_required
+def like_post(request, post_id):
+    if request.method == 'POST':
+        post = get_object_or_404(Post, id=post_id)
+        if request.user in post.likes.all():
+            post.likes.remove(request.user)
+            liked = False
+        else:
+            post.likes.add(request.user)
+            liked = True
+
+        # Retorna el conteo de likes y el estado de "like"
+        return JsonResponse({'liked': liked, 'like_count': post.likes.count()})
+
+@login_required
+def reply_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+    if request.method == 'POST':
+        content = request.POST.get('content')
+        if content:
+            Reply.objects.create(post=post, author=request.user, content=content)
+    return redirect('foro')
+
+@login_required
+def delete_post(request, post_id):
+    post = get_object_or_404(Post, id=post_id)
+
+    # Verifica que el usuario autenticado sea el autor del post
+    if post.author == request.user:
+        post.delete()
+        return redirect('foro')  # Redirige a la lista de posts después de eliminar
+    else:
+        return render(request, 'error.html', {'message': 'No tienes permiso para eliminar este post.'})
+
+
+
+
 from django.urls import reverse
 
 # Vista para la Política de Privacidad

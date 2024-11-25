@@ -255,3 +255,27 @@ class Video(models.Model):
     def delete(self, *args, **kwargs):
         # Puedes añadir lógica adicional aquí si deseas realizar alguna acción antes de la eliminación
         super(Video, self).delete(*args, **kwargs)
+        
+        
+
+class Post(models.Model):
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+    likes = models.ManyToManyField(User, related_name="post_likes", blank=True)
+
+    def like_count(self):
+        return self.likes.count()
+
+    def __str__(self):
+        return self.content[:50]  # Muestra los primeros 50 caracteres del contenido
+
+
+class Reply(models.Model):
+    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="replies")
+    author = models.ForeignKey(User, on_delete=models.CASCADE)
+    content = models.TextField()
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.content[:50]  # Muestra los primeros 50 caracteres del contenido
