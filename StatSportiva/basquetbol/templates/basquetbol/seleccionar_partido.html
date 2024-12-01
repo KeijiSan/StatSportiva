@@ -1,0 +1,223 @@
+    {% load static %}
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Gestión de Registros</title>
+        <link rel="stylesheet" href="{% static 'css/style.css' %}">
+        <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+        <style>
+            body {
+                background-color: #f0f0f0;
+                font-family: 'Arial', sans-serif;
+            }
+
+            .wrapper {
+                display: flex;
+            }
+
+            /* Sidebar styles */
+            .sidebar {
+                width: 250px;
+                background-color: #333;
+                padding: 20px;
+                color: #ffffff;
+                height: 100vh;
+                position: fixed;
+            }
+
+            .sidebar h3 {
+                color: #ff8c00;
+                text-transform: uppercase;
+                border-bottom: 2px solid #ff8c00;
+                padding-bottom: 10px;
+            }
+
+            .sidebar ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .sidebar ul li {
+                margin: 20px 0;
+            }
+
+            .sidebar ul li a {
+                color: #ffffff;
+                text-decoration: none;
+                font-weight: bold;
+                cursor: pointer;
+            }
+
+            .sidebar ul li a:hover {
+                color: #e67e22;
+            }
+
+            .logout-btn {
+                display: block;
+                width: 100%;
+                text-align: center;
+                margin-top: 40px;
+                padding: 10px;
+                background-color: #e67e22;
+                border: none;
+                color: #ffffff;
+                font-weight: bold;
+                text-transform: uppercase;
+                border-radius: 5px;
+                text-decoration: none;
+            }
+
+            .logout-btn:hover {
+                background-color: #d35400;
+            }
+
+            /* Content styles */
+            .content {
+                margin-left: 270px;
+                padding: 20px;
+                width: calc(100% - 270px);
+            }
+
+            .container {
+                margin-top: 40px;
+                background-color: #ffffff;
+                padding: 30px;
+                border-radius: 10px;
+                box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            }
+
+            .form-section {
+                margin-bottom: 40px;
+            }
+
+            .form-section h3 {
+                border-bottom: 2px solid #ff8c00;
+                padding-bottom: 10px;
+                color: #333333;
+                text-transform: uppercase;
+            }
+
+            .form-group {
+                margin-bottom: 20px;
+            }
+
+            .btn-primary {
+                background-color: #ff8c00;
+                border-color: #ff8c00;
+            }
+
+            .btn-primary:hover {
+                background-color: #e67e22;
+                border-color: #e67e22;
+            }
+
+            .hidden {
+                display: none;
+            }
+        </style>
+        <script>
+            function toggleForm(formId) {
+                const forms = document.querySelectorAll('.form-section');
+                forms.forEach(form => {
+                    if (form.id === formId) {
+                        form.classList.toggle('hidden');
+                    } else {
+                        form.classList.add('hidden');
+                    }
+                });
+            }
+        </script>
+    </head>
+    <body>
+        <div class="wrapper">
+            <!-- Sidebar -->
+            <div class="sidebar">
+                <h3>Gestión de Registros</h3>
+                <ul>
+                    <li><a onclick="toggleForm('registrar-usuario')">Registrar Usuario</a></li>
+                    <li><a onclick="toggleForm('registrar-equipo')">Registrar Equipo</a></li>
+                    <li><a onclick="toggleForm('crear-campeonato')">Crear Campeonato</a></li>
+                    <li><a onclick="toggleForm('listar-campeonatos')">Listar Campeonatos</a></li>
+                    <li><a onclick="toggleForm('listar-equipos')">Listar Equipos</a></li>
+                </ul>
+
+                <!-- Botón de Cerrar Sesión -->
+                <form method="post" action="{% url 'logout' %}">
+                    {% csrf_token %}
+                    <button type="submit" class="logout-btn">Cerrar Sesión</button>
+                </form>
+            </div>
+
+            <!-- Main Content -->
+            <div class="content">
+                <div class="container">
+                    <h2 class="text-center mb-4">Gestión de Registros</h2>
+
+                    <!-- Formulario para registrar usuarios (Planillero o Administrador) -->
+                    <div class="form-section hidden" id="registrar-usuario">
+                        <h3>Registrar Usuario (Planillero o Administrador)</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ usuario_form.as_p }}
+                            <div class="form-group">
+                                <label for="tipo_usuario">Tipo de Usuario:</label>
+                                <select name="tipo_usuario" id="tipo_usuario" class="form-control">
+                                    <option value="planillero">Planillero</option>
+                                    <option value="administrador">Administrador</option>
+                                </select>
+                            </div>
+                            <button type="submit" name="registrar_usuario" class="btn btn-primary">Registrar Usuario</button>
+                        </form>
+                    </div>
+
+                    <!-- Formulario para registrar equipos -->
+                    <div class="form-section hidden" id="registrar-equipo">
+                        <h3>Registrar Equipo</h3>
+                        <form method="post" enctype="multipart/form-data">
+                            {% csrf_token %}
+                            {{ equipo_form.as_p }}
+                            {{ entrenador_form.as_p }}
+                            {{ jugador_formset.management_form }}
+                            {% for form in jugador_formset %}
+                                {{ form.as_p }}
+                            {% endfor %}
+                            <button type="submit" name="registrar_equipo" class="btn btn-primary">Registrar Equipo</button>
+                        </form>
+                    </div>
+
+                    <!-- Formulario para crear campeonatos -->
+                    <div class="form-section hidden" id="crear-campeonato">
+                        <h3>Crear Campeonato</h3>
+                        <form method="post">
+                            {% csrf_token %}
+                            {{ campeonato_form.as_p }}
+                            <button type="submit" name="crear_campeonato" class="btn btn-primary">Crear Campeonato</button>
+                        </form>
+                    </div>
+
+                    <!-- Listado de campeonatos -->
+                    <div class="form-section hidden" id="listar-campeonatos">
+                        <h3>Campeonatos Registrados</h3>
+                        <ul>
+                            {% for campeonato in campeonatos %}
+                                <li>{{ campeonato.nombre }} - Fecha de inicio: {{ campeonato.fecha_inicio }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+
+                    <!-- Listado de equipos -->
+                    <div class="form-section hidden" id="listar-equipos">
+                        <h3>Equipos Registrados</h3>
+                        <ul>
+                            {% for equipo in equipos %}
+                                <li>{{ equipo.nombre_equipo }} - Campeonato: {{ equipo.campeonato.nombre }}</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </body>
+    </html>

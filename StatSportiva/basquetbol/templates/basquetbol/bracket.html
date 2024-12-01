@@ -1,0 +1,249 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Bracket Triangular - Eliminatorias</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <style>
+        body {
+            background-color: #f4f6f8;
+            color: #333;
+            font-family: 'Roboto', sans-serif;
+        }
+        
+        .container {
+            padding-top: 100px;
+            padding-bottom: 50px;
+        }
+        
+        /* Triangular Bracket */
+        .bracket-triangle {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            position: relative;
+            gap: 30px;
+        }
+        
+        .bracket-level {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+        }
+        
+        .bracket-match {
+            background-color: #ffffff;
+            border: 2px solid #003366;
+            border-radius: 10px;
+            padding: 15px 20px;
+            width: 200px;
+            text-align: center;
+            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+        }
+        
+        .bracket-match img.team-logo {
+            width: 50px;
+            height: 50px;
+            object-fit: contain;
+            margin-bottom: 10px;
+        }
+        
+        .team {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #003366;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px;
+        }
+        
+        .vs-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin: 10px 0;
+            height: 50px;
+        }
+        
+        .vs-text {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #003366;
+            background: #f8f9fa;
+            padding: 5px 15px;
+            border-radius: 5px;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .bracket-match:hover {
+            background-color: #eef3fa;
+            border-color: #007bff;
+            transform: scale(1.05);
+            transition: all 0.3s ease-in-out;
+        }
+        
+        .team {
+            font-weight: bold;
+            font-size: 1rem;
+            color: #003366;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 180px; /* Para evitar que el texto salga del cuadro */
+        }
+        
+        .vs {
+            font-size: 0.9rem;
+            color: #555;
+            margin: 5px 0;
+            text-align: center;
+        }
+        
+        .match-date {
+            font-size: 0.8rem;
+            color: #777;
+            margin-top: 10px;
+            text-align: center;
+            white-space: nowrap;
+        }
+        
+        
+        /* Triangle Connectors */
+        .triangle-connector {
+            width: 0;
+            height: 0;
+            border-left: 25px solid transparent;
+            border-right: 25px solid transparent;
+            border-top: 40px solid #003366;
+            margin-top: -10px;
+        }
+        
+        /* Margins for footer and navbar */
+        .mt-5 {
+            margin-top: 120px !important;
+        }
+        
+        .mb-5 {
+            margin-bottom: 80px !important;
+        }
+        
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .bracket-level {
+                flex-direction: column;
+                align-items: center;
+                gap: 20px;
+            }
+            .bracket-match {
+                width: 160px;
+            }
+            .triangle-connector {
+                border-left: 20px solid transparent;
+                border-right: 20px solid transparent;
+                border-top: 30px solid #003366;
+            }
+        }
+         
+
+    </style>
+</head>
+{% include 'partials/header.html' %}
+
+<body>
+    <div class="container mt-5 mb-5 text-center">
+        <!-- Título -->
+        <h1 class="text-uppercase font-weight-bold mb-5" style="color: #003366;">Eliminatorias Campeonato: {{ campeonato.nombre }}</h1>
+    
+        <div class="bracket-triangle">
+            <!-- Cuartos -->
+            <div class="bracket-level">
+                {% for partido in partidos_cuartos %}
+                <div class="bracket-match shadow-sm">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+    
+            <!-- Conector -->
+            <div class="triangle-connector"></div>
+    
+            <!-- Semifinal -->
+            <div class="bracket-level">
+                {% for partido in partidos_semifinal %}
+                <div class="bracket-match shadow-sm">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% endfor %}
+            </div>
+    
+            <!-- Conector -->
+            <div class="triangle-connector"></div>
+    
+            <!-- Final -->
+            <div class="bracket-level">
+                {% if partido_final %}
+                <div class="bracket-match shadow-lg">
+                    <div class="team">
+                        <img src="{{ partido_final.equipo_local.logo.url }}" alt="{{ partido_final.equipo_local.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido_final.goles_local|default:"-" }}</div>
+                    </div>
+                    <div class="vs-container">
+                        <div class="vs-text">VS</div>
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido_final.equipo_visitante.logo.url }}" alt="{{ partido_final.equipo_visitante.nombre_equipo }}" class="team-logo">
+                        <div class="score">{{ partido_final.goles_visitante|default:"-" }}</div>
+                    </div>
+                    <small class="match-date">{{ partido_final.fecha|date:"d M, H:i" }}</small>
+                </div>
+                {% else %}
+                <p style="color: #777;">Aún no se ha programado la final.</p>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    
+    
+{% include 'partials/footer.html' %}
+
+</body>
+</html>

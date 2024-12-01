@@ -12,8 +12,32 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 
 from pathlib import Path
 
+
+
+
+
+
+
+
+
+
+
+
+
+# -------- MERCADO PAGO ----------
+
+
+MERCADOPAGO_ACCESS_TOKEN = 'TEST-7300071637912413-112218-a3449faa2ddc8eb90e5a42914d5098f9-490058609'
+MERCADOPAGO_PUBLIC_KEY = 'TEST-c6ef3eea-762e-41c4-9cfe-30172040878c'
+
+
+
+
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
+
+
+
 
 
 # Quick-start development settings - unsuitable for production
@@ -27,10 +51,25 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# settings.py
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_HOST_USER = 'uenchiri@gmail.com'  # Cambia por tu correo
+EMAIL_HOST_PASSWORD = 'mkxn wwvf dedj lvba'  # Contraseña de la app
+DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
+DEFAULT_CONTACT_EMAIL = 'destinatario@correo.com'  # Correo que recibirá los mensajes
+
+
+# Archivo JSON de las credenciales
+GOOGLE_CREDENTIALS_FILE = 'basquetbol/client_secret_228538335100-nnv91uvl01i4iml1r6iv9old9pkiualm.apps.googleusercontent.com.json'
 
 # Application definition
 
 INSTALLED_APPS = [
+    
+    'widget_tweaks',
     'django.contrib.sites',  # Necesario para django-allauth
     'allauth',
     'allauth.account',
@@ -46,6 +85,9 @@ INSTALLED_APPS = [
 ]
 SITE_ID = 1
 
+CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
+
+
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
@@ -57,30 +99,33 @@ MIDDLEWARE = [
     'allauth.account.middleware.AccountMiddleware',
 ]
 
-
-
 ROOT_URLCONF = 'StatSportiva.urls'
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [BASE_DIR / "templates/basquetbol"],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',  # Este debe estar incluido
+                'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'django.template.context_processors.request',  # Este debe estar incluido
+
             ],
         },
     },
 ]
 
 WSGI_APPLICATION = 'StatSportiva.wsgi.application'
+import os
 
 MEDIA_URL = '/media/'
-MEDIA_ROOT = BASE_DIR / 'media'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
+
+
 # Database
 # https://docs.djangoproject.com/en/5.1/ref/settings/#databases
 
@@ -131,7 +176,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
 STATIC_URL = 'static/'
-STATICFILES_DIRS = [BASE_DIR, 'static'] # Para manejar los archivos estáticos
+
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.1/ref/settings/#default-auto-field
@@ -141,17 +186,19 @@ LOGIN_REDIRECT_URL = '/proximo_partido/'
 LOGIN_URL = 'login'
 LOGOUT_REDIRECT_URL = '/proximo_partido/'
 
+
 # Configuración de autenticación
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',  # Backend predeterminado
     'allauth.account.auth_backends.AuthenticationBackend',  # Backend de allauth
 ]
 # Configuración de la autenticación de Google
-ACCOUNT_AUTHENTICATION_METHOD = 'username_email'  # Iniciar sesión con usuario o correo
-ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_AUTHENTICATION_METHOD = 'username_email'
 ACCOUNT_EMAIL_REQUIRED = True
-ACCOUNT_EMAIL_VERIFICATION = 'mandatory'  # Verificación obligatoria
-
+ACCOUNT_USERNAME_REQUIRED = True
+ACCOUNT_EMAIL_VERIFICATION = 'mandatory'
+ACCOUNT_SIGNUP_REDIRECT_URL = '/proximo_partido/'
+SOCIALACCOUNT_LOGIN_ON_GET = True
 
 SOCIALACCOUNT_PROVIDERS = {
     'google': {
@@ -159,14 +206,3 @@ SOCIALACCOUNT_PROVIDERS = {
         'AUTH_PARAMS': {'access_type': 'online'},
     }
 }
-
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'tu_correo@gmail.com'
-EMAIL_HOST_PASSWORD = 'tu_contraseña'
-DEFAULT_FROM_EMAIL = 'webmaster@localhost'
-
-
-ACCOUNT_LOGIN_ON_GET = True

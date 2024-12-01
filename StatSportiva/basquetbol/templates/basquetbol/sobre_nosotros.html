@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sobre Nosotros - StatSportiva</title>
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/sobre_nosotros.css' %}">
+
+        <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+<style>
+
+
+
+        /**
+        * @license
+        * Copyright 2019 Google LLC. All Rights Reserved.
+        * SPDX-License-Identifier: Apache-2.0
+        */
+        /*
+        * Always set the map height explicitly to define the size of the div element
+        * that contains the map.
+        */
+        #map {
+          height: 100%;
+        }
+        /*
+        * Optional: Makes the sample page fill the window.
+        */  
+        body {
+            font-family: 'Roboto', sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #121212;
+            color: #ffffff;
+            line-height: 1.6;
+        }
+
+        
+        /* Secciones */
+        .section {
+            padding: 60px 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2rem;
+            font-weight: bold;
+            text-align: center;
+            margin-bottom: 30px;
+            color: #ffd700;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* Hero Section */
+        .hero {
+            height: 70vh;
+            background: linear-gradient(135deg, #ffd700, #f8b500);
+            text-align: center;
+            color: #121212;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .hero h1 {
+            font-size: 3rem;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            line-height: 1.8;
+            max-width: 800px;
+        }
+
+        /* FAQ Section */
+        .faq-section {
+            background: #1f1f1f;
+        }
+
+        .faq-item {
+            margin-bottom: 15px;
+        }
+
+        .faq-item h3 {
+            font-size: 1.4rem;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .faq-item p {
+            font-size: 1rem;
+            color: #ffffff;
+        }
+
+        /* Contact Section */
+        .contact-section {
+            background: #121212;
+        }
+
+        .contact-container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .contact-container form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .contact-container input, .contact-container textarea {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #444;
+            border-radius: 5px;
+            background: #1f1f1f;
+            color: #fff;
+        }
+
+        .contact-container button {
+            padding: 10px 20px;
+            background-color: #ffd700;
+            color: #121212;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background-color 0.3s;
+        }
+
+        .contact-container button:hover {
+            background-color: #e5c100;
+        }
+    /**
+        * @license
+        * Copyright 2019 Google LLC. All Rights Reserved.
+        * SPDX-License-Identifier: Apache-2.0
+        */
+        /*
+        * Always set the map height explicitly to define the size of the div element
+        * that contains the map.
+        */
+
+        #map {
+            width: 100%;
+            height: 400px;
+            border-radius: 15px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            margin-top: 30px;
+        }
+
+        /* Footer */
+        footer {
+            background: #1f1f1f;
+            color: #ffffff;
+            text-align: center;
+            padding: 20px 0;
+        }
+
+        footer a {
+            color: #ffd700;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+
+        footer a:hover {
+            color: #ffffff;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navbar -->
+    <header class="header">
+        <nav class="nav container-nav">
+           <div class="nav__data">
+              <a href="{% url 'proximo_partido' %}" class="nav__logo">
+                 <i class="ri-planet-line"></i> StatSportiva
+              </a>
+              
+              <div class="nav__toggle" id="nav-toggle">
+                 <i class="ri-menu-line nav__burger"></i>
+                 <i class="ri-close-line nav__close"></i>
+              </div>
+           </div>
+
+           <!--=============== NAV MENU ===============-->
+           <div class="nav__menu" id="nav-menu">
+              <ul class="nav__list">
+                 <li><a href="{% url 'proximo_partido' %}" class="nav__link">Inicio</a></li>
+
+                 <li><a href="#" class="nav__link">Foro</a></li>
+
+                 <!--=============== DROPDOWN 1 ===============-->
+                 <li class="dropdown__item">
+                    <div class="nav__link">
+                       Analytics <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                    </div>
+
+                    <ul class="dropdown__menu">
+                       <li>
+                          <a href="{% url 'tabla_posiciones' %}" class="dropdown__link">
+                             <i class="ri-pie-chart-line"></i> Posiciones
+                          </a>                          
+                       </li>
+
+                       <li>
+                          <a href="{% url 'bracket_eliminatorias' campeonato_id=1 %}" class="dropdown__link">
+                             <i class="ri-arrow-up-down-line"></i> Eliminatorias
+                          </a>
+                       </li>
+
+                       <!--=============== DROPDOWN SUBMENU ===============-->
+                       <li class="dropdown__subitem">
+                          <div class="dropdown__link">
+                             <i class="ri-bar-chart-line"></i> Partidos <i class="ri-add-line dropdown__add"></i>
+                          </div>
+
+                          <ul class="dropdown__submenu">
+                             <li>
+                                <a href="{% url 'estadisticas_equipos' %}" class="dropdown__sublink">
+                                   <i class="ri-file-list-line"></i> Estadisticas
+                                </a>
+                             </li>
+     
+                             <li>
+                                <a href="#" class="dropdown__sublink">
+                                   <i class="ri-cash-line"></i> Payments
+                                </a>
+                             </li>
+     
+                             <li>
+                                <a href="#" class="dropdown__sublink">
+                                   <i class="ri-refund-2-line"></i> Refunds
+                                </a>
+                             </li>
+                          </ul>
+                       </li>
+                    </ul>
+                 </li>
+                 
+
+                 <li class="nav__item form-inline my-2 my-lg-0">
+                    <form method="GET" action="{% url 'buscar_partidos' %}" class="form-inline">
+                        <input class="form-control mr-sm-2 nav__search-input" type="search" name="q" placeholder="Buscar partidos..." aria-label="Buscar" value="{{ query|default:'' }}">
+                        <button class="btn btn-outline-warning nav__search-button" type="submit">Buscar</button>
+                    </form>
+                </li>
+                 <!--=============== DROPDOWN 2 ===============-->
+                 <li class="dropdown__item">
+                    <div class="nav__link">
+                       Usuario <i class="ri-arrow-down-s-line dropdown__arrow"></i>
+                    </div>
+
+                    <ul class="dropdown__menu">
+                        {% if user.is_authenticated %}
+                        <li>
+                          <a href="{% url 'perfil_usuario' %}" class="dropdown__link">
+                             <i class="ri-user-line"></i> Perfil
+                          </a>                          
+                       </li>
+                       {% endif %}
+                       <li>
+                        {% if user.is_authenticated %}
+                        {% if not equipo_inscrito %}
+                            <a href="{% url 'inscribir_equipo' %}" class="dropdown__link"><i class="ri-lock-line"></i>Inscribir equipo</a>
+                        {% endif %}
+                            <form method="POST" action="{% url 'logout' %}"  class="dropdown__link">
+                            {% csrf_token %}
+                            <button type="submit" class="btn btn-outline-warning nav__search-button">Cerrar Sesión</button>
+                        </form>
+                    {% else %}
+                        <a href="{% url 'login' %}" class="dropdown__link"><i class="ri-lock-line"></i> Iniciar sesion</a>
+                    {% endif %}
+
+
+                       </li>
+
+                    </ul>
+                 </li>
+
+                 <li><a href="{% url 'nosotros' %}" class="nav__link">Contacto</a></li>
+              </ul>
+           </div>
+        </nav>
+     </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>Transformando el Baloncesto</h1>
+        <p>
+            Somos <span class="highlight">StatSportiva</span>, una plataforma que conecta a jugadores, entrenadores y fanáticos 
+            del baloncesto con datos precisos y experiencias inolvidables.
+        </p>
+    </section>
+
+    <!-- A Qué Nos Dedicamos -->
+    <section class="section">
+        <h2 class="section-title">A Qué Nos Dedicamos</h2>
+        <p class="text-center">
+            En <strong>StatSportiva</strong>, revolucionamos el mundo del baloncesto proporcionando una plataforma integral 
+            que combina estadísticas avanzadas, gestión de campeonatos y una comunidad vibrante. Nuestro objetivo es capacitar 
+            a jugadores y entrenadores con herramientas digitales, conectar a fanáticos con sus equipos favoritos, 
+            y promover el desarrollo del deporte a nivel global.
+        </p>
+    </section>
+    <!-- Sección del Mapa -->
+<section class="map-section section">
+    <h2 class="section-title">Ubicación de los Campeonatos</h2>
+    <p class="text-center map-description">
+        Descubre dónde se realizan los campeonatos más emocionantes. ¡Encuentra el lugar perfecto para apoyar a tu equipo favorito!
+    </p>
+    <div class="map-container">
+        <div id="map"></div>
+    </div>
+</section>
+
+    <!-- FAQ -->
+    <section class="faq-section section">
+        <h2 class="section-title">Preguntas Frecuentes</h2>
+        <div class="faq-container">
+            <div class="faq-item">
+                <h3>¿Qué servicios ofrece StatSportiva?</h3>
+                <p>Ofrecemos estadísticas avanzadas, organización de campeonatos, y un espacio para construir comunidades deportivas.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Cómo puedo registrar mi equipo?</h3>
+                <p>Puedes registrarte desde nuestra plataforma, creando un perfil de equipo y añadiendo jugadores.</p>
+            </div>
+            <div class="faq-item">
+                <h3>¿Qué tipo de estadísticas puedo encontrar?</h3>
+                <p>Desde puntos y rebotes hasta análisis detallados de rendimiento por jugador y equipo.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+<section class="contact-section section">
+    <h2 class="section-title">Contáctanos</h2>
+    <div class="contact-container">
+        <p>¿Tienes preguntas o necesitas ayuda? Escríbenos y nuestro equipo te responderá pronto.</p>
+        <form id="contact-form">
+            <input type="text" name="nombre" placeholder="Tu nombre" required>
+            <input type="email" name="email" placeholder="Tu correo electrónico" required>
+            <textarea name="mensaje" rows="4" placeholder="Tu mensaje" required></textarea>
+            <button type="submit">Enviar</button>
+        </form>
+        <p id="response-message" style="margin-top: 15px; color: #ffd700;"></p>
+    </div>
+</section>
+
+<script>
+    document.getElementById('contact-form').addEventListener('submit', async function (e) {
+        e.preventDefault();
+
+        const formData = new FormData(this);
+        const responseMessage = document.getElementById('response-message');
+
+        try {
+            const response = await fetch('/enviar-contacto/', {
+                method: 'POST',
+                body: formData,
+            });
+
+            const result = await response.json();
+
+            if (result.success) {
+                responseMessage.textContent = result.message;
+                this.reset(); // Limpia el formulario
+            } else {
+                responseMessage.textContent = 'Hubo un error al enviar tu mensaje.';
+            }
+        } catch (error) {
+            responseMessage.textContent = 'Error al enviar el formulario. Intenta de nuevo más tarde.';
+        }
+    });
+</script>
+
+
+    <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${
+        c}apis.com/maps/api/js?`+e;d[q]=f;a.onerror=()=>h=n(Error(p+" could not load."));a.nonce=m.querySelector("script[nonce]")?.nonce||"";m.head.append(a)}));d[l]?console.warn(p+" only loads once. Ignoring:",g):d[l]=(f,...n)=>r.add(f)&&u().then(()=>d[l](f,...n))})
+            ({key: "AIzaSyAr4RojcuSbhI9XObkJhcGxUYrAw-fDQG8", v: "weekly"});</script>
+        <script>
+        /**
+        * @license
+        * Copyright 2019 Google LLC. All Rights Reserved.
+        * SPDX-License-Identifier: Apache-2.0
+        */
+        // Initialize and add the map
+        let map;
+        async function initMap() {
+          // The location of Uluru
+          const position = { lat: -33.5192521, lng: -70.589610 };
+          // Request needed libraries.
+          //@ts-ignore
+          const { Map } = await google.maps.importLibrary("maps");
+          const { AdvancedMarkerElement } = await google.maps.importLibrary("marker");
+          // The map, centered at Uluru
+          map = new Map(document.getElementById("map"), {
+            zoom: 4,
+            center: position,
+            mapId: "DEMO_MAP_ID",
+          });
+          // The marker, positioned at Uluru
+          const marker = new AdvancedMarkerElement({
+            map: map,
+            position: position,
+            title: "Uluru",
+          });
+        }
+        initMap();
+        </script>
+            
+
+    <!-- Footer -->
+    <footer>
+        &copy; 2024 StatSportiva. Todos los derechos reservados. <a href="#">Política de Privacidad</a>
+    </footer>
+</body>
+</html>

@@ -1,56 +1,118 @@
- <!-- QUE APAREZCA EL LOGO Y STATPORTIVA  LINEA 19 y cambios en css en login, registro, proximo partido -->
-
 <!DOCTYPE html>
 <html lang="es">
-    <head>
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>StatSportiva</title>
-    {% load static %}  <!-- Carga la etiqueta de archivos estáticos -->
-    <link rel="stylesheet" href="{% static 'css/style.css' %}"> 
-    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
-    <!-- Bootstrap CSS -->
+    {% load static %}
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
 
+<style>
+       .modal-body {
+            padding: 20px;
+        }
+    
+        table {
+            width: 100%;
+            border-collapse: separate;
+            border-spacing: 0;
+            margin-bottom: 20px;
+            color: var(--modal-text-color);
+        }
+    
+        table th {
+            background-color: var(--modal-header-color);
+            color: var(--modal-highlight-color);
+            padding: 15px;
+            text-align: left;
+            font-weight: bold;
+            text-transform: uppercase;
+            font-size: 0.9rem;
+        }
+    
+        table th:first-child {
+            border-top-left-radius: 8px;
+        }
+    
+        table th:last-child {
+            border-top-right-radius: 8px;
+        }
+    
+        table td {
+            padding: 15px;
+            border-bottom: 1px solid var(--modal-table-border);
+            font-size: 0.9rem;
+        }
+    
+        table tbody tr:hover {
+            background-color: var(--modal-row-hover);
+            transition: background-color 0.3s;
+        }
+    
+        table tbody tr:last-child td {
+            border-bottom: none;
+        }
+    
+
+    
+        .btn-secondary {
+            background-color: var(--modal-header-color);
+            color: var(--modal-text-color);
+            border: 1px solid var(--modal-highlight-color);
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s;
+        }
+    
+        .btn-secondary:hover {
+            background-color: var(--modal-highlight-color);
+            color: var(--modal-bg-color);
+        }
+    </style>
 </head>
-<body>
-    <header>
-        <div class="navbar">
-            <!-- Contenedor del logo y el texto "STATSPORTIVA" -->
-            <a href="{% url 'proximo_partido' %}" class="d-flex align-items-center brand">
-                <img class="logo" src="{% static 'img/icono.png' %}" alt="StatSportiva Logo">
-                <span class="brand-text">STATSPORTIVA</span>
-            </a>
+<body class="body-prox">
 
-            <!-- Menú de navegación centrado -->
-            <nav>
-                <ul>
-                    <li><a href="{% url 'proximo_partido' %}">Inicio</a></li>
-                    <li><a href="#">Estadísticas</a></li>
-                    {% if user.is_authenticated %}
-                        <li><a href="{% url 'perfil_usuario' %}">Perfil</a></li>
-                    {% endif %}
-                </ul>
-            </nav>
+    {% include 'partials/header.html' %}
 
-            <!-- Botones de autenticación -->
-            <div class="auth-buttons">
-                {% if user.is_authenticated %}
-                    {% if not equipo_inscrito %}
-                        <a href="{% url 'inscribir_equipo' %}">Inscribir equipo</a>
-                    {% endif %}
-                     <!-- Formulario para cerrar sesión -->
 
-                    <form method="POST" action="{% url 'logout' %}" style="display:inline;">
-                        {% csrf_token %}
-                        <button type="submit">Cerrar Sesión</button>
-                    </form>
-                {% else %}
-                    <a href="{% url 'login' %}">Iniciar Sesión</a>
-                {% endif %}
-            </div>
-        
-    </header>
+    <div class="container-nav mt-4">
+        {% if partidos %}
+            <table class="table table-bordered">
+                <thead class="table-dark">
+                    <tr>
+                        <th>Fecha</th>
+                        <th>Equipo Local</th>
+                        <th>Equipo Visitante</th>
+                        <th>Estadio</th>
+                        <th>Fase</th>
+                    </tr>
+                </thead>
+
+
+
+                <tbody>
+                    {% for partido in partidos %}
+                        <tr>
+                            <td>{{ partido.fecha|date:"D, d M Y H:i" }}</td>
+                            <td>{{ partido.equipo_local.nombre_equipo }}</td>
+                            <td>{{ partido.equipo_visitante.nombre_equipo }}</td>
+                            <td>{{ partido.estadio.nombre }}</td>
+                            <td>{{ partido.fase }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        {% else %}
+        {% endif %}
+    </div>
+    
+
+
     <section class="banner">
         <div id="bannerCarrusel" class="carousel slide" data-ride="carousel">
             <!-- Indicadores de las fotos -->
@@ -60,6 +122,9 @@
                 <li data-target="#bannerCarrusel" data-slide-to="2"></li>
             </ol>
     
+
+
+
             <!-- Las imágenes del carrusel -->
             <div class="carousel-inner">
                 <div class="carousel-item active">
@@ -72,6 +137,10 @@
                     <img src="{% static 'img/banner3.jpg' %}" class="d-block w-100" alt="Banner 3">
                 </div>
             </div>
+
+
+
+
     
             <!-- Controles de navegación -->
             <a class="carousel-control-prev" href="#bannerCarrusel" role="button" data-slide="prev">
@@ -84,70 +153,461 @@
             </a>
         </div>
     </section>
-    
-
-    <section class="match-info">
-        <h2 class="match-title">Próximo partido</h2>
-        <div class="match-teams">
-            <div class="team" style="background-color: #ff3333;">
-                <img src="{% static 'img/shohoku.jpg' %}" alt="">
-                <p>Shohoku</p>
-
+<div class="contenedor-noticias">
+    <div class="anuncio-izquierda">
+        <div class="anuncio">
+            <!-- Anuncio Izquierdo -->
+            <div class="anuncio-img">
+                
+                <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                    Anuncio
+                    <img src="{% static 'img/anuncio.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-iz">
+                </a>
             </div>
-            <div class="vs-container">
-                <div class="vs">
-                    <p>VS</p>
+            <div class="anuncio-img">
+                
+                <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                    Anuncio
+                    <img src="{% static 'img/anuncio4.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-iz">
+                </a>
+            </div>
+        </div>
+    </div>
+    <div class="contenedor-partidos">
+
+
+
+        <div class="proximo_partido-container proximo-partido">
+            <h3 class="proximo_partido-title">Partidos jugados</h3>
+            <p class="proximo_partido-time-ago">{{ proximo_partido.campeonato.nombre }}</p>
+            {% if partidos_con_estadisticas %}
+            <div class="proximo_partido-list">
+                {% for partido in partidos_con_estadisticas %}
+                <div class="proximo_partido-card">
+                    <div class="proximo_partido-info">
+                        <div class="proximo_partido-teams">
+                            <div class="proximo_partido-team">
+                                <img src="{% if partido.equipo_local.logo %}{{ partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ partido.equipo_local.nombre_equipo }}" class="proximo_partido-team-flag">
+                                <span class="proximo_partido-team-name">{{ partido.equipo_local.nombre_equipo }}</span>
+                                <p class="partidos-jugados-score">Puntos: {{ partido.estadisticas.puntos_equipo_local }}</p>
+                            </div>
+                            <div class="proximo_partido-team">
+                                <img src="{% if partido.equipo_visitante.logo %}{{ partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="proximo_partido-team-flag">
+                                <span class="proximo_partido-team-name">{{ partido.equipo_visitante.nombre_equipo }}</span>
+                                <p class="partidos-jugados-score">Puntos: {{ partido.estadisticas.puntos_equipo_visitante }}</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="proximo_partido-time-location">
+                        <p class="proximo_partido-location">{{ partido.estadio.nombre }}</p>
+                        <p class="proximo_partido-date">{{ partido.fecha|date:"D, d M" }}</p>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+            <button id="ver-mas-btn" class="btn mt-3 btn-outline-warning nav__search-button">Ver más</button>
+            {% else %}
+            <p class="proximo_partido-no-matches">No hay partidos programados.</p>
+            {% endif %}
+        </div>
+    
+        <div class="container-nav ">
+            <section class="match-info">
+                <h2 class="text-center font-weight-bold mb-4">Próximo Partido</h2>
+                {% if proximo_partido %}
+                <div class="match-teams">
+                    <!-- Equipo Local -->
+                    <div class="team text-center">
+                        <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                             alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
+                             class="img-fluid rounded-circle border" 
+                             style="width: 120px; height: 120px;">
+                        <h4 class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_local.nombre_equipo }}</h4>
+                        <p class="badge badge-primary p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_local }}</p>
+                    </div>
+        
+                    <!-- Contenedor VS -->
+                    <div class="vs-container text-center d-flex flex-column justify-content-center">
+                        <span class="badge badge-dark p-3" style="font-size: 1.5rem;">VS</span>
+                    </div>
+        
+                    <!-- Equipo Visitante -->
+                    <div class="team text-center">
+                        <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                             alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
+                             class="img-fluid rounded-circle border" 
+                             style="width: 120px; height: 120px;">
+                        <h4 class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h4>
+                        <p class="badge badge-danger p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_visitante }}</p>
+                    </div>
+                </div>
+        <div class="info-adicional">
+
+
+        </div>
+                <!-- Información adicional -->
+                <p class="mt-3 text-secondary text-center">
+                    {{ proximo_partido.fecha|date:"D, d M Y" }} | {{ proximo_partido.fecha|time:"H:i" }}
+                    {% if proximo_partido.estadio %}
+                    <br>Estadio: {{ proximo_partido.estadio.nombre }}
+                    {% endif %}
+                </p>
+        
+                <!-- Probabilidades -->
+                <div class="probability-section text-center mb-4">
+                    <h5 class="font-weight-bold mb-4">Probabilidad de Ganar</h5>
+                    <div class="row align-items-center">
+                        <!-- Equipo Local -->
+                        <div class="col-md-5 text-center">
+                            <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                                 alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
+                                 class="img-fluid rounded-circle shadow-sm mb-2" 
+                                 style="width: 80px; height: 80px;">
+                            <h6 class="font-weight-bold text-primary">{{ proximo_partido.equipo_local.nombre_equipo }}</h6>
+                            <p class="text-primary font-weight-bold">{{ probabilidad_local }}%</p>
+                        </div>
+        
+                        <!-- Barra -->
+                        <div class="col-md-2 text-center">
+                            <div class="" style="height: 20px;">
+                                <div class="progress-bar bg-primary-estat" role="progressbar" 
+                                     style="width: {{ probabilidad_local }}%; border-radius: 20px 0 0 20px;" 
+                                     aria-valuenow="{{ probabilidad_local }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                                <div class="progress-bar bg-danger" role="progressbar" 
+                                     style="width: {{ probabilidad_visitante }}%; border-radius: 0 20px 20px 0;" 
+                                     aria-valuenow="{{ probabilidad_visitante }}" aria-valuemin="0" aria-valuemax="100">
+                                </div>
+                            </div>
+                        </div>
+        
+                        <!-- Equipo Visitante -->
+                        <div class="col-md-5 text-center">
+                            <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                                 alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
+                                 class="img-fluid rounded-circle shadow-sm mb-2" 
+                                 style="width: 80px; height: 80px;">
+                            <h6 class="font-weight-bold text-danger">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h6>
+                            <p class="text-danger font-weight-bold">{{ probabilidad_visitante }}%</p>
+                        </div>
+                    </div>
+                </div>
+                {% else %}
+                <p class="text-center text-secondary font-italic">No hay partidos programados próximamente.</p>
+                {% endif %}
+                <!-- Botones de Modales -->
+        <div class="text-center">
+            <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#posicionesModal">
+                Ver Posiciones
+            </button>
+            <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#estadisticasModal">
+                Ver Estadísticas
+            </button>
+        </div>
+            </section>
+        </div>
+        
+    
+      
+        
+
+
+        
+     <!-- Modal Estadísticas -->
+<div class="modal fade" id="estadisticasModal" tabindex="-1" aria-labelledby="estadisticasModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content-prox">
+            <div class="modal-header-stat">
+                <h5 class="modal-title" id="estadisticasModalLabel">Estadísticas del Partido</h5>
+                <button type="button" class="close btn-secondary-stat" data-dismiss="modal" aria-label="Cerrar">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                {% if proximo_partido.estadisticas %}
+                    <div class="row">
+                        <!-- Equipo Local -->
+                        <div class="col-md-6">
+                            <div class="team-header">
+                                <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_local.nombre_equipo }}" class="team-logo-stat">
+                                <h5>{{ proximo_partido.equipo_local.nombre_equipo }}</h5>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Estadística</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Puntos</td>
+                                        <td>{{ proximo_partido.estadisticas.puntos_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Triples</td>
+                                        <td>{{ proximo_partido.estadisticas.triples_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pases</td>
+                                        <td>{{ proximo_partido.estadisticas.pases_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Faltas</td>
+                                        <td>{{ proximo_partido.estadisticas.faltas_equipo_local }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Equipo Visitante -->
+                        <div class="col-md-6">
+                            <div class="team-header">
+                                <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" class="team-logo-stat">
+                                <h5>{{ proximo_partido.equipo_visitante.nombre_equipo }}</h5>
+                            </div>
+                            <table class="table">
+                                <thead>
+                                    <tr>
+                                        <th>Estadística</th>
+                                        <th>Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr>
+                                        <td>Puntos</td>
+                                        <td>{{ proximo_partido.estadisticas.puntos_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Triples</td>
+                                        <td>{{ proximo_partido.estadisticas.triples_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Pases</td>
+                                        <td>{{ proximo_partido.estadisticas.pases_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Faltas</td>
+                                        <td>{{ proximo_partido.estadisticas.faltas_equipo_visitante }}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                {% else %}
+                    <p class="no-data">No hay estadísticas disponibles para este partido.</p>
+                {% endif %}
+            </div>
+            <div class="modal-footer-stat">
+                <button type="button" class="btn-secondary" data-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+    
+    
+        <!-- Modal Posiciones -->
+        <div class="modal fade" id="posicionesModal" tabindex="-1" aria-labelledby="posicionesModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-lg">
+                <div class="modal-content-prox">
+                    <div class="modal-header-stat">
+                        <h5 class="modal-title" id="posicionesModalLabel">Tabla de Posiciones</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Cerrar">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        {% if posiciones %}
+                            <table class="table table-striped">
+                                <thead>
+                                    <tr>
+                                        <th>#</th>
+                                        <th>Equipo</th>
+                                        <th>Puntos</th>
+                                        <th>Partidos Jugados</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for item in posiciones %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ item.equipo.nombre_equipo }}</td>
+                                        <td>{{ item.puntos }}</td>
+                                        <td>{{ item.partidos_jugados }}</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        {% else %}
+                            <p>No hay posiciones disponibles.</p>
+                        {% endif %}
+                    </div>
+                    <div class="modal-footer-stat">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
+                    </div>
                 </div>
             </div>
-            <div class="team" style="background-color: #3366ff;">
-                <p>Kainan</p>
-                <img src="{% static 'img/kainan.png' %}" alt="">
-            </div>
         </div>
-        <p class="match-details">sáb, 31° agosto | 12:30 | Preparatoria Shohoku</p>
-    
-        <div class="stats-links">
-            <a href="#">Estadísticas</a>
-            <a href="#">Alineaciones</a>
-            <a href="#">Posiciones</a>
-        </div>
-    </section>
-    <section class="match-info">
-        <h2 class="match-title">Próximo partido</h2>
-        <div class="match-teams">
-            <div class="team" style="background-color: #ff3333;">
-                <img src="{% static 'img/shohoku.jpg' %}" alt="">
-                <p>Shohoku</p>
+    </div>
 
-            </div>
-            <div class="vs-container">
-                <div class="vs">
-                    <p>VS</p>
+
+
+
+    <div class="anuncio-derecha">
+        <!-- Anuncio Izquierdo -->
+
+        <div class="">
+            <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                Anuncio
+                <img src="{% static 'img/anuncio2.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-dr">
+            </a>
+        </div>
+
+        <div class="">
+            <a href="https://www.converse.cl/?gad_source=1&gclid=CjwKCAiAl4a6BhBqEiwAqvrquv1fEefVZaBflrBAM9k8IxtOFI6dYL5yO4YO31OWYsCsRqic-8D85hoC7UoQAvD_BwE">
+                Anuncio
+                <img src="{% static 'img/anuncio3.jpg' %}" alt="Anuncio Izquierdo" class="anuncio-img-dr">
+            </a>
+        </div>
+
+    </div>
+    
+    
+    </div>
+    
+
+
+    <section class="highlights-section text-center">
+        <h2 class="highlights-title">🎥 Highlights</h2>
+        <div class="highlights-slider">
+            <div class="highlights-container">
+                {% for video in videos %}
+                <div class="highlight-item">
+                    <iframe width="300" height="200" src="{{ video.url }}" 
+                        frameborder="0" 
+                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                        allowfullscreen
+                        class="rounded shadow-lg">
+                    </iframe>
                 </div>
-            </div>
-            <div class="team" style="background-color: #3366ff;">
-                <p>Kainan</p>
-                <img src="{% static 'img/kainan.png' %}" alt="">
+                {% endfor %}
             </div>
         </div>
-        <p class="match-details">sáb, 31° agosto | 12:30 | Preparatoria Shohoku</p>
-    
-        <div class="stats-links">
-            <a href="#">Estadísticas</a>
-            <a href="#">Alineaciones</a>
-            <a href="#">Posiciones</a>
-        </div>
+        <button class="slider-control prev" id="prevBtn">‹</button>
+        <button class="slider-control next" id="nextBtn">›</button>
     </section>
     
-    
 
-    <footer>
-        <p>Condiciones para el uso | Política de Privacidad | Anuncios basados en intereses</p>
-        <p>© StatSportiva. Todos los derechos reservados.</p>
-    </footer>
-    <!-- jQuery and Bootstrap JS -->
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
+    {% include 'partials/footer.html' %}
 
+
+
+
+
+
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const container = document.querySelector(".highlights-container");
+        const items = document.querySelectorAll(".highlight-item");
+        const prevBtn = document.getElementById("prevBtn");
+        const nextBtn = document.getElementById("nextBtn");
+
+        const itemWidth = 320; // Ancho de cada item (incluyendo márgenes y padding)
+        const visibleItems = Math.floor(container.parentElement.offsetWidth / itemWidth); // Elementos visibles en pantalla
+        const maxScroll = (items.length - visibleItems) * itemWidth; // Máximo desplazamiento
+        let scrollAmount = 0;
+
+        // Oculta los botones si no son necesarios
+        if (items.length <= visibleItems) {
+            nextBtn.style.display = "none";
+            prevBtn.style.display = "none";
+        }
+
+        // Botón "Siguiente"
+        nextBtn.addEventListener("click", function () {
+            scrollAmount += itemWidth;
+            if (scrollAmount > maxScroll) scrollAmount = maxScroll; // Limitar el desplazamiento al máximo
+            container.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+
+        // Botón "Anterior"
+        prevBtn.addEventListener("click", function () {
+            scrollAmount -= itemWidth;
+            if (scrollAmount < 0) scrollAmount = 0; // No permitir scroll negativo
+            container.style.transform = `translateX(-${scrollAmount}px)`;
+        });
+
+        // Centrar el slider al inicio
+        const centerScroll = Math.max(0, (maxScroll - scrollAmount) / 2);
+        scrollAmount = centerScroll;
+        container.style.transform = `translateX(-${scrollAmount}px)`;
+    });
+</script>
+
+   <script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const verMasBtn = document.getElementById("ver-mas-btn");
+        const cards = document.querySelectorAll(".proximo_partido-card");
+
+        // Mostrar inicialmente solo los primeros 3 partidos
+        cards.forEach((card, index) => {
+            if (index >= 3) {
+                card.classList.add("hidden");
+            }
+        });
+
+        // Agregar evento al botón para alternar entre ver más y retraer
+        verMasBtn.addEventListener("click", function () {
+            const hiddenCards = document.querySelectorAll(".proximo_partido-card.hidden");
+
+            if (hiddenCards.length > 0) {
+                // Mostrar más
+                hiddenCards.forEach(card => card.classList.remove("hidden"));
+                verMasBtn.textContent = "Ver menos"; // Cambiar texto del botón
+            } else {
+                // Retraer
+                cards.forEach((card, index) => {
+                    if (index >= 3) {
+                        card.classList.add("hidden");
+                    }
+                });
+                verMasBtn.textContent = "Ver más"; // Cambiar texto del botón
+            }
+        });
+    });
+</script>
+
+
+
+   <script>
+    /*=============== SHOW MENU ===============*/
+        const showMenu = (toggleId, navId) =>{
+        const toggle = document.getElementById(toggleId),
+                nav = document.getElementById(navId)
+
+        toggle.addEventListener('click', () =>{
+            // Add show-menu class to nav menu
+            nav.classList.toggle('show-menu')
+
+            // Add show-icon to show and hide the menu icon
+            toggle.classList.toggle('show-icon')
+        })
+        }
+
+        showMenu('nav-toggle','nav-menu')
+   </script>
+  
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.2/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

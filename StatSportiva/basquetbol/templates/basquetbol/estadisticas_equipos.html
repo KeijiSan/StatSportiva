@@ -1,0 +1,127 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Estadísticas de Equipos</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
+
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<style>
+    body {
+        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
+    }
+    .table {
+        border-radius: 15px;
+        overflow: hidden;
+    }
+    
+    .table th, .table td {
+        vertical-align: middle;
+    }
+    
+    .table-hover tbody tr:hover {
+        background-color: #f4f6f8; /* Color de hover en filas */
+    }
+    
+    .table th {
+        font-size: 1.1rem;
+        font-weight: bold;
+    }
+    
+    .table td {
+        font-size: 1rem;
+        font-weight: 500;
+        color: #333333;
+    }
+    
+    .table img {
+        border: 2px solid #ffd700;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+    }
+    
+</style>
+{% include 'partials/header.html' %}
+
+<body>
+    <div class="container mt-5">
+        <h2 class="text-center font-weight-bold mb-5" style="color: #003366;">📊 Estadísticas de Equipos</h2>
+        <div class="table-responsive">
+            <table class="table table-hover table-striped align-middle shadow-lg">
+                <thead class="text-white" style="background-color: #1f1f1f;">
+                    <tr >
+                        <th class="text-center py-3">Equipo</th>
+                        <th class="text-center py-3">Total Puntos</th>
+                        <th class="text-center py-3">Total Triples</th>
+                        <th class="text-center py-3">Total Pases</th>
+                        <th class="text-center py-3">Total Rebotes</th>
+                        <th class="text-center py-3">Total Faltas</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for equipo in equipos %}
+                    <tr>
+                        <td class="text-center py-3 font-weight-bold">
+                            <img src="{% if equipo.logo %}{{ equipo.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ equipo.nombre_equipo }}" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
+                            {{ equipo.nombre_equipo }}
+                        </td>
+                        <td class="text-center py-3">{{ equipo.total_puntos|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_triples|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_pases|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_rebotes|default:0 }}</td>
+                        <td class="text-center py-3">{{ equipo.total_faltas|default:0 }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container-foot">
+            <div class="row">
+                <div class="footer-col">
+                    <h4>StatSportiva</h4>
+                    <ul>
+                        <li><a href="#">Sobre Nosotros</a></li>
+                        <li><a href="#">Nuestros servicios</a></li>
+                        <li><a href="#">Politica & Privacidad</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Ayuda</h4>
+                    <ul>
+                        <li><a href="#">FAQ</a></li>
+                        <li><a href="#">Contactanos</a></li>
+                        <li><a href="#">Foro</a></li>
+                        <li><a href="#">Ubicación</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Campeonatos</h4>
+                    <ul>
+                        <li><a href="#">Equipos</a></li>
+                        <li><a href="#">Partidos</a></li>
+                        <li><a href="#">Estadisticas</a></li>
+                        <li><a href="#">Posiciones</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h4>Siguenos</h4>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-instagram"></i></a>
+                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+                    </div>
+                </div>
+            </div>
+        </div>
+   </footer>
+</body>
+</html>
