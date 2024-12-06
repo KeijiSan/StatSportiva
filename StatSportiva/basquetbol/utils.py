@@ -10,7 +10,7 @@ def obtener_posiciones(campeonato):
     return Posicion.objects.filter(campeonato=campeonato).order_by('-puntos', '-partidos_ganados')
 
 # basquetbol/utils.py
-from sklearn.externals import joblib
+import joblib
 import pandas as pd
 from django.db.models import Avg
 from basquetbol.models import PartidoEstadistica
@@ -55,3 +55,27 @@ def calcular_probabilidades_sin_estadisticas(partido):
     prediccion = model.predict_proba(df)
 
     return round(prediccion[0][1] * 100, 2), round(prediccion[0][0] * 100, 2)
+
+
+from django.contrib.auth.tokens import default_token_generator
+from django.utils.http import urlsafe_base64_encode
+from django.template.loader import render_to_string
+from django.core.mail import send_mail
+from django.conf import settings
+from django.utils.encoding import force_bytes
+
+def send_confirmation_email(user, request):
+    """Envía un correo de confirmación al usuario recién registrado."""
+    token = default_token_generator.make_token(user)
+    uid = urlsafe_base64_encode(force_bytes(user.pk))  # Codificar el ID del usuario
+    current_site = request.get_host()
+
+    activation_link = f"{request.scheme}://{current_site}/confirmar/{uid}/{token}/"
+    subject = 'Confirmación de Registro'
+    message = (
+        f"Hola {user.username},\n\n"
+        f"Gracias por registrarte en nuestra plataforma. Por favor, confirma tu cuenta "
+        f"haciendo clic en el siguiente enlace:\n\n{activation_link}\n\n"
+        "Si no solicitaste esta cuenta, ignora este mensaje.\n\nSaludos,\nEquipo de Soporte."
+    )
+    send_mail(subject, message, settings.DEFAULT_FROM_EMAIL, [user.email])

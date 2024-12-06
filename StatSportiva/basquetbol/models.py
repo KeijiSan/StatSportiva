@@ -190,6 +190,7 @@ class Cuartos(models.Model):
 
 
 # Modelo Estadísticas de Partido
+# Modelo Estadísticas de Partido
 class PartidoEstadistica(models.Model):
     """
     Representa las estadísticas de un partido entre dos equipos.
@@ -201,8 +202,12 @@ class PartidoEstadistica(models.Model):
     faltas_equipo_visitante = models.PositiveIntegerField(default=0)
     triples_equipo_local = models.PositiveIntegerField(default=0)
     triples_equipo_visitante = models.PositiveIntegerField(default=0)
-    rebotes_equipo_local = models.PositiveIntegerField(default=0)
-    rebotes_equipo_visitante = models.PositiveIntegerField(default=0)
+    rebotes_ofensivos_equipo_local = models.PositiveIntegerField(default=0)  # Nuevo campo
+    rebotes_ofensivos_equipo_visitante = models.PositiveIntegerField(default=0)  # Nuevo campo
+    rebotes_defensivos_equipo_local = models.PositiveIntegerField(default=0)  # Nuevo campo
+    rebotes_defensivos_equipo_visitante = models.PositiveIntegerField(default=0)  # Nuevo campo
+    robos_equipo_local = models.PositiveIntegerField(default=0)  # Nuevo campo
+    robos_equipo_visitante = models.PositiveIntegerField(default=0)  # Nuevo campo
     puntos_equipo_local = models.PositiveIntegerField(default=0)
     puntos_equipo_visitante = models.PositiveIntegerField(default=0)
 
@@ -258,24 +263,27 @@ class Video(models.Model):
         
         
 
-class Post(models.Model):
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
-    likes = models.ManyToManyField(User, related_name="post_likes", blank=True)
 
-    def like_count(self):
+from django.db import models
+from django.contrib.auth.models import User
+
+class Publicacion(models.Model):
+    titulo = models.CharField(max_length=255)
+    contenido = models.TextField()
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name="publicaciones")
+    likes = models.ManyToManyField(User, related_name="publicaciones_likes", blank=True)
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
+
+    @property
+    def total_likes(self):
         return self.likes.count()
 
-    def __str__(self):
-        return self.content[:50]  # Muestra los primeros 50 caracteres del contenido
-
-
-class Reply(models.Model):
-    post = models.ForeignKey(Post, on_delete=models.CASCADE, related_name="replies")
-    author = models.ForeignKey(User, on_delete=models.CASCADE)
-    content = models.TextField()
-    created_at = models.DateTimeField(auto_now_add=True)
+class Comentario(models.Model):
+    contenido = models.TextField()
+    autor = models.ForeignKey(User, on_delete=models.CASCADE, related_name='comentarios')
+    publicacion = models.ForeignKey(Publicacion, on_delete=models.CASCADE, related_name='comentarios')
+    fecha_creacion = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return self.content[:50]  # Muestra los primeros 50 caracteres del contenido
+        return f"Comentario de {self.autor} en {self.publicacion.titulo}"
+

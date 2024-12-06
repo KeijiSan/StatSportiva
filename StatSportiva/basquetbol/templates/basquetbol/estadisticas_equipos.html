@@ -1,127 +1,303 @@
-{% load static %}
 <!DOCTYPE html>
+{% load static %}
+{% csrf_token %}
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Estadísticas de Equipos</title>
     <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-
     <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<style>
-    body {
-        padding-top: 80px; /* Ajusta este valor según la altura del navbar */
-    }
-    .table {
-        border-radius: 15px;
-        overflow: hidden;
-    }
-    
-    .table th, .table td {
-        vertical-align: middle;
-    }
-    
-    .table-hover tbody tr:hover {
-        background-color: #f4f6f8; /* Color de hover en filas */
-    }
-    
-    .table th {
-        font-size: 1.1rem;
-        font-weight: bold;
-    }
-    
-    .table td {
-        font-size: 1rem;
-        font-weight: 500;
-        color: #333333;
-    }
-    
-    .table img {
-        border: 2px solid #ffd700;
-        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
-    }
-    
-</style>
-{% include 'partials/header.html' %}
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        :root {
+            --primary-bg: #121212;
+            --secondary-bg: #1f1f1f;
+            --highlight-color: #ffd700;
+            --text-color: #ffffff;
+            --muted-text: #bbbbbb;
+            --border-color: #444444;
+            --hover-row-bg: #1e1e1e;
+        }
 
+        body {
+            background-color: white;
+            color: var(--text-color);
+            font-family: 'Roboto', sans-serif;
+        }
+
+        h2, h4 {
+            color: var(--highlight-color);
+            text-transform: uppercase;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            color: var(--highlight-color);
+            font-weight: bold;
+        }
+
+        select {
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            padding: 10px;
+        }
+
+        .container {
+            margin-top: 100px;
+            background-color: var(--secondary-bg);
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+        }
+
+        canvas {
+            margin: 0px 100px;
+            max-width: 800px;
+            max-height: 300px;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.3);
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+        .table {
+            margin-top: 30px;
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .table thead th {
+            background-color: var(--secondary-bg);
+            color: var(--highlight-color);
+            text-transform: uppercase;
+        }
+
+        .table tbody tr:hover {
+            background-color: var(--hover-row-bg);
+        }
+
+        .table td, .table th {
+            color: var(--muted-text);
+            text-align: center;
+            vertical-align: middle;
+        }
+
+        footer {
+            margin-top: 50px;
+            background-color: var(--secondary-bg);
+            color: var(--text-color);
+            text-align: center;
+            padding: 10px 0;
+        }
+
+        footer a {
+            color: var(--highlight-color);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
 <body>
-    <div class="container mt-5">
-        <h2 class="text-center font-weight-bold mb-5" style="color: #003366;">📊 Estadísticas de Equipos</h2>
-        <div class="table-responsive">
-            <table class="table table-hover table-striped align-middle shadow-lg">
-                <thead class="text-white" style="background-color: #1f1f1f;">
-                    <tr >
-                        <th class="text-center py-3">Equipo</th>
-                        <th class="text-center py-3">Total Puntos</th>
-                        <th class="text-center py-3">Total Triples</th>
-                        <th class="text-center py-3">Total Pases</th>
-                        <th class="text-center py-3">Total Rebotes</th>
-                        <th class="text-center py-3">Total Faltas</th>
+    {% include 'partials/header.html' %}
+    
+    <div class="container">
+        <h2>📊 Estadísticas de Equipos</h2>
+        
+        <!-- Selector de Equipo -->
+        <div class="form-group">
+            <label for="equipo-select">Seleccionar Equipo:</label>
+            <select id="equipo-select" class="form-control">
+                <option value="">-- Selecciona un equipo --</option>
+                {% for equipo in equipos %}
+                <option value="{{ equipo.id }}">{{ equipo.nombre_equipo }}</option>
+                {% endfor %}
+            </select>
+        </div>
+
+        <!-- Gráfico de Línea -->
+        <div class="mt-5">
+            <h4>Rendimiento por Partidos Ganados</h4>
+            <canvas id="grafico-linea"></canvas>
+        </div>
+
+        <!-- Gráfico de Barras -->
+        <div class="mt-5">
+            <h4>Comparativa de Estadísticas</h4>
+            <canvas id="grafico-barras"></canvas>
+        </div>
+
+        <!-- Gráfico de Pie -->
+        <div class="mt-5">
+            <h4>Distribución de Rebotes</h4>
+            <canvas id="grafico-pie"></canvas>
+        </div>
+
+        <!-- Tabla de Promedios -->
+        <div class="mt-5">
+            <h4>Promedios por Partido</h4>
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th>Estadística</th>
+                        <th>Promedio</th>
                     </tr>
                 </thead>
-                <tbody>
-                    {% for equipo in equipos %}
+                <tbody id="detalles-promedios"></tbody>
+            </table>
+        </div>
+
+        <!-- Tabla de Totales -->
+        <div class="mt-5">
+            <h4>Totales</h4>
+            <table class="table table-dark">
+                <thead>
                     <tr>
-                        <td class="text-center py-3 font-weight-bold">
-                            <img src="{% if equipo.logo %}{{ equipo.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ equipo.nombre_equipo }}" class="rounded-circle" style="width: 40px; height: 40px; margin-right: 10px;">
-                            {{ equipo.nombre_equipo }}
-                        </td>
-                        <td class="text-center py-3">{{ equipo.total_puntos|default:0 }}</td>
-                        <td class="text-center py-3">{{ equipo.total_triples|default:0 }}</td>
-                        <td class="text-center py-3">{{ equipo.total_pases|default:0 }}</td>
-                        <td class="text-center py-3">{{ equipo.total_rebotes|default:0 }}</td>
-                        <td class="text-center py-3">{{ equipo.total_faltas|default:0 }}</td>
+                        <th>Total Puntos</th>
+                        <th>Triples</th>
+                        <th>Pases</th>
+                        <th>Rebotes</th>
+                        <th>Partidos Ganados</th>
                     </tr>
-                    {% endfor %}
-                </tbody>
+                </thead>
+                <tbody id="tabla-metricas"></tbody>
             </table>
         </div>
     </div>
-    
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container-foot">
-            <div class="row">
-                <div class="footer-col">
-                    <h4>StatSportiva</h4>
-                    <ul>
-                        <li><a href="#">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros servicios</a></li>
-                        <li><a href="#">Politica & Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Ayuda</h4>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contactanos</a></li>
-                        <li><a href="#">Foro</a></li>
-                        <li><a href="#">Ubicación</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Campeonatos</h4>
-                    <ul>
-                        <li><a href="#">Equipos</a></li>
-                        <li><a href="#">Partidos</a></li>
-                        <li><a href="#">Estadisticas</a></li>
-                        <li><a href="#">Posiciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Siguenos</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
-                </div>
-            </div>
-        </div>
-   </footer>
+
+    <footer>
+        <p>&copy; 2024 StatSportiva. Todos los derechos reservados. <a href="#">Política de Privacidad</a></p>
+    </footer>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const equipoSelect = document.getElementById('equipo-select');
+            const graficoLineaCanvas = document.getElementById('grafico-linea').getContext('2d');
+            const graficoBarrasCanvas = document.getElementById('grafico-barras').getContext('2d');
+            const graficoPieCanvas = document.getElementById('grafico-pie').getContext('2d');
+        
+            let lineaChart, barrasChart, pieChart;
+        
+            equipoSelect.addEventListener('change', () => {
+                const equipoId = equipoSelect.value;
+        
+                if (!equipoId) return;
+        
+                fetch(`/api/estadisticas-equipo/${equipoId}/`)
+                    .then(response => response.json())
+                    .then(data => {
+                        actualizarGraficoLinea(data.partidos);
+                        actualizarGraficoBarras(data.partidos);
+                        actualizarGraficoPie(data.rebotes);
+                        actualizarPromedios(data.estadisticas_promedios);
+                        actualizarTablaMetricas(data.estadisticas_totales);
+                    })
+                    .catch(error => console.error(error));
+            });
+        
+            function actualizarGraficoLinea(partidos) {
+                const labels = partidos.map(p => p.partido);
+                const data = partidos.map(p => p.ganado);
+        
+                if (lineaChart) lineaChart.destroy();
+                lineaChart = new Chart(graficoLineaCanvas, {
+                    type: 'line',
+                    data: {
+                        labels: labels,
+                        datasets: [{
+                            label: 'Partidos Ganados',
+                            data: data,
+                            borderColor: '#28a745',
+                            backgroundColor: 'rgba(40, 167, 69, 0.2)',
+                            fill: true,
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: true, position: 'top' } },
+                        scales: {
+                            x: { title: { display: true, text: 'Partidos' } },
+                            y: { title: { display: true, text: 'Estado (0 = Perdido, 1 = Ganado)' }, beginAtZero: true, max: 1 },
+                        },
+                    },
+                });
+            }
+        
+            function actualizarGraficoBarras(partidos) {
+                const labels = partidos.map(p => p.partido);
+                const puntos = partidos.map(p => p.puntos);
+                const triples = partidos.map(p => p.triples);
+        
+                if (barrasChart) barrasChart.destroy();
+                barrasChart = new Chart(graficoBarrasCanvas, {
+                    type: 'bar',
+                    data: {
+                        labels: labels,
+                        datasets: [
+                            { label: 'Puntos', data: puntos, backgroundColor: '#007bff' },
+                            { label: 'Triples', data: triples, backgroundColor: '#ffc107' }
+                        ],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: true, position: 'top' } },
+                        scales: {
+                            x: { title: { display: true, text: 'Partidos' } },
+                            y: { beginAtZero: true },
+                        },
+                    },
+                });
+            }
+        
+            function actualizarGraficoPie(rebotes) {
+                if (pieChart) pieChart.destroy();
+                pieChart = new Chart(graficoPieCanvas, {
+                    type: 'pie',
+                    data: {
+                        labels: ['Defensivos', 'Ofensivos'],
+                        datasets: [{
+                            data: [rebotes.defensivos, rebotes.ofensivos],
+                            backgroundColor: ['#17a2b8', '#dc3545'],
+                        }],
+                    },
+                    options: {
+                        responsive: true,
+                        plugins: { legend: { display: true, position: 'top' } },
+                    },
+                });
+            }
+        
+            function actualizarPromedios(promedios) {
+                const detallesPromedios = document.getElementById('detalles-promedios');
+                detallesPromedios.innerHTML = '';
+        
+                Object.entries(promedios).forEach(([key, value]) => {
+                    detallesPromedios.innerHTML += `
+                        <tr>
+                            <td>${key.charAt(0).toUpperCase() + key.slice(1)}</td>
+                            <td>${value.toFixed(2)}</td>
+                        </tr>`;
+                });
+            }
+        
+            function actualizarTablaMetricas(totales) {
+                const tablaMetricas = document.getElementById('tabla-metricas');
+                tablaMetricas.innerHTML = `
+                    <tr>
+                        <td>${totales.puntos}</td>
+                        <td>${totales.triples}</td>
+                        <td>${totales.pases}</td>
+                        <td>${totales.rebotes}</td>
+                        <td>${totales.ganados}</td>
+                    </tr>`;
+            }
+        });
+    </script>
 </body>
 </html>

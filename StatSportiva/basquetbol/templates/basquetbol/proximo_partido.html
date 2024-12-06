@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+{% csrf_token %}
+
 <html lang="es">
 <head>
     <meta charset="UTF-8">
@@ -211,101 +213,82 @@
             {% endif %}
         </div>
     
-        <div class="container-nav ">
-            <section class="match-info">
-                <h2 class="text-center font-weight-bold mb-4">Próximo Partido</h2>
-                {% if proximo_partido %}
-                <div class="match-teams">
-                    <!-- Equipo Local -->
-                    <div class="team text-center">
-                        <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
-                             alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
-                             class="img-fluid rounded-circle border" 
-                             style="width: 120px; height: 120px;">
-                        <h4 class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_local.nombre_equipo }}</h4>
-                        <p class="badge badge-primary p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_local }}</p>
-                    </div>
-        
-                    <!-- Contenedor VS -->
-                    <div class="vs-container text-center d-flex flex-column justify-content-center">
-                        <span class="badge badge-dark p-3" style="font-size: 1.5rem;">VS</span>
-                    </div>
-        
-                    <!-- Equipo Visitante -->
-                    <div class="team text-center">
-                        <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
-                             alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
-                             class="img-fluid rounded-circle border" 
-                             style="width: 120px; height: 120px;">
-                        <h4 class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h4>
-                        <p class="badge badge-danger p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_visitante }}</p>
-                    </div>
-                </div>
-        <div class="info-adicional">
-
-
-        </div>
-                <!-- Información adicional -->
-                <p class="mt-3 text-secondary text-center">
-                    {{ proximo_partido.fecha|date:"D, d M Y" }} | {{ proximo_partido.fecha|time:"H:i" }}
-                    {% if proximo_partido.estadio %}
-                    <br>Estadio: {{ proximo_partido.estadio.nombre }}
-                    {% endif %}
-                </p>
-        
-                <!-- Probabilidades -->
-                <div class="probability-section text-center mb-4">
-                    <h5 class="font-weight-bold mb-4">Probabilidad de Ganar</h5>
-                    <div class="row align-items-center">
+            <div class="container-nav ">
+                <section class="match-info">
+                    <h2 class="text-center font-weight-bold mb-4">Próximo Partido</h2>
+                    {% if proximo_partido %}
+                    <div class="match-teams">
                         <!-- Equipo Local -->
-                        <div class="col-md-5 text-center">
+                        <div class="team text-center">
                             <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
-                                 alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
-                                 class="img-fluid rounded-circle shadow-sm mb-2" 
-                                 style="width: 80px; height: 80px;">
-                            <h6 class="font-weight-bold text-primary">{{ proximo_partido.equipo_local.nombre_equipo }}</h6>
-                            <p class="text-primary font-weight-bold">{{ probabilidad_local }}%</p>
+                                alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
+                                class="img-fluid rounded-circle border" 
+                                style="width: 120px; height: 120px;">
+                            <h4 id="equipo-local" class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_local.nombre_equipo }}</h4>
+                            <p id="puntos-local" class="badge badge-primary p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_local }}</p>
                         </div>
-        
-                        <!-- Barra -->
-                        <div class="col-md-2 text-center">
-                            <div class="" style="height: 20px;">
-                                <div class="progress-bar bg-primary-estat" role="progressbar" 
-                                     style="width: {{ probabilidad_local }}%; border-radius: 20px 0 0 20px;" 
-                                     aria-valuenow="{{ probabilidad_local }}" aria-valuemin="0" aria-valuemax="100">
-                                </div>
-                                <div class="progress-bar bg-danger" role="progressbar" 
-                                     style="width: {{ probabilidad_visitante }}%; border-radius: 0 20px 20px 0;" 
-                                     aria-valuenow="{{ probabilidad_visitante }}" aria-valuemin="0" aria-valuemax="100">
+            
+                        <!-- Contenedor VS -->
+                        <div class="vs-container text-center d-flex flex-column justify-content-center">
+                            <span class="badge badge-dark p-3" style="font-size: 1.5rem;">VS</span>
+                        </div>
+            
+                        <!-- Equipo Visitante -->
+                        <div class="team text-center">
+                            <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                                alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
+                                class="img-fluid rounded-circle border" 
+                                style="width: 120px; height: 120px;">
+                            <h4 id="equipo-visitante" class="mt-3 text-uppercase font-weight-bold">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h4>
+                            <p id="puntos-visitante" class="badge badge-danger p-2">Puntos: {{ proximo_partido.estadisticas.puntos_equipo_visitante }}</p>
+                        </div>
+                    </div>
+            <div class="info-adicional">
+
+
+            </div>
+                    <!-- Información adicional -->
+                    <p class="mt-3 text-secondary text-center">
+                        {{ proximo_partido.fecha|date:"D, d M Y" }} | {{ proximo_partido.fecha|time:"H:i" }}
+                        {% if proximo_partido.estadio %}
+                        <br>Estadio: {{ proximo_partido.estadio.nombre }}
+                        {% endif %}
+                    </p>
+            
+                    <div class="probability-section text-center mb-4">
+                        <h5 class="font-weight-bold mb-4">Probabilidad de Ganar</h5>
+                        <div class="row align-items-center">
+                            <div class="col-md-5">
+                                <h6 class="font-weight-bold text-primary">{{ proximo_partido.equipo_local.nombre_equipo }}</h6>
+                                <p class="text-primary font-weight-bold">{{ probabilidad_local }}%</p>
+                            </div>
+                            <div class="col-md-2 text-center">
+                                <div class="progress">
+                                    <div class="progress-bar bg-primary" style="width: {{ probabilidad_local }}%;"></div>
+                                    <div class="progress-bar bg-danger" style="width: {{ probabilidad_visitante }}%;"></div>
                                 </div>
                             </div>
-                        </div>
-        
-                        <!-- Equipo Visitante -->
-                        <div class="col-md-5 text-center">
-                            <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
-                                 alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
-                                 class="img-fluid rounded-circle shadow-sm mb-2" 
-                                 style="width: 80px; height: 80px;">
-                            <h6 class="font-weight-bold text-danger">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h6>
-                            <p class="text-danger font-weight-bold">{{ probabilidad_visitante }}%</p>
+                            <div class="col-md-5">
+                                <h6 class="font-weight-bold text-danger">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h6>
+                                <p class="text-danger font-weight-bold">{{ probabilidad_visitante }}%</p>
+                            </div>
                         </div>
                     </div>
-                </div>
-                {% else %}
-                <p class="text-center text-secondary font-italic">No hay partidos programados próximamente.</p>
-                {% endif %}
-                <!-- Botones de Modales -->
-        <div class="text-center">
-            <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#posicionesModal">
-                Ver Posiciones
-            </button>
-            <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#estadisticasModal">
-                Ver Estadísticas
-            </button>
-        </div>
-            </section>
-        </div>
+
+                    {% else %}
+                    <p class="text-center text-secondary font-italic">No hay partidos programados próximamente.</p>
+                    {% endif %}
+                    <!-- Botones de Modales -->
+            <div class="text-center">
+                <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#posicionesModal">
+                    Ver Posiciones
+                </button>
+                <button class="btn btn mt-3 btn-outline-warning nav__search-button" data-toggle="modal" data-target="#estadisticasModal">
+                    Ver Estadísticas
+                </button>
+            </div>
+                </section>
+            </div>
         
     
       
@@ -316,10 +299,10 @@
      <!-- Modal Estadísticas -->
 <div class="modal fade" id="estadisticasModal" tabindex="-1" aria-labelledby="estadisticasModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-lg">
-        <div class="modal-content-prox">
-            <div class="modal-header-stat">
+        <div class="modal-content">
+            <div class="modal-header bg-dark text-white">
                 <h5 class="modal-title" id="estadisticasModalLabel">Estadísticas del Partido</h5>
-                <button type="button" class="close btn-secondary-stat" data-dismiss="modal" aria-label="Cerrar">
+                <button type="button" class="close text-white" data-dismiss="modal" aria-label="Cerrar">
                     <span aria-hidden="true">&times;</span>
                 </button>
             </div>
@@ -327,13 +310,16 @@
                 {% if proximo_partido.estadisticas %}
                     <div class="row">
                         <!-- Equipo Local -->
-                        <div class="col-md-6">
-                            <div class="team-header">
-                                <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_local.nombre_equipo }}" class="team-logo-stat">
-                                <h5>{{ proximo_partido.equipo_local.nombre_equipo }}</h5>
+                        <div class="col-md-6 border-right">
+                            <div class="text-center mb-4">
+                                <img src="{% if proximo_partido.equipo_local.logo %}{{ proximo_partido.equipo_local.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                                     alt="{{ proximo_partido.equipo_local.nombre_equipo }}" 
+                                     class="rounded-circle" 
+                                     style="width: 100px; height: 100px;">
+                                <h5 class="mt-2 text-primary">{{ proximo_partido.equipo_local.nombre_equipo }}</h5>
                             </div>
-                            <table class="table">
-                                <thead>
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
                                     <tr>
                                         <th>Estadística</th>
                                         <th>Valor</th>
@@ -353,8 +339,12 @@
                                         <td>{{ proximo_partido.estadisticas.pases_equipo_local }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Rebotes</td>
-                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_local }}</td>
+                                        <td>Rebotes Ofensivos</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_ofensivos_equipo_local }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes Defensivos</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_defensivos_equipo_local }}</td>
                                     </tr>
                                     <tr>
                                         <td>Faltas</td>
@@ -366,12 +356,15 @@
 
                         <!-- Equipo Visitante -->
                         <div class="col-md-6">
-                            <div class="team-header">
-                                <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" class="team-logo-stat">
-                                <h5>{{ proximo_partido.equipo_visitante.nombre_equipo }}</h5>
+                            <div class="text-center mb-4">
+                                <img src="{% if proximo_partido.equipo_visitante.logo %}{{ proximo_partido.equipo_visitante.logo.url }}{% else %}{% static 'img/default_team.png' %}{% endif %}" 
+                                     alt="{{ proximo_partido.equipo_visitante.nombre_equipo }}" 
+                                     class="rounded-circle" 
+                                     style="width: 100px; height: 100px;">
+                                <h5 class="mt-2 text-danger">{{ proximo_partido.equipo_visitante.nombre_equipo }}</h5>
                             </div>
-                            <table class="table">
-                                <thead>
+                            <table class="table table-striped">
+                                <thead class="thead-dark">
                                     <tr>
                                         <th>Estadística</th>
                                         <th>Valor</th>
@@ -391,8 +384,12 @@
                                         <td>{{ proximo_partido.estadisticas.pases_equipo_visitante }}</td>
                                     </tr>
                                     <tr>
-                                        <td>Rebotes</td>
-                                        <td>{{ proximo_partido.estadisticas.rebotes_equipo_visitante }}</td>
+                                        <td>Rebotes Ofensivos</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_ofensivos_equipo_visitante }}</td>
+                                    </tr>
+                                    <tr>
+                                        <td>Rebotes Defensivos</td>
+                                        <td>{{ proximo_partido.estadisticas.rebotes_defensivos_equipo_visitante }}</td>
                                     </tr>
                                     <tr>
                                         <td>Faltas</td>
@@ -403,16 +400,16 @@
                         </div>
                     </div>
                 {% else %}
-                    <p class="no-data">No hay estadísticas disponibles para este partido.</p>
+                    <p class="text-center text-muted">No hay estadísticas disponibles para este partido.</p>
                 {% endif %}
             </div>
-            <div class="modal-footer-stat">
-                <button type="button" class="btn-secondary" data-dismiss="modal">Cerrar</button>
+            <div class="modal-footer bg-light">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Cerrar</button>
             </div>
         </div>
     </div>
 </div>
-    
+
     
         <!-- Modal Posiciones -->
         <div class="modal fade" id="posicionesModal" tabindex="-1" aria-labelledby="posicionesModalLabel" aria-hidden="true">
@@ -504,17 +501,47 @@
         <button class="slider-control prev" id="prevBtn">‹</button>
         <button class="slider-control next" id="nextBtn">›</button>
     </section>
-    
+
 
     {% include 'partials/footer.html' %}
 
 
+    <script>
+        function actualizarMarcador() {
+            fetch(window.location.href, {
+                method: 'GET',
+                headers: {
+                    'X-Requested-With': 'XMLHttpRequest' // Indica que es una solicitud AJAX
+                }
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Error al obtener datos');
+                }
+                return response.json();
+            })
+            .then(data => {
+                if (data.error) {
+                    console.error(data.error);
+                } else {
+                    // Actualiza los puntos en el DOM
+                    document.getElementById('puntos-local').textContent = data.puntos_local;
+                    document.getElementById('puntos-visitante').textContent = data.puntos_visitante;
+                }
+            })
+            .catch(error => console.error('Error:', error));
+        }
+        
+        // Llama a la función cada 5 segundos para actualizar el marcador
+        setInterval(actualizarMarcador, 3000);
+        
+    </script>
 
+    
 
-
-
-
+ 
    <script>
+
     document.addEventListener("DOMContentLoaded", function () {
         const container = document.querySelector(".highlights-container");
         const items = document.querySelectorAll(".highlight-item");

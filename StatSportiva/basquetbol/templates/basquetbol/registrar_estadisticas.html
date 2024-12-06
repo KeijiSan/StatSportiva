@@ -1,187 +1,174 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="es">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Registrar Estadísticas del Partido</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link
+      rel="stylesheet"
+      href="{% static 'css/registrar_estadistica.css' %}"
+    />
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css"
+    />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/css/bootstrap.min.css"
+      rel="stylesheet"
+    />
+  </head>
 
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #f3f4f6;
-            font-family: 'Roboto', sans-serif;
-        }
-
-        .stats-container {
-            background: #ffffff;
-            padding: 30px;
-            margin: 50px auto;
-            border-radius: 12px;
-            max-width: 900px;
-            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.1);
-        }
-
-        .header-title {
-            font-size: 2.5rem;
-            font-weight: bold;
-            color: #0056b3;
-            text-align: center;
-            margin-bottom: 30px;
-        }
-
-        .match-info {
-            background-color: #f8f9fa;
-            border-left: 4px solid #457b9d;
-            padding: 15px;
-            border-radius: 8px;
-            margin-bottom: 30px;
-            text-align: center;
-        }
-
-        .match-info p {
-            margin: 0;
-            font-size: 1.2rem;
-            color: #333333;
-        }
-
-        .match-info strong {
-            color: #e63946;
-        }
-
-        .form-group {
-            margin-bottom: 20px;
-        }
-
-        .form-card {
-            background-color: #f9f9f9;
-            border: 1px solid #ddd;
-            border-radius: 10px;
-            padding: 20px;
-            margin-bottom: 20px;
-            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-card label {
-            font-weight: bold;
-            color: #0056b3;
-            display: block;
-            margin-bottom: 10px;
-        }
-
-        .form-card input, .form-card select {
-            width: 100%;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            padding: 10px;
-            font-size: 1rem;
-            box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.1);
-        }
-
-        .form-card input:focus, .form-card select:focus {
-            border-color: #457b9d;
-            outline: none;
-            box-shadow: 0 0 4px rgba(69, 123, 157, 0.5);
-        }
-
-        .btn-submit {
-            width: 100%;
-            background: linear-gradient(90deg, #457b9d, #1d3557);
-            border: none;
-            color: white;
-            font-weight: bold;
-            padding: 15px;
-            border-radius: 8px;
-            text-transform: uppercase;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            transition: all 0.3s ease-in-out;
-        }
-
-        .btn-submit:hover {
-            background: linear-gradient(90deg, #1d3557, #457b9d);
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.2);
-        }
-
-        .form-error {
-            color: #e63946;
-            font-size: 0.9rem;
-            margin-top: 5px;
-        }
-
-    </style>
-</head>
-<body>
-
+  <body>
     <div class="stats-container">
-        <h1 class="header-title">Registrar Estadísticas del Partido</h1>
-        
-        <div class="match-info">
-            <p><strong>Partido:</strong> {{ partido.equipo_local }} vs {{ partido.equipo_visitante }}</p>
-            <p><strong>Fecha:</strong> {{ partido.fecha|date:"D, d M Y H:i" }}</p>
+      <h1 class="header-title">Registrar Estadísticas del Partido</h1>
+
+      <div class="match-info">
+        <p>
+          <strong>Partido:</strong> {{ partido.equipo_local }} vs {{partido.equipo_visitante }}
+        </p>
+        <p><strong>Fecha:</strong> {{ partido.fecha|date:"D, d M Y H:i" }}</p>
+      </div>
+
+      <form method="post" id="stats-form">
+        {% csrf_token %} {% for field in form %}
+        <div class="form-card">
+          <label for="{{ field.id_for_label }}">{{ field.label }}</label>
+          {{ field }} {% if field.errors %}
+          <div class="form-error">{{ field.errors }}</div>
+          {% endif %}
         </div>
+        {% endfor %}
+        <button type="submit" class="btn-submit">Guardar Estadísticas</button>
+      </form>
 
-        <form method="post">
-            {% csrf_token %}
-            {% for field in form %}
-                <div class="form-card">
-                    <label for="{{ field.id_for_label }}">{{ field.label }}</label>
-                    {{ field }}
-                    {% if field.errors %}
-                        <div class="form-error">{{ field.errors }}</div>
-                    {% endif %}
-                </div>
-            {% endfor %}
-            <button type="submit" class="btn-submit">Guardar Estadísticas</button>
-        </form>
-    </div>
-
-    <!-- Footer -->
-    <footer class="footer">
-        <div class="container-foot">
-            <div class="row">
-                <div class="footer-col">
-                    <h4>StatSportiva</h4>
-                    <ul>
-                        <li><a href="#">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros servicios</a></li>
-                        <li><a href="#">Politica & Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Ayuda</h4>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contactanos</a></li>
-                        <li><a href="#">Foro</a></li>
-                        <li><a href="#">Ubicación</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Campeonatos</h4>
-                    <ul>
-                        <li><a href="#">Equipos</a></li>
-                        <li><a href="#">Partidos</a></li>
-                        <li><a href="#">Estadisticas</a></li>
-                        <li><a href="#">Posiciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Siguenos</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
+      <div class="container mt-5">
+        <div class="card shadow">
+            <div class="card-header bg-dark text-white text-center">
+                <h2>Partido: <span class="text-warning">{{ partido.equipo_local.nombre_equipo }}</span> vs <span class="text-danger">{{ partido.equipo_visitante.nombre_equipo }}</span></h2>
+            </div>
+            <div class="card-body">
+                <div class="row text-center">
+                    <!-- Equipo Local -->
+                    <div class="col-md-5 d-flex flex-column align-items-center">
+                        <h4 class="text-primary font-weight-bold">{{ partido.equipo_local.nombre_equipo }}</h4>
+                        <p class="display-4 text-primary" id="puntos_local">{{ form.instance.puntos_equipo_local }}</p>
+                        <div class="btn-group mt-3" role="group" aria-label="Control de Puntos Local">
+                            <button class="btn btn-success btn-lg" id="btn_local_add">+1</button>
+                            <button class="btn btn-danger btn-lg" id="btn_local_subtract">-1</button>
+                        </div>
                     </div>
-                </div>
+    
+                    <!-- Contenedor VS -->
+                    <div class="col-md-2 d-flex align-items-center justify-content-center">
+                        <div class="badge badge-dark p-4" style="font-size: 1.5rem;">VS</div>
+                    </div>
+    
+                    <!-- Equipo Visitante -->
+                    <div class="col-md-5 d-flex flex-column align-items-center">
+                        <h4 class="text-danger font-weight-bold">{{ partido.equipo_visitante.nombre_equipo }}</h4>
+                        <p class="display-4 text-danger" id="puntos_visitante">{{ form.instance.puntos_equipo_visitante }}</p>
+                        <div class="btn-group mt-3" role="group" aria-label="Control de Puntos Visitante">
+                            <button class="btn btn-success btn-lg" id="btn_visitante_add">+1</button>
+                            <button class="btn btn-danger btn-lg" id="btn_visitante_subtract">-1</button>
+                        </div>
+                    </div>
+                    
+            </div>
+            <div class="card-footer bg-light text-center">
+                <p class="text-secondary">Actualiza el marcador en tiempo real para mantener el registro.</p>
             </div>
         </div>
-   </footer>
+    </div>
+</div>
+</div>
+<style>
+    .card {
+        border-radius: 10px;
+    }
+    
+    .card-header {
+        border-radius: 10px 10px 0 0;
+        padding: 20px;
+    }
+    
+    .card-footer {
+        border-radius: 0 0 10px 10px;
+    }
+    
+    button {
+        transition: transform 0.2s, box-shadow 0.2s;
+    }
+    
+    button:hover {
+        transform: scale(1.05);
+        box-shadow: 0px 4px 15px rgba(0, 0, 0, 0.2);
+    }
+    
+    p.display-4 {
+        font-size: 3rem;
+    }
+    
+    .badge {
+        border-radius: 50%;
+        width: 80px;
+        height: 80px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+</style>    
+    
+    <!-- Incluir jQuery si aún no está cargado -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="{% static 'js/partido_stats.js' %}"></script>
+    
+
+    <script>
+        function actualizarMarcador(equipo, accion) {
+            $.ajax({
+              type: "POST",
+              url: window.location.href, // La URL de la vista actual
+              data: {
+                equipo: equipo,
+                accion: accion, // Enviar 'add' o 'subtract'
+                csrfmiddlewaretoken: $('input[name="csrfmiddlewaretoken"]').val(),
+              },
+              success: function (response) {
+                // Actualizar los puntos en la interfaz
+                $("#puntos_local").text(response.puntos_local);
+                $("#puntos_visitante").text(response.puntos_visitante);
+              },
+              error: function (xhr, status, error) {
+                alert("Error al actualizar el marcador: " + xhr.responseJSON.error);
+              },
+            });
+          }
+          
+          // Asociar eventos a los botones
+          $(document).ready(function () {
+            $("#btn_local_add").on("click", function () {
+              actualizarMarcador("local", "add");
+            });
+          
+            $("#btn_local_subtract").on("click", function () {
+              actualizarMarcador("local", "subtract");
+            });
+          
+            $("#btn_visitante_add").on("click", function () {
+              actualizarMarcador("visitante", "add");
+            });
+          
+            $("#btn_visitante_subtract").on("click", function () {
+              actualizarMarcador("visitante", "subtract");
+            });
+          });
+          
+      </script>
+      
 
 </body>
+{% include 'partials/footer.html' %}
+
 </html>

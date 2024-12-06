@@ -56,8 +56,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_PORT = 587
 EMAIL_USE_TLS = True
-EMAIL_HOST_USER = 'uenchiri@gmail.com'  # Cambia por tu correo
-EMAIL_HOST_PASSWORD = 'mkxn wwvf dedj lvba'  # Contraseña de la app
+EMAIL_HOST_USER = 'StatSportiva@gmail.com'  # Cambia por tu correo
+EMAIL_HOST_PASSWORD = 'dyqy ytgj rjot cjlp'  # Contraseña de la app
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
 DEFAULT_CONTACT_EMAIL = 'destinatario@correo.com'  # Correo que recibirá los mensajes
 
@@ -91,20 +91,21 @@ CSRF_TRUSTED_ORIGINS = ['http://127.0.0.1', 'http://localhost']
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
-    'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     'allauth.account.middleware.AccountMiddleware',
 ]
 
 ROOT_URLCONF = 'StatSportiva.urls'
+import os
 
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [BASE_DIR / "templates/basquetbol"],
+        'DIRS': [os.path.join(BASE_DIR / "templates/basquetbol")],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [

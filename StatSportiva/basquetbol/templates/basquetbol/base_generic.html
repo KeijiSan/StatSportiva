@@ -1,0 +1,114 @@
+{% load static %}  <!-- Carga los recursos estáticos -->
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Mi Sitio Web{% endblock %}</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        /* Estilos globales */
+        body, html {
+            height: 100%;
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            font-family: Arial, sans-serif;
+            background-color: #2c3e50; /* Fondo oscuro */
+            color: #ffffff; /* Texto blanco */
+        }
+
+        header {
+            background-color: #34495e;
+            padding: 10px 0;
+            text-align: center;
+            color: #ecf0f1;
+            font-size: 18px;
+        }
+
+        main {
+            flex: 1; /* Permite que el contenido principal ocupe el espacio disponible */
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .container-content {
+            background-color: rgba(255, 255, 255, 0.1); /* Fondo semi-transparente */
+            padding: 40px;
+            border-radius: 8px;
+            width: 100%;
+            max-width: 400px; /* Ancho máximo del contenido */
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); /* Sombra */
+        }
+
+        footer {
+            background-color: #34495e;
+            text-align: center;
+            padding: 10px 0;
+            color: #ecf0f1;
+            font-size: 14px;
+        }
+
+        .btn-primary {
+            background-color: #1abc9c;
+            border-color: #1abc9c;
+            color: #fff;
+            width: 100%;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+
+        .btn-primary:hover {
+            background-color: #16a085;
+            border-color: #16a085;
+        }
+
+        input[type="password"], input[type="text"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            border: none;
+        }
+
+        .back-arrow {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            font-size: 24px;
+            color: #ffffff;
+            text-decoration: none;
+        }
+
+        .back-arrow:hover {
+            color: #1abc9c;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        StatPortiva - Restablecer Contraseña
+    </header>
+
+    <main>
+        <div class="container-content">
+            {% block content %}
+            <!-- Contenido específico de cada página -->
+            {% endblock %}
+        </div>
+    </main>
+
+    <footer>
+        &copy; StatPortiva 2024
+    </footer>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.9/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+</body>
+</html>

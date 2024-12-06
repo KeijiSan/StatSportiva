@@ -351,7 +351,7 @@
     <h2 class="section-title">Contáctanos</h2>
     <div class="contact-container">
         <p>¿Tienes preguntas o necesitas ayuda? Escríbenos y nuestro equipo te responderá pronto.</p>
-        <form id="contact-form">
+        <form action="https://getform.io/f/bdrrqvwb" id="contact-form" method="POST">
             <input type="text" name="nombre" placeholder="Tu nombre" required>
             <input type="email" name="email" placeholder="Tu correo electrónico" required>
             <textarea name="mensaje" rows="4" placeholder="Tu mensaje" required></textarea>
@@ -361,32 +361,6 @@
     </div>
 </section>
 
-<script>
-    document.getElementById('contact-form').addEventListener('submit', async function (e) {
-        e.preventDefault();
-
-        const formData = new FormData(this);
-        const responseMessage = document.getElementById('response-message');
-
-        try {
-            const response = await fetch('/enviar-contacto/', {
-                method: 'POST',
-                body: formData,
-            });
-
-            const result = await response.json();
-
-            if (result.success) {
-                responseMessage.textContent = result.message;
-                this.reset(); // Limpia el formulario
-            } else {
-                responseMessage.textContent = 'Hubo un error al enviar tu mensaje.';
-            }
-        } catch (error) {
-            responseMessage.textContent = 'Error al enviar el formulario. Intenta de nuevo más tarde.';
-        }
-    });
-</script>
 
 
     <script>(g=>{var h,a,k,p="The Google Maps JavaScript API",c="google",l="importLibrary",q="__ib__",m=document,b=window;b=b[c]||(b[c]={});var d=b.maps||(b.maps={}),r=new Set,e=new URLSearchParams,u=()=>h||(h=new Promise(async(f,n)=>{await (a=m.createElement("script"));e.set("libraries",[...r]+"");for(k in g)e.set(k.replace(/[A-Z]/g,t=>"_"+t[0].toLowerCase()),g[k]);e.set("callback",c+".maps."+q);a.src=`https://maps.${

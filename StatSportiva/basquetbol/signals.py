@@ -100,28 +100,4 @@ def avanzar_fase(sender, instance, **kwargs):
 
             print(f"¡El equipo {equipo_campeon.nombre_equipo} ha sido declarado campeón del campeonato {campeonato.nombre}!")
 
-# signals.py
 
-from django.core.mail import send_mail
-from django.db.models.signals import post_save
-from django.dispatch import receiver
-from django.contrib.auth.models import User
-
-@receiver(post_save, sender=User)
-def enviar_correo_confirmacion(sender, instance, created, **kwargs):
-    """
-    Signal que se ejecuta cuando un usuario se crea. Envía un correo de confirmación.
-    """
-    if created:
-        subject = 'Confirma tu correo electrónico'
-        message = f'Hola {instance.username}, por favor confirma tu cuenta haciendo clic en el enlace.'
-        recipient_list = [instance.email]
-        
-        # Enviar correo de confirmación
-        send_mail(
-            subject=subject, 
-            message=message, 
-            from_email='from@example.com', 
-            recipient_list=recipient_list
-        )
-        print(f"Correo de confirmación enviado a {instance.email}")

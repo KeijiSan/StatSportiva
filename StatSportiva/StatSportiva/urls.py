@@ -5,8 +5,8 @@ from django.conf import settings
 from django.conf.urls.static import static
 from basquetbol import views
 from django.urls import path, include
-from basquetbol.views import create_post, like_post, delete_post
-from basquetbol.views import activate
+from basquetbol.views import confirmar_correo
+
 
 urlpatterns = [
     #------------------ KEIJI---------------------------------
@@ -15,22 +15,21 @@ urlpatterns = [
     path('politica-privacidad/', views.politica_privacidad, name='politica_privacidad'),  # Política de privacidad
     path('accounts/', include('allauth.urls')),  # Rutas de django-allauth
     path('nosotros/', views.nosotros, name='nosotros'),
-    path('confirmar/<uidb64>/<token>/', views.confirmar_correo, name='confirmar_correo'),
 
-    path('foro/', views.foro, name='foro'),
-    path('create/', views.create_post, name='create_post'),
-    path('like/<int:post_id>/', views.like_post, name='like_post'),
-    path('reply/<int:post_id>/', views.reply_post, name='reply_post'),
-    path('delete/<int:post_id>/', views.delete_post, name='delete_post'),  # Ruta para eliminar un post
-
+    #----------------------------- olvido password -----------------------------
+    path('password_reset/', auth_views.PasswordResetView.as_view(template_name='basquetbol/password_reset_form.html'), name='password_reset'),
+    path('password_reset/done/', auth_views.PasswordResetDoneView.as_view(template_name='basquetbol/password_reset_done.html'), name='password_reset_done'),
+    path('reset/<uidb64>/<token>/', auth_views.PasswordResetConfirmView.as_view(template_name='basquetbol/password_reset_confirm.html'), name='password_reset_confirm'),
+    path('reset/done/', auth_views.PasswordResetCompleteView.as_view(template_name='basquetbol/password_reset_complete.html'), name='password_reset_complete'),
+ 
     # -------------------------- Admin --------------------------
     path('admin/', admin.site.urls),
-
+    path('api/estadisticas-equipo/<int:equipo_id>/', views.estadisticas_equipo_api, name='estadisticas_equipo_api'),
+    
     # -------------------------- Autenticación --------------------------
     path('login/', views.login_view, name='login'),
     path('registro/', views.registro, name='registro'),
-    path('confirmar/<uidb64>/<token>/', activate, name='activate'),
-
+    path('confirmar/<uidb64>/<token>/', views.confirmar_correo, name='confirmar_correo'),
     # -------------------------- Perfil de Usuario --------------------------
     path('perfil/', views.perfil_usuario, name='perfil_usuario'),
     path('abandonar_campeonato/', views.abandonar_campeonato, name='abandonar_campeonato'),
@@ -60,4 +59,12 @@ urlpatterns = [
 
     # -------------------------- Utilidades --------------------------
     path('buscar/', views.buscar_partidos, name='buscar_partidos'),
+    # -------------------------- Foro --------------------------
+    path('foro/', views.foro, name='foro'),
+    path('like/', views.like_publicacion, name='like_publicacion'),
+    path('comentar/', views.agregar_comentario, name='agregar_comentario'),
+    path("agregar_comentario/", views.agregar_comentario, name="agregar_comentario"),
+    path('eliminar-publicacion/<int:publicacion_id>/', views.eliminar_publicacion, name='eliminar_publicacion'),
+    path('eliminar-comentario/<int:comentario_id>/', views.eliminar_comentario, name='eliminar_comentario'),
+
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

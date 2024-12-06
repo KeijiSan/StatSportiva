@@ -140,6 +140,7 @@ JugadorFormSet = inlineformset_factory(
 
 
 # Formulario para registrar estadísticas del partido
+# Formulario para registrar estadísticas del partido
 class PartidoStatsForm(forms.ModelForm):
     class Meta:
         model = PartidoEstadistica
@@ -150,8 +151,92 @@ class PartidoStatsForm(forms.ModelForm):
             'faltas_equipo_visitante',
             'triples_equipo_local',
             'triples_equipo_visitante',
-            'rebotes_equipo_local',
-            'rebotes_equipo_visitante',
-            'puntos_equipo_local',  # Añadir puntos del equipo local
-            'puntos_equipo_visitante',  # Añadir puntos del equipo visitante
+            'rebotes_ofensivos_equipo_local',  # Agregado rebotes ofensivos equipo local
+            'rebotes_ofensivos_equipo_visitante',  # Agregado rebotes ofensivos equipo visitante
+            'rebotes_defensivos_equipo_local',  # Agregado rebotes defensivos equipo local
+            'rebotes_defensivos_equipo_visitante',  # Agregado rebotes defensivos equipo visitante
+            'robos_equipo_local',  # Agregado robos equipo local
+            'robos_equipo_visitante',  # Agregado robos equipo visitante
+            'puntos_equipo_local',  # Puntos del equipo local
+            'puntos_equipo_visitante',  # Puntos del equipo visitante
         ]
+        
+    # Definir widgets personalizados si es necesario
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        
+        # Personalizar los widgets para una mejor apariencia (si lo deseas)
+        self.fields['pases_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['pases_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['faltas_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['faltas_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['triples_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['triples_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['rebotes_ofensivos_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['rebotes_ofensivos_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['rebotes_defensivos_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['rebotes_defensivos_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['robos_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['robos_equipo_visitante'].widget.attrs['class'] = 'form-control'
+        self.fields['puntos_equipo_local'].widget.attrs['class'] = 'form-control'
+        self.fields['puntos_equipo_visitante'].widget.attrs['class'] = 'form-control'
+
+    # Validación de que los puntos y estadísticas no sean negativas
+    def clean(self):
+        cleaned_data = super().clean()
+        
+        puntos_local = cleaned_data.get('puntos_equipo_local')
+        puntos_visitante = cleaned_data.get('puntos_equipo_visitante')
+        
+        # Asegurarse de que los puntos no sean negativos
+        if puntos_local is not None and puntos_local < 0:
+            self.add_error('puntos_equipo_local', 'Los puntos del equipo local no pueden ser negativos.')
+        
+        if puntos_visitante is not None and puntos_visitante < 0:
+            self.add_error('puntos_equipo_visitante', 'Los puntos del equipo visitante no pueden ser negativos.')
+        
+        # Validar robos, rebotes ofensivos y defensivos
+        for key in ['rebotes_ofensivos_equipo_local', 'rebotes_ofensivos_equipo_visitante', 
+                    'rebotes_defensivos_equipo_local', 'rebotes_defensivos_equipo_visitante', 
+                    'robos_equipo_local', 'robos_equipo_visitante']:
+            value = cleaned_data.get(key)
+            if value is not None and value < 0:
+                self.add_error(key, f'{key.replace("_", " ").capitalize()} no puede ser negativo.')
+        
+        return cleaned_data
+
+
+
+
+
+
+
+
+from django import forms
+from .models import Publicacion, Comentario
+
+from django import forms
+from .models import Publicacion, Comentario
+
+from django import forms
+from .models import Publicacion, Comentario
+from django import forms
+from .models import Publicacion
+
+class PublicacionForm(forms.ModelForm):
+    class Meta:
+        model = Publicacion
+        fields = ['titulo', 'contenido']
+        widgets = {
+            'titulo': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Título de la publicación'}),
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Escribe el contenido aquí...'}),
+        }
+
+
+class ComentarioForm(forms.ModelForm):
+    class Meta:
+        model = Comentario
+        fields = ['contenido']  # Campo para el texto del comentario
+        widgets = {
+            'contenido': forms.Textarea(attrs={'class': 'form-control', 'placeholder': 'Añadir un comentario'}),
+        }
