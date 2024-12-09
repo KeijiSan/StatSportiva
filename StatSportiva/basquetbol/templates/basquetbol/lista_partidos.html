@@ -10,7 +10,7 @@
     }
 
     body {
-        background-color: var(--primary-bg);
+        background: linear-gradient(180deg, #121212, #1f1f1f);
         color: var(--text-color);
         font-family: 'Roboto', sans-serif;
         margin: 0;
@@ -78,16 +78,22 @@
 
     .table tbody td {
         text-align: center;
-        padding: 10px;
+        padding: 15px;
         border-bottom: 1px solid var(--border-color);
-        color: var(--muted-text);
+        color: var(--text-color);
     }
 
     .table tbody tr:hover {
         background-color: var(--hover-row-bg);
         transition: all 0.3s ease;
     }
+    .table tbody tr:nth-child(odd) {
+        background-color: #181818; /* Alternar colores de fila */
+    }
 
+    .table tbody tr:hover td {
+        color: var(--highlight-color); /* Resaltar texto al hover */
+    }
     .btn-primary {
         background-color: var(--highlight-color);
         color: var(--primary-bg);
@@ -121,9 +127,67 @@
     .text-secondary {
         color: var(--muted-text) !important;
     }
+
+
+
+    /* Contenedor del botón de Cerrar Sesión */
+    .logout-container {
+        display: flex;
+        justify-content: center; /* Centrar horizontalmente */
+        margin-top: 50px; /* Aumenta la separación superior */
+        margin-bottom: 30px; /* Espacio inferior */
+    }
+    
+    /* Botón de Cerrar Sesión */
+    .logout-form button {
+        padding: 12px 25px;
+        font-size: 1rem;
+        font-weight: bold;
+        border-radius: 8px;
+        transition: all 0.3s ease;
+        text-transform: uppercase;
+        color: #212529;
+        background-color: #ffc107;
+        border: 1px solid #ffc107;
+        position: relative;
+        overflow: hidden;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+    
+    .logout-form button:hover {
+        background-color: #e0a800;
+        border-color: #e0a800;
+        color: #fff;
+    }
+    
+    /* Ícono escondido inicialmente */
+    .logout-form .icon {
+        opacity: 0;
+        position: absolute;
+        right: 10px;
+        top: 50%;
+        transform: translateY(-50%);
+        font-size: 1.2rem;
+        transition: all 0.3s ease;
+        color: #fff;
+    }
+    
+    /* Mostrar el ícono al pasar el mouse */
+    .logout-form button:hover .icon {
+        opacity: 1;
+        right: 15px; /* Mueve el ícono un poco hacia la derecha */
+    }
+    
+
+    
+    
+    
 </style>
 
 <div class="container">
+        
     <h1 class="display-5">Partidos del Campeonato: {% if campeonato %}{{ campeonato.nombre }}{% else %}Todos los Partidos{% endif %}</h1>
 
     {% if campeonato and campeonato.campeon %}
@@ -275,9 +339,13 @@
     {% else %}
         <p class="text-center mt-5 text-secondary">No hay partidos programados para este campeonato aún.</p>
     {% endif %}
+<!-- Botón de Cerrar Sesión -->
+<div style =  "display: flex; justify-content: center; margin-top: 50px; margin-bottom: 30px;">
+    <form method="POST" action="{% url 'logout' %}" class="logout-form">
+        {% csrf_token %}
+        <button type="submit" class="btn btn-outline-warning" >Cerrar Sesión</button>
+    </form>
+    </div>
 
-    {% if campeonato %}
-        <a href="{% url 'detalle_campeonato' campeonato.id %}" class="back-link">Volver al Detalle del Campeonato</a>
-    {% endif %}
 </div>
 

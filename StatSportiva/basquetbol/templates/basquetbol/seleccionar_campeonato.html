@@ -1,0 +1,12 @@
+<div class="container">
+    <h1>Selecciona un Campeonato</h1>
+    <ul>
+        {% for campeonato in campeonatos %}
+        <li>
+            <a href="{% url 'bracket_eliminatorias' campeonato.id %}">{{ campeonato.nombre }}</a>
+        </li>
+        {% empty %}
+        <p>No hay campeonatos disponibles.</p>
+        {% endfor %}
+    </ul>
+</div>

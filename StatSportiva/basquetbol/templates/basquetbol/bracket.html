@@ -1,249 +1,348 @@
-{% load static %}
-
 <!DOCTYPE html>
 <html lang="es">
+    {% load static %}
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Bracket Triangular - Eliminatorias</title>
-    <link rel="stylesheet" href="{% static 'css/style.css' %}">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
+    <title>Bracket del Campeonato</title>
+    <link rel="stylesheet" href="{% static 'css/index.css' %}">
+
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-
-    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
-
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
-        body {
-            background-color: #f4f6f8;
-            color: #333;
-            font-family: 'Roboto', sans-serif;
-        }
-        
-        .container {
-            padding-top: 100px;
-            padding-bottom: 50px;
-        }
-        
-        /* Triangular Bracket */
-        .bracket-triangle {
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            position: relative;
-            gap: 30px;
-        }
-        
-        .bracket-level {
-            display: flex;
-            justify-content: center;
-            gap: 40px;
-        }
-        
-        .bracket-match {
-            background-color: #ffffff;
-            border: 2px solid #003366;
-            border-radius: 10px;
-            padding: 15px 20px;
-            width: 200px;
-            text-align: center;
-            box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
-            position: relative;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            overflow: hidden;
-        }
-        
-        .bracket-match img.team-logo {
-            width: 50px;
-            height: 50px;
-            object-fit: contain;
-            margin-bottom: 10px;
-        }
-        
-        .team {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #003366;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px;
-        }
-        
-        .vs-container {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            margin: 10px 0;
-            height: 50px;
-        }
-        
-        .vs-text {
-            font-size: 1.5rem;
-            font-weight: bold;
-            color: #003366;
-            background: #f8f9fa;
-            padding: 5px 15px;
-            border-radius: 5px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
-        }
-        
-        .bracket-match:hover {
-            background-color: #eef3fa;
-            border-color: #007bff;
-            transform: scale(1.05);
-            transition: all 0.3s ease-in-out;
-        }
-        
-        .team {
-            font-weight: bold;
-            font-size: 1rem;
-            color: #003366;
-            white-space: nowrap;
-            overflow: hidden;
-            text-overflow: ellipsis;
-            max-width: 180px; /* Para evitar que el texto salga del cuadro */
-        }
-        
-        .vs {
-            font-size: 0.9rem;
-            color: #555;
-            margin: 5px 0;
-            text-align: center;
-        }
-        
-        .match-date {
-            font-size: 0.8rem;
-            color: #777;
-            margin-top: 10px;
-            text-align: center;
-            white-space: nowrap;
-        }
-        
-        
-        /* Triangle Connectors */
-        .triangle-connector {
-            width: 0;
-            height: 0;
-            border-left: 25px solid transparent;
-            border-right: 25px solid transparent;
-            border-top: 40px solid #003366;
-            margin-top: -10px;
-        }
-        
-        /* Margins for footer and navbar */
-        .mt-5 {
-            margin-top: 120px !important;
-        }
-        
-        .mb-5 {
-            margin-bottom: 80px !important;
-        }
-        
-        /* Responsive Design */
-        @media (max-width: 768px) {
-            .bracket-level {
-                flex-direction: column;
-                align-items: center;
-                gap: 20px;
-            }
-            .bracket-match {
-                width: 160px;
-            }
-            .triangle-connector {
-                border-left: 20px solid transparent;
-                border-right: 20px solid transparent;
-                border-top: 30px solid #003366;
-            }
-        }
-         
+:root {
+    --primary-bg: #121212;
+    --secondary-bg: #1f1f1f;
+    --highlight-color: #ffd700;
+    --text-color: #ffffff;
+    --border-color: #333333;
+    --hover-bg: #1e1e1e;
+    --font-family: "Montserrat", sans-serif;
+}
+
+html, body {
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-family);
+    color: var(--text-color);
+    background-color: var(--primary-bg);
+    display: flex;
+    flex-direction: column;
+}
+
+.container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    max-width: 1500px;
+    margin: 100px auto;
+    background-color: var(--secondary-bg);
+    border-radius: 10px;
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.4);
+}
+
+h1, h2 {
+    text-align: center;
+    color: var(--highlight-color);
+    margin-bottom: 20px;
+}
+
+#selector-campeonato {
+    padding: 20px;
+    background-color: var(--secondary-bg);
+    border: 2px solid var(--highlight-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    text-align: center;
+    margin-bottom: 30px;
+    width: 100%;
+    max-width: 500px;
+}
+
+#selector-campeonato label {
+    display: block;
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+    font-weight: bold;
+    color: var(--highlight-color);
+    text-transform: uppercase;
+}
+
+#selector-campeonato select {
+    width: 100%;
+    padding: 10px;
+    font-size: 1rem;
+    border: 2px solid var(--border-color);
+    border-radius: 5px;
+    background-color: var(--primary-bg);
+    color: var(--text-color);
+    font-family: var(--font-family);
+    transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+#selector-campeonato select:focus {
+    border-color: var(--highlight-color);
+    box-shadow: 0 0 5px var(--highlight-color);
+    outline: none;
+}
+
+.bracket-container {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    gap: 20px;
+    align-items: center;
+    margin-top: 40px;
+    width: 100%;
+}
+
+.bracket-level {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 15px;
+}
+
+.bracket-match {
+    background-color: var(--secondary-bg);
+    border: 1px solid var(--border-color);
+    padding: 15px;
+    border-radius: 8px;
+    width: 100%;
+    max-width: 220px;
+    text-align: center;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+}
+
+.team {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 0.9rem;
+    margin: 5px 0;
+}
+
+.team img {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    border: 1px solid var(--highlight-color);
+}
+
+.no-data {
+    font-style: italic;
+    text-align: center;
+    color: #e74c3c;
+    padding: 20px;
+    border: 1px dashed #e74c3c;
+    border-radius: 8px;
+}
+
+/* Grid Layout for Bracket */
+.bracket-container {
+    grid-template-areas:
+        "cuartos-left . semifinal-left final semifinal-right . cuartos-right";
+}
+
+.cuartos-left {
+    grid-area: cuartos-left;
+}
+
+.semifinal-left {
+    grid-area: semifinal-left;
+}
+
+.final {
+    grid-area: final;
+}
+
+.semifinal-right {
+    grid-area: semifinal-right;
+}
+
+.cuartos-right {
+    grid-area: cuartos-right;
+}
+
+/* Responsive Adjustments */
+@media (max-width: 1024px) {
+    .bracket-container {
+        grid-template-columns: 1fr 1fr 1fr;
+        grid-template-areas:
+            "cuartos-left semifinal-left final"
+            "cuartos-right semifinal-right final";
+    }
+
+    .bracket-level {
+        align-items: center;
+    }
+
+    #selector-campeonato {
+        max-width: 350px;
+    }
+}
+
+@media (max-width: 768px) {
+    .bracket-container {
+        grid-template-columns: 1fr;
+        grid-template-areas:
+            "cuartos-left"
+            "semifinal-left"
+            "final"
+            "semifinal-right"
+            "cuartos-right";
+    }
+}
+
+footer {
+    width: 100%;
+    background-color: var(--secondary-bg);
+    color: var(--text-color);
+    text-align: center;
+    padding: 20px 0;
+    border-top: 2px solid var(--highlight-color);
+}
+
 
     </style>
 </head>
-{% include 'partials/header.html' %}
-
 <body>
-    <div class="container mt-5 mb-5 text-center">
-        <!-- Título -->
-        <h1 class="text-uppercase font-weight-bold mb-5" style="color: #003366;">Eliminatorias Campeonato: {{ campeonato.nombre }}</h1>
-    
-        <div class="bracket-triangle">
-            <!-- Cuartos -->
-            <div class="bracket-level">
-                {% for partido in partidos_cuartos %}
-                <div class="bracket-match shadow-sm">
+    {% include 'partials/header.html' %}
+
+    <div class="container">
+        <!-- Formulario para seleccionar campeonato -->
+        <form id="selector-campeonato" class="text-center mb-4">
+            <label for="campeonato_id" style="color: var(--text-color);">Selecciona un campeonato:</label>
+            <select name="campeonato_id" id="campeonato_id">
+                {% for campeonato in todos_los_campeonatos %}
+                <option value="{{ campeonato.id }}" {% if campeonato.id == seleccionado_id %}selected{% endif %}>
+                    {{ campeonato.nombre }}
+                </option>
+                {% endfor %}
+            </select>
+        </form>
+
+        <!-- Mensaje de Estado -->
+        {% if campeonato %}
+        <h1>{{ campeonato.nombre }}</h1>
+
+        <div class="bracket-container">
+            <!-- Cuartos de Final Izquierda -->
+            <div class="bracket-level cuartos-left">
+                <h2>Cuartos de Final</h2>
+                {% for partido in partidos_cuartos|slice:":2" %}
+                <div class="bracket-match">
                     <div class="team">
-                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
-                    </div>
-                    <div class="vs-container">
-                        <div class="vs-text">VS</div>
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}">
+                        {{ partido.equipo_local.nombre_equipo }}
                     </div>
                     <div class="team">
-                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}">
+                        {{ partido.equipo_visitante.nombre_equipo }}
                     </div>
-                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
                 </div>
+                {% empty %}
+                <p class="no-data">No hay partidos en los cuartos de final.</p>
                 {% endfor %}
             </div>
-    
-            <!-- Conector -->
-            <div class="triangle-connector"></div>
-    
-            <!-- Semifinal -->
-            <div class="bracket-level">
-                {% for partido in partidos_semifinal %}
-                <div class="bracket-match shadow-sm">
+
+            <!-- Semifinal Izquierda -->
+            <div class="bracket-level semifinal-left">
+                <h2>Semifinal</h2>
+                {% for partido in partidos_semifinal|slice:":1" %}
+                <div class="bracket-match">
                     <div class="team">
-                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido.goles_local|default:"-" }}</div>
-                    </div>
-                    <div class="vs-container">
-                        <div class="vs-text">VS</div>
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}">
+                        {{ partido.equipo_local.nombre_equipo }}
                     </div>
                     <div class="team">
-                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido.goles_visitante|default:"-" }}</div>
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}">
+                        {{ partido.equipo_visitante.nombre_equipo }}
                     </div>
-                    <small class="match-date">{{ partido.fecha|date:"d M, H:i" }}</small>
                 </div>
+                {% empty %}
+                <p class="no-data">No hay partidos en la semifinal.</p>
                 {% endfor %}
             </div>
-    
-            <!-- Conector -->
-            <div class="triangle-connector"></div>
-    
+
             <!-- Final -->
-            <div class="bracket-level">
+            <div class="bracket-level final">
+                <h2>Final</h2>
                 {% if partido_final %}
-                <div class="bracket-match shadow-lg">
+                <div class="bracket-match">
                     <div class="team">
-                        <img src="{{ partido_final.equipo_local.logo.url }}" alt="{{ partido_final.equipo_local.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido_final.goles_local|default:"-" }}</div>
-                    </div>
-                    <div class="vs-container">
-                        <div class="vs-text">VS</div>
+                        <img src="{{ partido_final.equipo_local.logo.url }}" alt="{{ partido_final.equipo_local.nombre_equipo }}">
+                        {{ partido_final.equipo_local.nombre_equipo }}
                     </div>
                     <div class="team">
-                        <img src="{{ partido_final.equipo_visitante.logo.url }}" alt="{{ partido_final.equipo_visitante.nombre_equipo }}" class="team-logo">
-                        <div class="score">{{ partido_final.goles_visitante|default:"-" }}</div>
+                        <img src="{{ partido_final.equipo_visitante.logo.url }}" alt="{{ partido_final.equipo_visitante.nombre_equipo }}">
+                        {{ partido_final.equipo_visitante.nombre_equipo }}
                     </div>
-                    <small class="match-date">{{ partido_final.fecha|date:"d M, H:i" }}</small>
                 </div>
                 {% else %}
-                <p style="color: #777;">Aún no se ha programado la final.</p>
+                <p class="no-data">No hay partido programado para la final.</p>
                 {% endif %}
             </div>
+
+            <!-- Semifinal Derecha -->
+            <div class="bracket-level semifinal-right">
+                <h2>Semifinal</h2>
+                {% for partido in partidos_semifinal|slice:"1:" %}
+                <div class="bracket-match">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}">
+                        {{ partido.equipo_local.nombre_equipo }}
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}">
+                        {{ partido.equipo_visitante.nombre_equipo }}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="no-data">No hay partidos en la semifinal.</p>
+                {% endfor %}
+            </div>
+
+            <!-- Cuartos de Final Derecha -->
+            <div class="bracket-level cuartos-right">
+                <h2>Cuartos de Final</h2>
+                {% for partido in partidos_cuartos|slice:"2:" %}
+                <div class="bracket-match">
+                    <div class="team">
+                        <img src="{{ partido.equipo_local.logo.url }}" alt="{{ partido.equipo_local.nombre_equipo }}">
+                        {{ partido.equipo_local.nombre_equipo }}
+                    </div>
+                    <div class="team">
+                        <img src="{{ partido.equipo_visitante.logo.url }}" alt="{{ partido.equipo_visitante.nombre_equipo }}">
+                        {{ partido.equipo_visitante.nombre_equipo }}
+                    </div>
+                </div>
+                {% empty %}
+                <p class="no-data">No hay partidos en los cuartos de final.</p>
+                {% endfor %}
+            </div>
         </div>
+        {% else %}
+        <p class="no-data">Por favor, selecciona un campeonato para ver los detalles.</p>
+        {% endif %}
     </div>
-    
-    
-{% include 'partials/footer.html' %}
+    </div>
+
+    <script>
+        $(document).ready(function() {
+            $('#campeonato_id').change(function() {
+                var campeonatoId = $(this).val();
+                var url = "{% url 'bracket_eliminatorias' 0 %}".replace("0", campeonatoId);
+                window.location.href = url;
+            });
+        });
+    </script>
 
 </body>
+{% include 'partials/footer.html' %}
+
 </html>

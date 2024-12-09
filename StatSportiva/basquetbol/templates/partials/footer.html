@@ -1,48 +1,155 @@
 {% load static %}
-<link rel="stylesheet" href="{% static 'css/index.css' %}">
 <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css">
-<link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
 <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <link href="https://cdn.jsdelivr.net/npm/remixicon@3.2.0/fonts/remixicon.css" rel="stylesheet">
-  <!-- Footer -->
-    <footer class="footer">
-        <div class="container-foot">
-            <div class="row">
-                <div class="footer-col">
-                    <h4>StatSportiva</h4>
-                    <ul>
-                        <li><a href="#">Sobre Nosotros</a></li>
-                        <li><a href="#">Nuestros servicios</a></li>
-                        <li><a href="#">Politica & Privacidad</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Ayuda</h4>
-                    <ul>
-                        <li><a href="#">FAQ</a></li>
-                        <li><a href="#">Contactanos</a></li>
-                        <li><a href="#">Foro</a></li>
-                        <li><a href="#">Ubicación</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Campeonatos</h4>
-                    <ul>
-                        <li><a href="#">Equipos</a></li>
-                        <li><a href="#">Partidos</a></li>
-                        <li><a href="#">Estadisticas</a></li>
-                        <li><a href="#">Posiciones</a></li>
-                    </ul>
-                </div>
-                <div class="footer-col">
-                    <h4>Siguenos</h4>
-                    <div class="social-links">
-                        <a href="#"><i class="fab fa-facebook-f"></i></a>
-                        <a href="#"><i class="fab fa-twitter"></i></a>
-                        <a href="#"><i class="fab fa-instagram"></i></a>
-                        <a href="#"><i class="fab fa-linkedin-in"></i></a>
-                    </div>
+<style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap');
+
+    :root {
+        --footer-bg-color: #121212;
+        --footer-highlight-color: #e91e63;
+        --footer-text-color: #ffffff;
+        --footer-link-color: #bbbbbb;
+        --footer-link-hover-color: #ffffff;
+        --footer-social-bg: rgba(255, 255, 255, 0.2);
+        --footer-social-hover-bg: #ffffff;
+        --footer-social-hover-text: #24262b;
+    }
+
+    .container-foot {
+        max-width: 1170px;
+        margin: auto;
+    }
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+    }
+
+    ul {
+        list-style: none;
+    }
+
+    .footer {
+        background-color: hsl(220, 24%, 12%);
+        padding: 70px 0;
+    }
+
+    .footer-col {
+        width: 25%;
+        padding: 0 15px;
+    }
+
+    .footer-col h4 {
+        font-size: 18px;
+        color: var(--footer-text-color);
+        text-transform: capitalize;
+        margin-bottom: 35px;
+        font-weight: 500;
+        position: relative;
+    }
+
+    .footer-col h4::before {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: -10px;
+        background-color: var(--footer-highlight-color);
+        height: 2px;
+        box-sizing: border-box;
+        width: 50px;
+    }
+
+    .footer-col ul li:not(:last-child) {
+        margin-bottom: 10px;
+    }
+
+    .footer-col ul li a {
+        font-size: 16px;
+        text-transform: capitalize;
+        color: var(--footer-link-color);
+        text-decoration: none;
+        font-weight: 300;
+        display: block;
+        transition: all 0.3s ease;
+    }
+
+    .footer-col ul li a:hover {
+        color: var(--footer-link-hover-color);
+        padding-left: 8px;
+    }
+
+    .footer-col .social-links a {
+        display: inline-block;
+        height: 40px;
+        width: 40px;
+        background-color: var(--footer-social-bg);
+        margin: 0 10px 10px 0;
+        text-align: center;
+        line-height: 40px;
+        border-radius: 50%;
+        color: var(--footer-text-color);
+        transition: all 0.5s ease;
+    }
+
+    .footer-col .social-links a:hover {
+        color: var(--footer-social-hover-text);
+        background-color: var(--footer-social-hover-bg);
+    }
+
+    /* Responsividad */
+    @media (min-width: 768px) {
+        .footer-col {
+            width: 50%; /* Dos columnas en pantallas medianas */
+        }
+    }
+
+    @media (min-width: 992px) {
+        .footer-col {
+            width: 25%; /* Cuatro columnas en pantallas grandes */
+        }
+    }
+</style>
+
+<!-- Footer -->
+<footer class="footer">
+    <div class="container-foot">
+        <div class="row">
+            <div class="footer-col">
+                <h4>StatSportiva</h4>
+                <ul>
+                    <li><a href="#">Sobre Nosotros</a></li>
+                    <li><a href="#">Nuestros servicios</a></li>
+                    <li><a href="#">Politica & Privacidad</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Ayuda</h4>
+                <ul>
+                    <li><a href="#">FAQ</a></li>
+                    <li><a href="#">Contactanos</a></li>
+                    <li><a href="#">Foro</a></li>
+                    <li><a href="#">Ubicación</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Campeonatos</h4>
+                <ul>
+                    <li><a href="#">Equipos</a></li>
+                    <li><a href="#">Partidos</a></li>
+                    <li><a href="#">Estadisticas</a></li>
+                    <li><a href="#">Posiciones</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h4>Siguenos</h4>
+                <div class="social-links">
+                    <a href="#"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#"><i class="fab fa-twitter"></i></a>
+                    <a href="#"><i class="fab fa-instagram"></i></a>
+                    <a href="#"><i class="fab fa-linkedin-in"></i></a>
                 </div>
             </div>
         </div>
-   </footer>
+    </div>
+</footer>

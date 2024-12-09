@@ -105,6 +105,11 @@ def partidos_con_estadisticas(request):
 import os
 
 def proximo_partido(request):
+    equipo_inscrito = (
+        Equipo.objects.filter(entrenador__user=request.user).exists()
+        if request.user.is_authenticated
+        else False
+    )
     """
     Muestra el próximo partido y calcula las probabilidades si aplica.
     Responde a solicitudes AJAX con datos del próximo partido.
@@ -226,6 +231,7 @@ def proximo_partido(request):
             'probabilidad_visitante': probabilidad_visitante,
             'posiciones': posiciones,
             'videos': videos,
+            'equipo_inscrito': equipo_inscrito,
         },
     )
 
@@ -365,6 +371,7 @@ def perfil_usuario(request):
 
 
 
+# Vista actualizada
 @login_required
 def perfil_usuario(request):
     try:
@@ -418,8 +425,12 @@ def perfil_usuario(request):
             puntos_visitante=Sum('puntos_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
             faltas_local=Sum('faltas_equipo_local', filter=Q(partido__equipo_local=equipo)),
             faltas_visitante=Sum('faltas_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
-            rebotes_local=Sum('rebotes_equipo_local', filter=Q(partido__equipo_local=equipo)),
-            rebotes_visitante=Sum('rebotes_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
+            rebotes_ofensivos_local=Sum('rebotes_ofensivos_equipo_local', filter=Q(partido__equipo_local=equipo)),
+            rebotes_ofensivos_visitante=Sum('rebotes_ofensivos_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
+            rebotes_defensivos_local=Sum('rebotes_defensivos_equipo_local', filter=Q(partido__equipo_local=equipo)),
+            rebotes_defensivos_visitante=Sum('rebotes_defensivos_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
+            robos_local=Sum('robos_equipo_local', filter=Q(partido__equipo_local=equipo)),
+            robos_visitante=Sum('robos_equipo_visitante', filter=Q(partido__equipo_visitante=equipo)),
         )
 
         estadisticas_por_fase[fase] = {
@@ -429,11 +440,10 @@ def perfil_usuario(request):
             'triples': (estadisticas_fase['triples_local'] or 0) + (estadisticas_fase['triples_visitante'] or 0),
             'puntos': (estadisticas_fase['puntos_local'] or 0) + (estadisticas_fase['puntos_visitante'] or 0),
             'faltas': (estadisticas_fase['faltas_local'] or 0) + (estadisticas_fase['faltas_visitante'] or 0),
-            'rebotes': (estadisticas_fase['rebotes_local'] or 0) + (estadisticas_fase['rebotes_visitante'] or 0),
+            'rebotes_ofensivos': (estadisticas_fase['rebotes_ofensivos_local'] or 0) + (estadisticas_fase['rebotes_ofensivos_visitante'] or 0),
+            'rebotes_defensivos': (estadisticas_fase['rebotes_defensivos_local'] or 0) + (estadisticas_fase['rebotes_defensivos_visitante'] or 0),
+            'robos': (estadisticas_fase['robos_local'] or 0) + (estadisticas_fase['robos_visitante'] or 0),
         }
-
-
-
 
     # Próximos partidos
     proximos_partidos = Partido.objects.filter(
@@ -456,47 +466,84 @@ def perfil_usuario(request):
 
 
 
+from django.shortcuts import render, get_object_or_404
+from .models import Campeonato, Partido
+
+def seleccionar_campeonato(request):
+    campeonato_id = request.GET.get('campeonato_id')  # Obtén el ID del campeonato desde el formulario
+    campeonatos = Campeonato.objects.all()
+    campeonato = None
+    partidos_cuartos, partidos_semifinal, partido_final = [], [], None
+
+    if campeonato_id:
+        campeonato = get_object_or_404(Campeonato, id=campeonato_id)
+        partidos_cuartos = Partido.objects.filter(campeonato=campeonato, fase='Cuartos').order_by('fecha')
+        partidos_semifinal = Partido.objects.filter(campeonato=campeonato, fase='Semifinal').order_by('fecha')
+        partido_final = Partido.objects.filter(campeonato=campeonato, fase='Final').first()
+
+    return render(
+        request,
+        'basquetbol/seleccionar_campeonato.html',
+        {
+            'campeonatos': campeonatos,
+            'campeonato': campeonato,
+            'partidos_cuartos': partidos_cuartos,
+            'partidos_semifinal': partidos_semifinal,
+            'partido_final': partido_final,
+            'seleccionado_id': int(campeonato_id) if campeonato_id else None,
+        }
+    )
+
+
+from django.shortcuts import render, get_object_or_404
+from .models import Campeonato, Partido
+
+from django.http import JsonResponse
+
+from django.shortcuts import render, get_object_or_404
+from .models import Campeonato, Partido
+
+from django.shortcuts import render, get_object_or_404
+from .models import Campeonato, Partido
+
 def bracket_eliminatorias(request, campeonato_id):
-    # Obtener el campeonato y los partidos por fase
     campeonato = get_object_or_404(Campeonato, id=campeonato_id)
+
     partidos_cuartos = Partido.objects.filter(campeonato=campeonato, fase='Cuartos').order_by('fecha')
     partidos_semifinal = Partido.objects.filter(campeonato=campeonato, fase='Semifinal').order_by('fecha')
     partido_final = Partido.objects.filter(campeonato=campeonato, fase='Final').first()
+
+    # Obtener todos los campeonatos para el formulario
+    todos_los_campeonatos = Campeonato.objects.all()
 
     context = {
         'campeonato': campeonato,
         'partidos_cuartos': partidos_cuartos,
         'partidos_semifinal': partidos_semifinal,
         'partido_final': partido_final,
+        'todos_los_campeonatos': todos_los_campeonatos,
+        'seleccionado_id': campeonato.id,  # Pasar el ID seleccionado al contexto
     }
 
     return render(request, 'basquetbol/bracket.html', context)
 
 
+def buscar_partidos(request):
+    query = request.GET.get('q', '')  # Obtener el término de búsqueda del formulario
+    partidos = Partido.objects.all()
 
-def estadisticas_equipos(request):
-    equipos = Equipo.objects.annotate(
-        total_puntos_local=Sum('partidos_local__estadisticas__puntos_equipo_local'),
-        total_puntos_visitante=Sum('partidos_visitante__estadisticas__puntos_equipo_visitante'),
-        total_triples_local=Sum('partidos_local__estadisticas__triples_equipo_local'),
-        total_triples_visitante=Sum('partidos_visitante__estadisticas__triples_equipo_visitante'),
-        total_pases_local=Sum('partidos_local__estadisticas__pases_equipo_local'),
-        total_pases_visitante=Sum('partidos_visitante__estadisticas__pases_equipo_visitante'),
-        total_rebotes_local=Sum('partidos_local__estadisticas__rebotes_equipo_local'),
-        total_rebotes_visitante=Sum('partidos_visitante__estadisticas__rebotes_equipo_visitante'),
-        total_faltas_local=Sum('partidos_local__estadisticas__faltas_equipo_local'),
-        total_faltas_visitante=Sum('partidos_visitante__estadisticas__faltas_equipo_visitante'),
-    ).annotate(
-        total_puntos=F('total_puntos_local') + F('total_puntos_visitante'),
-        total_triples=F('total_triples_local') + F('total_triples_visitante'),
-        total_pases=F('total_pases_local') + F('total_pases_visitante'),
-        total_rebotes=F('total_rebotes_local') + F('total_rebotes_visitante'),
-        total_faltas=F('total_faltas_local') + F('total_faltas_visitante'),
-    ).order_by('-total_puntos')
+    if query:
+        partidos = partidos.filter(
+            Q(equipo_local__nombre_equipo__icontains=query) |
+            Q(equipo_visitante__nombre_equipo__icontains=query)
+        )
 
-    return render(request, 'basquetbol/estadisticas_equipos.html', {
-        'equipos': equipos,
+    return render(request, 'basquetbol/buscar_partidos.html', {
+        'partidos': partidos,
+        'query': query,
     })
+
+
 
 
 
@@ -1090,6 +1137,14 @@ def actualizar_fase_partidos(campeonato):
 
 
 #------------------------------------------------------- ADMINISTRADOR Y PLANILLERO -------------------------------------------------------------------------------
+from django.contrib.auth.decorators import login_required, user_passes_test
+from django.shortcuts import get_object_or_404, render
+from django.http import JsonResponse
+from .models import Partido, PartidoEstadistica
+from .forms import PartidoStatsForm
+from django.db import transaction
+
+
 @login_required
 @user_passes_test(lambda u: u.groups.filter(name='Planillero').exists())  # Solo usuarios 'Planillero'
 def registrar_estadisticas_partido(request, partido_id):
@@ -1104,6 +1159,7 @@ def registrar_estadisticas_partido(request, partido_id):
         accion = request.POST.get('accion')  # 'add' o 'subtract'
 
         try:
+            # Actualizar los puntos según el equipo y acción
             if equipo == 'local':
                 if accion == 'add':
                     estadisticas.puntos_equipo_local += 1
@@ -1117,7 +1173,12 @@ def registrar_estadisticas_partido(request, partido_id):
             else:
                 return JsonResponse({'error': 'Equipo inválido'}, status=400)
 
+            # Guardar las estadísticas actualizadas
             estadisticas.save()
+
+            # Actualizar las posiciones si el partido pertenece a las clasificatorias
+            if partido.fase == 'Clasificatorias':
+                actualizar_posiciones(partido)
 
             return JsonResponse({
                 'puntos_local': estadisticas.puntos_equipo_local,
@@ -1127,7 +1188,25 @@ def registrar_estadisticas_partido(request, partido_id):
         except Exception as e:
             return JsonResponse({'error': f'Error al actualizar puntos: {str(e)}'}, status=400)
 
-    # Para solicitudes normales, renderizar la página
+    # Procesar solicitudes normales (no AJAX)
+    if request.method == 'POST':
+        form = PartidoStatsForm(request.POST, instance=estadisticas)
+        if form.is_valid():
+            with transaction.atomic():  # Usar transacción para garantizar consistencia
+                form.save()
+                # Actualizar posiciones solo si es clasificatoria
+                if partido.fase == 'Clasificatorias':
+                    actualizar_posiciones(partido)
+            messages.success(request, "Estadísticas registradas y posiciones actualizadas correctamente.")
+            return redirect('lista_partidos', campeonato_id=partido.campeonato.id)
+        else:
+            return render(request, 'basquetbol/registrar_estadisticas.html', {
+                'form': form,
+                'partido': partido,
+                'errors': form.errors,
+            })
+
+    # Renderizar el formulario con los datos actuales
     form = PartidoStatsForm(instance=estadisticas)
     return render(request, 'basquetbol/registrar_estadisticas.html', {
         'form': form,

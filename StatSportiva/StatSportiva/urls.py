@@ -6,7 +6,7 @@ from django.conf.urls.static import static
 from basquetbol import views
 from django.urls import path, include
 from basquetbol.views import confirmar_correo
-
+from basquetbol.views import seleccionar_campeonato, bracket_eliminatorias
 
 urlpatterns = [
     #------------------ KEIJI---------------------------------
@@ -66,5 +66,13 @@ urlpatterns = [
     path("agregar_comentario/", views.agregar_comentario, name="agregar_comentario"),
     path('eliminar-publicacion/<int:publicacion_id>/', views.eliminar_publicacion, name='eliminar_publicacion'),
     path('eliminar-comentario/<int:comentario_id>/', views.eliminar_comentario, name='eliminar_comentario'),
+
+    # -------------------------- Basquetbol --------------------------
+    path('seleccionar-campeonato/', seleccionar_campeonato, name='seleccionar_campeonato'),
+    path('bracket/<int:campeonato_id>/', bracket_eliminatorias, name='bracket_eliminatorias'),
+    path('seleccionar_campeonato/', views.seleccionar_campeonato, name='seleccionar_campeonato'),
+    path('campeonatos/<int:campeonato_id>/bracket/', views.bracket_eliminatorias, name='bracket_eliminatorias'),
+    path('bracket/<int:campeonato_id>/', bracket_eliminatorias, name='bracket_eliminatorias'),
+    path('seleccionar-campeonato/', seleccionar_campeonato, name='seleccionar_campeonato'),
 
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
