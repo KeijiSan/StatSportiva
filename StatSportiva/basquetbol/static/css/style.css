@@ -1734,6 +1734,116 @@ ul{
 .back-link:hover {
     text-decoration: underline;
 }
+/* Responsividad */
+@media (max-width: 768px) {
+    .container {
+        padding: 20px;
+        width: 100%; /* Ocupa todo el ancho de la pantalla */
+        margin: 20px auto; /* Reduce el margen superior */
+    }
+
+    .title {
+        font-size: 22px; /* Reduce el tamaño del título */
+        margin-bottom: 20px;
+    }
+
+    .team-logo {
+        max-width: 120px; /* Reduce el tamaño del logo */
+        border-width: 3px; /* Ajusta el grosor del borde */
+    }
+
+    .section-title {
+        font-size: 20px; /* Reduce el tamaño de los títulos de las secciones */
+        margin-top: 20px;
+        margin-bottom: 15px;
+        padding-bottom: 8px;
+    }
+
+    .form-container {
+        padding: 20px; /* Reduce el padding del contenedor del formulario */
+    }
+
+    .jugador-form {
+        flex-direction: column; /* Coloca los elementos en columna */
+        align-items: flex-start; /* Alinea los elementos al inicio */
+        padding: 10px; /* Reduce el padding */
+    }
+
+    .jugador-form input {
+        margin: 0 0 10px 0; /* Ajusta el margen para evitar espacios laterales */
+        width: 100%; /* Ocupa todo el ancho disponible */
+        font-size: 14px; /* Reduce el tamaño del texto */
+    }
+
+    .add-player-btn {
+        padding: 8px 15px; /* Ajusta el padding */
+        font-size: 12px; /* Reduce el tamaño de la fuente */
+    }
+
+    .submit-btn,
+    .abandonar-btn {
+        width: 100%; /* Ocupa todo el ancho disponible */
+        padding: 10px; /* Ajusta el padding */
+        font-size: 14px; /* Reduce el tamaño de la fuente */
+    }
+
+    .back-link {
+        font-size: 14px; /* Reduce el tamaño del texto */
+        margin-top: 15px;
+    }
+}
+
+@media (max-width: 480px) {
+    .container {
+        padding: 15px; /* Reduce más el padding para pantallas pequeñas */
+    }
+
+    .title {
+        font-size: 20px; /* Reduce el tamaño del título aún más */
+        margin-bottom: 15px;
+    }
+
+    .team-logo {
+        max-width: 100px; /* Reduce aún más el tamaño del logo */
+        border-width: 2px;
+    }
+
+    .section-title {
+        font-size: 18px; /* Ajusta el tamaño del texto */
+        margin-top: 15px;
+        margin-bottom: 10px;
+    }
+
+    .form-container {
+        padding: 15px; /* Reduce más el padding */
+    }
+
+    .jugador-form {
+        padding: 8px; /* Menor padding */
+    }
+
+    .jugador-form input {
+        font-size: 12px; /* Reduce el tamaño del texto en el input */
+    }
+
+    .add-player-btn {
+        padding: 6px 12px; /* Ajusta el padding del botón */
+        font-size: 10px;
+    }
+
+    .submit-btn,
+    .abandonar-btn {
+        padding: 8px 15px; /* Reduce aún más el padding */
+        font-size: 12px; /* Ajusta el tamaño de la fuente */
+    }
+
+    .back-link {
+        font-size: 12px; /* Ajusta el tamaño del texto */
+        margin-top: 10px;
+    }
+}
+
+
 /*FIN PERFIL.HTML*/
 
 

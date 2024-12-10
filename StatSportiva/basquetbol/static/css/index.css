@@ -1731,12 +1731,12 @@ table tbody tr:last-child td {
     }
 
     .anuncio-izquierda, .anuncio-derecha {
-        flex: 0 0 200px; /* Reduce el ancho de los anuncios */
+        flex: 0 0 200px; /*Reduce el ancho de los anuncios */
     }
 
     .anuncio-img-iz, .anuncio-img-dr {
-        max-width: 100%; /* Asegura que las imágenes se ajusten */
-        height: auto; /* Mantiene las proporciones */
+        max-width: 100%; /* Asegura que las imágenes se ajusten * /
+        height: auto; / *Mantiene las proporciones */
         border-radius: 10px; /* Ajusta los bordes */
     }
 }
@@ -1744,12 +1744,11 @@ table tbody tr:last-child td {
 @media (max-width: 768px) {
     .contenedor-noticias {
         flex-direction: column; /* Cambia a disposición vertical */
-        gap: 15px; /* Espaciado entre elementos */
+        gap: 15px; /*Espaciado entre elementos */
     }
 
     .anuncio-izquierda, .anuncio-derecha {
-        flex: 0 0 150px; /* Reduce más el ancho de los anuncios */
-        margin: 0 auto; /* Centra los anuncios en pantallas pequeñas */
+        display: none; /* Oculta los anuncios en pantallas pequeñas */
     }
 
     .proximo-partido {
@@ -1765,10 +1764,6 @@ table tbody tr:last-child td {
 }
 
 @media (max-width: 480px) {
-    .anuncio-izquierda, .anuncio-derecha {
-        flex: 0 0 120px; /* Reduce aún más el tamaño de los anuncios */
-    }
-
     .contenedor-noticias {
         gap: 10px; /* Reduce aún más el espacio entre elementos */
     }

@@ -223,84 +223,145 @@
                 {% endif %}
 
                 <!-- Formularios para cada acción -->
-                <!-- Registrar Usuario -->
-                <div class="form-section" id="registrar-usuario">
-                    <h3>Registrar Usuario (Planillero o Administrador)</h3>
-                    <form method="post">
-                        {% csrf_token %}
-                        {{ usuario_form.as_p }}
-                        <div class="form-group">
-                            <label for="tipo_usuario">Tipo de Usuario:</label>
-                            <select name="tipo_usuario" id="tipo_usuario" class="form-control">
-                                <option value="planillero">Planillero</option>
-                                <option value="administrador">Administrador</option>
-                            </select>
-                        </div>
-                        <button type="submit" name="registrar_usuario" class="btn btn-primary">Registrar Usuario</button>
-                    </form>
-                </div>
+<!-- Registrar Usuario -->
+<div class="form-section" id="registrar-usuario">
+    <h3>Registrar Usuario (Planillero o Administrador)</h3>
+    <form method="post">
+        {% csrf_token %}
+        <!-- Campo oculto para indicar la acción -->
+        <input type="hidden" name="action" value="registrar_usuario">
+        
+        {{ usuario_form.as_p }}
+        <div class="form-group">
+            <label for="tipo_usuario">Tipo de Usuario:</label>
+            <select name="tipo_usuario" id="tipo_usuario" class="form-control">
+                <option value="planillero">Planillero</option>
+                <option value="administrador">Administrador</option>
+            </select>
+        </div>
+        <button type="submit" class="btn btn-primary">Registrar Usuario</button>
+    </form>
+</div>
 
-                <!-- Registrar Equipo -->
-                <div class="form-section" id="registrar-equipo">
-                    <h3>Registrar Equipo</h3>
-                    <form method="post" enctype="multipart/form-data">
-                        {% csrf_token %}
-                        {{ equipo_form.as_p }}
-                        {{ entrenador_form.as_p }}
-                        {{ jugador_formset.management_form }}
-                        {% for form in jugador_formset %}
-                            {{ form.as_p }}
-                        {% endfor %}
-                        <button type="submit" name="registrar_equipo" class="btn btn-primary">Registrar Equipo</button>
-                    </form>
-                </div>
 
-                <!-- Crear Campeonato -->
-                {% load widget_tweaks %}
+<div class="form-section" id="registrar-equipo">
+    <h3>Registrar Equipo</h3>
+    <form method="post" enctype="multipart/form-data">
+        {% csrf_token %}
+        <!-- Campo oculto para la acción -->
+        <input type="hidden" name="action" value="registrar_equipo">
+        
+        <!-- Selección del Usuario -->
+        <div class="form-group">
+            <label for="user_id">Seleccionar Usuario:</label>
+            <select name="user_id" id="user_id" class="form-control">
+                {% for user in todos_usuarios %}
+                    {% if user in usuarios_con_entrenador %}
+                        <option value="{{ user.id }}" style="text-decoration: line-through;" disabled>
+                            {{ user.username }} ({{ user.email }})
+                        </option>
+                    {% else %}
+                        <option value="{{ user.id }}">
+                            {{ user.username }} ({{ user.email }})
+                        </option>
+                    {% endif %}
+                {% endfor %}
+            </select>
+        </div>
 
-                <div class="form-section" id="crear-campeonato">
-                    <h3 class="text-center mb-4">Crear Campeonato</h3>
-                    <form method="post" class="p-4 rounded shadow-sm bg-light">
-                        {% csrf_token %}
-                
-                        <div class="form-group">
-                            <label for="id_nombre">Nombre del Campeonato:</label>
-                            {{ campeonato_form.nombre|add_class:"form-control" }}
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="id_fecha_inicio">Fecha de Inicio:</label>
-                            {{ campeonato_form.fecha_inicio|add_class:"form-control" }}
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="id_fecha_fin">Fecha de Fin:</label>
-                            {{ campeonato_form.fecha_fin|add_class:"form-control" }}
-                        </div>
-                
-                        <div class="form-group">
-                            <label for="id_descripcion">Descripción:</label>
-                            {{ campeonato_form.descripcion|add_class:"form-control" }}
-                        </div>
-                
-                        <div class="text-center">
-                            <button type="submit" name="crear_campeonato" class="btn btn-primary btn-lg">
-                                <i class="fas fa-plus-circle"></i> Crear Campeonato
-                            </button>
-                        </div>
-                    </form>
-                </div>
-                
+        <!-- Formulario del Equipo -->
+        {{ equipo_form.as_p }}
 
-                <!-- Listar Campeonatos -->
-                <div class="form-section" id="listar-campeonatos">
-                    <h3>Campeonatos Registrados</h3>
-                    <ul>
-                        {% for campeonato in campeonatos %}
-                            <li>{{ campeonato.nombre }} - Fecha de inicio: {{ campeonato.fecha_inicio }}</li>
-                        {% endfor %}
-                    </ul>
-                </div>
+        <!-- Formulario del Entrenador -->
+        {{ entrenador_form.as_p }}
+
+        <!-- Formulario para Jugadores -->
+        {{ jugador_formset.management_form }}
+        {% for form in jugador_formset %}
+            {{ form.as_p }}
+        {% endfor %}
+
+        <!-- Botón para Registrar -->
+        <div class="text-center mt-3">
+            <button type="submit" class="btn btn-primary btn-lg">
+                <i class="fas fa-plus-circle"></i> Registrar Equipo
+            </button>
+        </div>
+    </form>
+</div>
+
+
+    <!-- CREAR Campeonatos -->
+    <div class="form-section" id="crear-campeonato">
+        <h3 class="text-center mb-4">Crear Campeonato</h3>
+        <form method="post" class="p-4 rounded shadow-sm bg-light">
+            {% csrf_token %}
+        
+            <div class="form-group">
+                <label for="id_nombre">Nombre del Campeonato:</label>
+                <input type="text" name="nombre" id="id_nombre" class="form-control" value="{{ campeonato_form.nombre.value }}">
+            </div>
+        
+            <div class="form-group">
+                <label for="id_fecha_inicio">Fecha de Inicio:</label>
+                <input type="date" name="fecha_inicio" id="id_fecha_inicio" class="form-control" value="{{ campeonato_form.fecha_inicio.value }}">
+            </div>
+        
+            <div class="form-group">
+                <label for="id_fecha_fin">Fecha de Fin:</label>
+                <input type="date" name="fecha_fin" id="id_fecha_fin" class="form-control" value="{{ campeonato_form.fecha_fin.value }}">
+            </div>
+        
+            <div class="form-group">
+                <label for="id_descripcion">Descripción:</label>
+                <textarea name="descripcion" id="id_descripcion" class="form-control">{{ campeonato_form.descripcion.value }}</textarea>
+            </div>
+    
+            <div class="form-group">
+                <label for="id_max_equipos">Máximo de Equipos:</label>
+                <input type="number" name="max_equipos" id="id_max_equipos" class="form-control" value="{{ campeonato_form.max_equipos.value }}">
+            </div>
+    
+            <div class="form-group">
+                <label for="id_premios">Premios:</label>
+                <input type="text" name="premios" id="id_premios" class="form-control" value="{{ campeonato_form.premios.value }}">
+            </div>
+        
+            <div class="text-center">
+                <button type="submit" name="crear_campeonato" class="btn btn-primary btn-lg">
+                    <i class="fas fa-plus-circle"></i> Crear Campeonato
+                </button>
+            </div>
+        </form>
+    </div>
+    
+
+
+   <!-- Listar Campeonatos -->
+<div class="form-section" id="listar-campeonatos">
+    <h3>Campeonatos Registrados</h3>
+    <ul>
+        {% for campeonato in campeonatos %}
+            <li>
+                <strong>{{ campeonato.nombre }}</strong> - Fecha de inicio: {{ campeonato.fecha_inicio }}
+                <!-- Botón para modificar el campeonato -->
+                <form method="post" style="display: inline-block;">
+                    {% csrf_token %}
+                    <input type="hidden" name="modificar_campeonato" value="{{ campeonato.id }}">
+                    <button type="submit" class="btn btn-primary btn-sm">Modificar</button>
+                </form>
+                <!-- Botón para eliminar el campeonato -->
+                <form method="post" style="display: inline-block;">
+                    {% csrf_token %}
+                    <input type="hidden" name="eliminar_campeonato" value="{{ campeonato.id }}">
+                    <button type="submit" class="btn btn-danger btn-sm" onclick="return confirm('¿Estás seguro de eliminar este campeonato?');">Eliminar</button>
+                </form>
+            </li>
+        {% endfor %}
+    </ul>
+</div>
+
+
 
                 <!-- Listar Equipos -->
                 <div class="form-section" id="listar-equipos">
@@ -405,6 +466,7 @@
     <!-- Selección de Campeonato -->
     <form method="post" class="mb-4">
         {% csrf_token %}
+        <input type="hidden" name="action" value="ver_detalle_campeonato">
         <div class="form-group">
             <label for="campeonato_id">Seleccionar Campeonato:</label>
             <select name="campeonato_id" id="campeonato_id" class="form-control" onchange="this.form.submit()">
@@ -417,6 +479,7 @@
             </select>
         </div>
     </form>
+    
 
     {% if campeonato_seleccionado %}
         <!-- Información del Campeonato -->
@@ -438,9 +501,13 @@
             </form>
             <form method="post" action="{% url 'generar_fase_eliminatoria' campeonato_seleccionado.id %}" class="d-inline">
                 {% csrf_token %}
-                <button type="submit" class="btn btn-danger">Generar Fase Eliminatoria</button>
+                <button type="submit" class="btn btn-danger" 
+                        {% if partidos_eliminatoria.exists %}disabled{% endif %}>
+                    Generar Fase Eliminatoria
+                </button>
             </form>
         </div>
+        
 
         <!-- Clasificatorias -->
         <h3>Partidos de Clasificatorias</h3>
@@ -467,7 +534,6 @@
             <p>No hay partidos de fase clasificatoria disponibles.</p>
         {% endif %}
 
-        <!-- Eliminatoria -->
         <h3>Partidos de Fase Eliminatoria</h3>
         {% if partidos_eliminatoria %}
             <table class="table table-striped">
@@ -490,9 +556,11 @@
                     {% endfor %}
                 </tbody>
             </table>
-        {% else %}12000000000
+        {% else %}
             <p>No hay partidos de fase eliminatoria disponibles.</p>
         {% endif %}
+        
+        
     {% else %}
         <p class="text-center">Por favor selecciona un campeonato para ver los detalles.</p>
     {% endif %}

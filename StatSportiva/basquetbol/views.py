@@ -16,7 +16,7 @@ from django.db.models import F, Q, Sum
 from django.utils.timezone import now
 from itertools import combinations
 from random import shuffle, choice
-from datetime import timedelta
+from datetime import datetime, timedelta
 import joblib
 import pandas as pd
 
@@ -56,6 +56,7 @@ from django.db.models import Avg
 def tabla_posiciones(request):
     posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')  # Ordenar por puntos y partidos ganados
     return render(request, 'basquetbol/tabla_posiciones.html', {'posiciones': posiciones})
+
 
 
 
@@ -889,6 +890,11 @@ def generar_partidos_clasificatorias_view(request, campeonato_id):
 def generar_fase_eliminatoria(request, campeonato_id):
     campeonato = get_object_or_404(Campeonato, id=campeonato_id)
 
+    # Verificar si los partidos de cuartos ya fueron generados
+    if Partido.objects.filter(campeonato=campeonato, fase='Cuartos').exists():
+        messages.warning(request, "Los partidos de cuartos de final ya han sido generados para este campeonato.")
+        return redirect('detalle_campeonato', campeonato_id=campeonato.id)
+
     # Obtener los 8 equipos mejor clasificados
     posiciones = campeonato.posicion_set.order_by('-puntos')[:8]
     equipos = [posicion.equipo for posicion in posiciones]
@@ -900,7 +906,7 @@ def generar_fase_eliminatoria(request, campeonato_id):
     # Definir una fecha base a partir de la cual asignar fechas para los partidos
     fecha_base = timezone.now()
 
-    # Generar los partidos para los cuartos de final (antes llamado octavos)
+    # Generar los partidos para los cuartos de final
     for i in range(4):
         equipo_local = equipos[i]
         equipo_visitante = equipos[7 - i]  # Emparejar 1-8, 2-7, 3-6, 4-5
@@ -913,12 +919,12 @@ def generar_fase_eliminatoria(request, campeonato_id):
             campeonato=campeonato,
             equipo_local=equipo_local,
             equipo_visitante=equipo_visitante,
-            fase='Cuartos',  # Cambiado de 'Octavos' a 'Cuartos'
+            fase='Cuartos',  # Fase de cuartos de final
             fecha=fecha_partido  # Asignar la fecha al partido
         )
         PartidoEstadistica.objects.create(partido=partido)  # Crear la estadística para el partido
 
-    messages.success(request, f"Partidos de cuartos de final generados exitosamente.")
+    messages.success(request, "Partidos de cuartos de final generados exitosamente.")
     return redirect('detalle_campeonato', campeonato_id=campeonato.id)
 
 
@@ -1218,6 +1224,7 @@ def registrar_estadisticas_partido(request, partido_id):
 
 from .models import Video  # Importa el modelo de Video
 
+
 @login_required
 @user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='Administrador').exists())
 def gestionar_registros(request):
@@ -1227,6 +1234,10 @@ def gestionar_registros(request):
     jugador_formset = JugadorFormSet()
     campeonato_form = CrearCampeonatoForm()
 
+    # Obtener todos los usuarios y marcar los que ya tienen un entrenador registrado
+    usuarios_con_entrenador = User.objects.filter(entrenador__isnull=False)
+    todos_usuarios = User.objects.all()
+
     campeonatos = Campeonato.objects.all()
     equipos = Equipo.objects.all()
     posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')
@@ -1235,37 +1246,171 @@ def gestionar_registros(request):
     campeonato_seleccionado = None
     partidos_clasificatorias = []
     partidos_eliminatoria = []
+@login_required
+@user_passes_test(lambda u: u.is_superuser or u.groups.filter(name='Administrador').exists())
+def gestionar_registros(request):
+    # Formularios iniciales
+    usuario_form = RegistroForm()
+    equipo_form = InscripcionEquipoForm()
+    entrenador_form = EntrenadorForm()
+    jugador_formset = JugadorFormSet()
+    campeonato_form = CrearCampeonatoForm()
+
+    # Datos
+    usuarios_con_entrenador = User.objects.filter(entrenador__isnull=False)
+    todos_usuarios = User.objects.all()
+    campeonatos = Campeonato.objects.all()
+    equipos = Equipo.objects.all()
+    posiciones = Posicion.objects.all().order_by('-puntos', '-partidos_ganados')
+    videos = Video.objects.all()
+
+    # Variables auxiliares
+    campeonato_seleccionado = None
+    partidos_clasificatorias = []
+    partidos_eliminatoria = []
 
     if request.method == 'POST':
-        # Manejo del detalle del campeonato
-        if 'campeonato_id' in request.POST:
-            campeonato_id = request.POST.get('campeonato_id')
-            if campeonato_id:
-                try:
-                    campeonato_seleccionado = Campeonato.objects.get(id=campeonato_id)
-                    partidos_clasificatorias = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Clasificatorias')
-                    partidos_eliminatoria = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Eliminatoria')
-                except Campeonato.DoesNotExist:
-                    messages.error(request, "El campeonato seleccionado no existe.")
+        action = request.POST.get('action')  # Determina qué acción realizar
+        print(f"Acción recibida: {action}")  # Log para depuración
+        print(f"Datos POST: {request.POST}")  # Mostrar los datos enviados en la consola
 
+        try:
+            # Crear Campeonato
+            if action == 'crear_campeonato':
+                campeonato_form = CrearCampeonatoForm(request.POST)
+                if campeonato_form.is_valid():
+                    campeonato_form.save()
+                    messages.success(request, "Campeonato creado exitosamente.")
+                    return redirect('gestionar_registros')
+                else:
+                    print(f"Errores del formulario de campeonato: {campeonato_form.errors}")
+                    messages.error(request, f"Error al crear el campeonato: {campeonato_form.errors}")
+
+            # Modificar Campeonato
+            elif action == 'modificar_campeonato':
+                campeonato_id = request.POST.get('campeonato_id')
+                campeonato_instance = get_object_or_404(Campeonato, id=campeonato_id)
+                campeonato_form = CrearCampeonatoForm(request.POST, instance=campeonato_instance)
+                if campeonato_form.is_valid():
+                    campeonato_form.save()
+                    messages.success(request, "Campeonato modificado exitosamente.")
+                    return redirect('gestionar_registros')
+                else:
+                    print(f"Errores del formulario de modificación: {campeonato_form.errors}")
+                    messages.error(request, f"Error al modificar el campeonato: {campeonato_form.errors}")
+
+            # Registrar Usuario
+            elif action == 'registrar_usuario':
+                usuario_form = RegistroForm(request.POST)
+                if usuario_form.is_valid():
+                    user = usuario_form.save(commit=False)
+                    user.is_active = True
+                    user.save()
+                    tipo_usuario = request.POST.get('tipo_usuario')
+                    if tipo_usuario == 'planillero':
+                        planillero_group, _ = Group.objects.get_or_create(name='Planillero')
+                        user.groups.add(planillero_group)
+                    elif tipo_usuario == 'administrador':
+                        admin_group, _ = Group.objects.get_or_create(name='Administrador')
+                        user.groups.add(admin_group)
+                    messages.success(request, "Usuario registrado exitosamente.")
+                    return redirect('gestionar_registros')
+                else:
+                    print(f"Errores al registrar usuario: {usuario_form.errors}")
+                    messages.error(request, f"Error al registrar usuario: {usuario_form.errors}")
+
+            # Registrar Equipo
+            elif action == 'registrar_equipo':
+                user_id = request.POST.get('user_id')
+                user = get_object_or_404(User, id=user_id)
+                equipo_form = InscripcionEquipoForm(request.POST, request.FILES)
+                entrenador_form = EntrenadorForm(request.POST)
+                jugador_formset = JugadorFormSet(request.POST)
+
+                if equipo_form.is_valid() and entrenador_form.is_valid() and jugador_formset.is_valid():
+                    entrenador = entrenador_form.save(commit=False)
+                    entrenador.user = user
+                    entrenador.save()
+
+                    equipo = equipo_form.save(commit=False)
+                    equipo.entrenador = entrenador
+                    equipo.save()
+
+                    jugadores = jugador_formset.save(commit=False)
+                    for jugador in jugadores:
+                        jugador.equipo = equipo
+                        jugador.save()
+
+                    messages.success(request, "Equipo registrado exitosamente.")
+                    return redirect('gestionar_registros')
+                else:
+                    errors = {
+                        'equipo_form': equipo_form.errors,
+                        'entrenador_form': entrenador_form.errors,
+                        'jugador_formset': jugador_formset.errors
+                    }
+                    print(f"Errores al registrar el equipo: {errors}")
+                    messages.error(request, f"Error al registrar el equipo: {errors}")
+
+            # Ver Detalle del Campeonato
+            elif action == 'ver_detalle_campeonato':
+                campeonato_id = request.POST.get('campeonato_id')
+                if campeonato_id:
+                    try:
+                        campeonato_seleccionado = Campeonato.objects.get(id=campeonato_id)
+                        partidos_clasificatorias = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Clasificatorias')
+                        partidos_eliminatoria = Partido.objects.filter(campeonato=campeonato_seleccionado, fase='Eliminatoria')
+                    except Campeonato.DoesNotExist:
+                        messages.error(request, "El campeonato seleccionado no existe.")
+                else:
+                    messages.error(request, "No se proporcionó un ID de campeonato válido.")
+
+            # Generar Fase Eliminatoria
+            elif action == 'generar_fase_eliminatoria':
+                campeonato_id = request.POST.get('campeonato_id')
+                if campeonato_id:
+                    campeonato = get_object_or_404(Campeonato, id=campeonato_id)
+                    if Partido.objects.filter(campeonato=campeonato, fase='Cuartos').exists():
+                        messages.error(request, "Los partidos de cuartos de final ya están generados para este campeonato.")
+                    else:
+                        # Lógica para generar partidos
+                        equipos_clasificados = Equipo.objects.filter(campeonato=campeonato).order_by('-puntos')[:8]
+                        if len(equipos_clasificados) < 8:
+                            messages.error(request, "No hay suficientes equipos clasificados para generar la fase eliminatoria.")
+                        else:
+                            for i in range(4):  # Generar 4 partidos
+                                Partido.objects.create(
+                                    equipo_local=equipos_clasificados[i],
+                                    equipo_visitante=equipos_clasificados[-(i + 1)],
+                                    campeonato=campeonato,
+                                    fase='Cuartos',
+                                    fecha=datetime.now() + timedelta(days=i)
+                                )
+                            messages.success(request, "Fase eliminatoria generada exitosamente.")
+                else:
+                    messages.error(request, "No se proporcionó un ID de campeonato válido.")
+
+        except Exception as e:
+            print(f"Error inesperado: {str(e)}")
+            messages.error(request, f"Error inesperado: {str(e)}")
+
+    # Contexto para renderizar
     context = {
+        'campeonatos': campeonatos,
+        'campeonato_seleccionado': campeonato_seleccionado,
+        'partidos_clasificatorias': partidos_clasificatorias,
+        'partidos_eliminatoria': partidos_eliminatoria,
         'usuario_form': usuario_form,
         'equipo_form': equipo_form,
         'entrenador_form': entrenador_form,
         'jugador_formset': jugador_formset,
         'campeonato_form': campeonato_form,
-        'campeonatos': campeonatos,
         'equipos': equipos,
         'posiciones': posiciones,
         'videos': videos,
+        'todos_usuarios': todos_usuarios,
+        'usuarios_con_entrenador': usuarios_con_entrenador,
     }
-
-    if campeonato_seleccionado:
-        context.update({
-            'campeonato_seleccionado': campeonato_seleccionado,
-            'partidos_clasificatorias': partidos_clasificatorias,
-            'partidos_eliminatoria': partidos_eliminatoria,
-        })
 
     return render(request, 'basquetbol/gestionar_registros.html', context)
 
@@ -1488,6 +1633,12 @@ def estadisticas_equipo_api(request, equipo_id):
 
 @login_required
 def foro(request):
+    equipo_inscrito = (
+        Equipo.objects.filter(entrenador__user=request.user).exists()
+        if request.user.is_authenticated
+        else False
+    )
+
     if request.method == "POST":
         # Procesar formulario de nueva publicación
         publicacion_form = PublicacionForm(request.POST)
@@ -1509,6 +1660,7 @@ def foro(request):
         'publicaciones': publicaciones,
         'publicacion_form': publicacion_form,
         'comentario_form': comentario_form,
+        'equipo_inscrito': equipo_inscrito,
     })
 
 from django.http import JsonResponse

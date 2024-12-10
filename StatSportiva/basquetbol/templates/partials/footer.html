@@ -118,27 +118,25 @@
             <div class="footer-col">
                 <h4>StatSportiva</h4>
                 <ul>
-                    <li><a href="#">Sobre Nosotros</a></li>
-                    <li><a href="#">Nuestros servicios</a></li>
-                    <li><a href="#">Politica & Privacidad</a></li>
+                    <li><a href="{% url 'nosotros' %}">Sobre Nosotros</a></li>
+                    <li><a href="{% url 'nosotros' %}">Nuestros servicios</a></li>
+                    <li><a href="{% url 'politica_privacidad' %}">Politica & Privacidad</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Ayuda</h4>
                 <ul>
-                    <li><a href="#">FAQ</a></li>
-                    <li><a href="#">Contactanos</a></li>
-                    <li><a href="#">Foro</a></li>
-                    <li><a href="#">Ubicación</a></li>
+                    <li><a href="{% url 'nosotros' %}">FAQ</a></li>
+                    <li><a href="{% url 'nosotros' %}">Contactanos</a></li>
+                    <li><a href="{% url 'foro' %}">Foro</a></li>
                 </ul>
             </div>
             <div class="footer-col">
                 <h4>Campeonatos</h4>
                 <ul>
-                    <li><a href="#">Equipos</a></li>
-                    <li><a href="#">Partidos</a></li>
-                    <li><a href="#">Estadisticas</a></li>
-                    <li><a href="#">Posiciones</a></li>
+                    <li><a href="{% url 'buscar_partidos' %}">Partidos</a></li>
+                    <li><a href="{% url 'estadisticas_equipos' %}">Estadisticas</a></li>
+                    <li><a href="{% url 'tabla_posiciones' %}">Posiciones</a></li>
                 </ul>
             </div>
             <div class="footer-col">
