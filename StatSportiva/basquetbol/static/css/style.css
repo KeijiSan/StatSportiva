@@ -502,12 +502,12 @@ background-attachment: fixed;
 
 /* Título de inicio de sesión */
 .login-title {
-    font-size: 28px;
-    margin-bottom: 20px;
-    color: #ffffff;
-    font-weight: bold;
-    font-family: 'Verdana', sans-serif;
-    letter-spacing: 1.5px;
+    font-size: 28px!important;
+    margin-bottom: 20px!important;
+    color: #ffffff!important;
+    font-weight: bold!important;
+    font-family: 'Verdana', sans-serif!important;
+    letter-spacing: 1.5px!important;
 }
 
 /* Formulario y campos de entrada */
@@ -2057,4 +2057,18 @@ select:focus {
 
 .basketball-back-link:before {
     content: '⬅ ';
+}
+
+
+.forgot-password-link {
+    color: #5cb3fd; /* Azul claro */
+    font-weight: bold;
+    text-decoration: none;
+    transition: color 0.3s ease, text-shadow 0.3s ease;
+}
+
+.forgot-password-link:hover {
+    color: #0044cc; /* Azul más oscuro */
+    text-shadow: 0 0 5px rgba(0, 68, 204, 0.8);
+    text-decoration: underline;
 }

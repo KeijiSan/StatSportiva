@@ -580,6 +580,12 @@ from django.contrib import messages
 from django.shortcuts import render, redirect
 from basquetbol.models import Campeonato  # Asegúrate de importar el modelo correspondiente
 
+from django.contrib.auth import login as auth_login
+from django.contrib.auth.forms import AuthenticationForm
+from django.shortcuts import render, redirect
+from django.contrib import messages
+from .models import Campeonato
+
 def login_view(request):
     if request.method == 'POST':
         form = AuthenticationForm(request, data=request.POST)
@@ -588,7 +594,7 @@ def login_view(request):
 
             # Verificar si el usuario está activo
             if not user.is_active:
-                messages.error(request, "Tu cuenta no está activa. Por favor, verifica tu correo para activarla.")
+                messages.error(request, "Tu cuenta no está activa. Por favor, verifica tu correo para activarla.", extra_tags="login")
                 return render(request, 'basquetbol/login.html', {'form': form})
 
             # Iniciar sesión
@@ -604,7 +610,7 @@ def login_view(request):
 
             # Si no hay campeonatos, redirigir a una página por defecto o mostrar un mensaje
             if not campeonato:
-                messages.warning(request, "No hay campeonatos disponibles actualmente.")
+                messages.warning(request, "No hay campeonatos disponibles actualmente.", extra_tags="login")
                 return redirect('inicio')  # Cambia 'inicio' por tu vista de página principal
 
             # Redirigir según el tipo de usuario
@@ -617,11 +623,12 @@ def login_view(request):
 
         else:
             # Si las credenciales son incorrectas
-            messages.error(request, "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.")
+            messages.error(request, "Usuario o contraseña incorrectos. Por favor, inténtalo de nuevo.", extra_tags="login")
     else:
         form = AuthenticationForm()
 
     return render(request, 'basquetbol/login.html', {'form': form})
+
 
 
 #------------------------------------------------------------------------------
